@@ -3,7 +3,7 @@
 # Markov Logic Networks
 #
 # (C) 2006-2010 by Dominik Jain (jain@cs.tum.edu)
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -26,8 +26,7 @@
 
 def truthDegreeGivenSoftEvidence(gf, worldValues, mln):
     return mln.getTruthDegreeGivenSoftEvidence(gf, worldValues)
-    
+
+
 def noisyOr(worldValues, disj, mln):
     return mln._noisyOr(worldValues, disj)
-
-

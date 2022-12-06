@@ -1,4 +1,3 @@
-
 # (C) 2012-2015 by Daniel Nyga
 #     2006-2011 by Dominik Jain
 #

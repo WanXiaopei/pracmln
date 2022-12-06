@@ -40,10 +40,9 @@ class MCMCInference(Inference):
     """
     Abstract super class for Markov chain Monte Carlo-based inference.
     """
-    
+
     def __init__(self, mrf, queries=ALL, **params):
         Inference.__init__(self, mrf, queries, **params)
-        
 
     def random_world(self, evidence=None):
         """
@@ -62,14 +61,12 @@ class MCMCInference(Inference):
                 value = [v for _, v in var.itervalues(evdict)][validx]
                 var.setval(value, world)
         return world
-                
 
     class Chain:
         """
         Represents the state of a Markov Chain.
         """
-        
-        
+
         def __init__(self, infer, queries):
             self.queries = queries
             self.soft_evidence = None
@@ -81,8 +78,7 @@ class MCMCInference(Inference):
             # copy the current  evidence as this chain's state
             # initialize remaining variables randomly (but consistently with the evidence)
             self.state = infer.random_world()
-        
-        
+
         def update(self, state):
             self.steps += 1
             self.state = state
@@ -101,41 +97,35 @@ class MCMCInference(Inference):
                 for se in self.soft_evidence:
                     self.softev_counts[se["expr"]] += se["formula"](self.state)
 
-        
         def set_soft_evidence(self, soft_evidence):
             self.soft_evidence = soft_evidence
             self.softev_counts = {}
             for se in soft_evidence:
-                if 'formula' not in se:
-                    formula = self.infer.mrf.mln.logic.parse_formula(se['expr'])
-                    se['formula'] = formula.ground(self.infer.mrf, {})
-                    se['expr'] = fstr(se['formula'])
+                if "formula" not in se:
+                    formula = self.infer.mrf.mln.logic.parse_formula(se["expr"])
+                    se["formula"] = formula.ground(self.infer.mrf, {})
+                    se["expr"] = fstr(se["formula"])
                 self.softev_counts[se["expr"]] = se["formula"](self.state)
-        
-        
+
         def soft_evidence_frequency(self, formula):
-            if self.steps == 0: return 0
+            if self.steps == 0:
+                return 0
             return float(self.softev_counts[fstr(formula)]) / self.steps
-        
-        
+
         def results(self):
             results = []
             for i in range(len(self.queries)):
                 results.append(float(self.truths[i]) / self.steps)
             return results
-    
-            
+
     class ChainGroup:
-        
         def __init__(self, infer):
             self.chains = []
             self.infer = infer
-    
-    
+
         def chain(self, chain):
             self.chains.append(chain)
-    
-    
+
         def results(self):
             chains = float(len(self.chains))
             queries = self.chains[0].queries
@@ -152,16 +142,15 @@ class MCMCInference(Inference):
                 for i in range(len(self.chains[0].queries)):
                     var[i] += (cr[i] - results[i]) ** 2 / chains
             return dict([(str(q), p) for q, p in zip(queries, results)]), var
-        
-        
+
         def avgtruth(self, formula):
-            """ returns the fraction of chains in which the given formula is currently true """
-            t = 0.0 
+            """returns the fraction of chains in which the given formula is currently true"""
+            t = 0.0
             for c in self.chains:
                 t += formula(c.state)
             return t / len(self.chains)
-        
-        
+
+
 #         def write(self, short=False):
 #             if len(self.chains) > 1:
 #                 for i in range(len(self.infer.queries)):

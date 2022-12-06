@@ -35,7 +35,7 @@ class LL(AbstractLearner):
     """
     Exact Log-Likelihood learner.
     """
-    
+
     def __init__(self, mrf, **params):
         AbstractLearner.__init__(self, mrf, **params)
         self._stat = None
@@ -43,10 +43,8 @@ class LL(AbstractLearner):
         self._eworld_idx = None
         self._lastw = None
 
-    
     def _prepare(self):
         self._compute_statistics()
-        
 
     def _l(self, w):
         """
@@ -65,21 +63,22 @@ class LL(AbstractLearner):
                             break
                     else:
                         s += val * w[fidx]
-                if hc_violation: 
+                if hc_violation:
                     expsums.append(0)
                 else:
                     expsums.append(exp(s))
             z = sum(expsums)
-            if z == 0: raise SatisfiabilityException('MLN is unsatisfiable: probability masses of all possible worlds are zero.')
-            self._ls = [v / z for v in expsums] 
-        return self._ls 
-            
+            if z == 0:
+                raise SatisfiabilityException(
+                    "MLN is unsatisfiable: probability masses of all possible worlds are zero."
+                )
+            self._ls = [v / z for v in expsums]
+        return self._ls
 
     def _f(self, w):
         ls = self._l(w)
         return numpy.log(ls[self._eworld_idx])
-                
-    
+
     def _grad(self, w):
         ls = self._l(w)
         grad = numpy.zeros(len(self.mrf.formulas), numpy.float64)
@@ -88,15 +87,14 @@ class LL(AbstractLearner):
                 if widx == self._eworld_idx:
                     grad[fidx] += count
                 grad[fidx] -= count * ls[widx]
-        return grad 
-
+        return grad
 
     def _compute_statistics(self):
         self._stat = []
         grounder = DefaultGroundingFactory(self.mrf)
         eworld = list(self.mrf.evidence)
         if self.verbose:
-            bar = ProgressBar(steps=self.mrf.countworlds(), color='green')
+            bar = ProgressBar(steps=self.mrf.countworlds(), color="green")
         for widx, world in self.mrf.iterallworlds():
             if self.verbose:
                 bar.label(str(widx))
@@ -104,7 +102,8 @@ class LL(AbstractLearner):
             values = {}
             self._stat.append(values)
             if self._eworld_idx is None and world == eworld:
-                self._eworld_idx = widx  
+                self._eworld_idx = widx
             for gf in grounder.itergroundings():
                 truth = gf(world)
-                if truth != 0: values[gf.idx] = values.get(gf.idx, 0) + truth
+                if truth != 0:
+                    values[gf.idx] = values.get(gf.idx, 0) + truth

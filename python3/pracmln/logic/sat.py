@@ -1,8 +1,8 @@
-# 
+#
 # First-Order Logic -- Satisfiability Reasoning
 #
 # (C) 2013 by Daniel Nyga (nyga@cs.tum.edu)
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -25,7 +25,7 @@
 
 def DPLL(clauses):
     """
-    Implementation of the Davis-Putnam-Logemann-Loveland (DPLL) algorithm for 
+    Implementation of the Davis-Putnam-Logemann-Loveland (DPLL) algorithm for
     proving satisfiability of a sentence in CNF in propositional logic.
     Returns True iff clauses is satisfiable, or False otherwise.
     - clauses:     A Set of clauses, i.e. a list of sets of literals. Literals
@@ -38,88 +38,89 @@ def DPLL(clauses):
     polarities = {}
     atoms = set()
     satisfiable = True
-#     print 'enter with', clauses
+    #     print 'enter with', clauses
     for clause in clauses:
         if len(clause) == 0:
-#             print 'empty clause => backtracking'
+            #             print 'empty clause => backtracking'
             return False
         elif len(clause) == 1:
-            for l in clause: break
+            for l in clause:
+                break
             unitClauses.add(l)
         for lit in clause:
-            (pol, atom) = (False, lit[1:]) if lit[0] == '!' else (True, lit)
+            (pol, atom) = (False, lit[1:]) if lit[0] == "!" else (True, lit)
             if not atom in polarities:
                 pureLiterals.add(lit)
             pureLit = polarities.get(atom, pol) == pol
             satisfiable = satisfiable and pureLit
             polarities[atom] = pol
             if not pureLit:
-                try: pureLiterals.remove(lit[1:] if lit[0] == '!' else '!%s' % lit)
-                except: pass
-#     print 'pureLits:', pureLiterals
-    if satisfiable: return True
+                try:
+                    pureLiterals.remove(lit[1:] if lit[0] == "!" else "!%s" % lit)
+                except:
+                    pass
+    #     print 'pureLits:', pureLiterals
+    if satisfiable:
+        return True
     # do unit propagation
     newClauses = []
     for clause in clauses:
         skipClause = False
         newClause = set(clause)
         for uc in unitClauses:
-#             print 'UP %s / %s ->' % (uc, str(newClause)),
-            if set([uc]) == newClause: 
+            #             print 'UP %s / %s ->' % (uc, str(newClause)),
+            if set([uc]) == newClause:
                 skipClause = True
-#                 print 'True'
+                #                 print 'True'
                 break
-            (ucPol, ucAtom) = (False, uc[1:]) if uc[0] == '!' else (True, uc)
+            (ucPol, ucAtom) = (False, uc[1:]) if uc[0] == "!" else (True, uc)
             for l in set(newClause):
-                (pol, atom) = (False, l[1:]) if l[0] == '!' else (True, l)
+                (pol, atom) = (False, l[1:]) if l[0] == "!" else (True, l)
                 if atom == ucAtom:
-                    if pol == ucPol: 
+                    if pol == ucPol:
                         skipClause = True
-#                         print 'True'
+                        #                         print 'True'
                         break
-                    else: newClause.remove(l)
-                else: newClause.add(l)
-            if skipClause: break
-#             print newClause
-        if skipClause: continue
+                    else:
+                        newClause.remove(l)
+                else:
+                    newClause.add(l)
+            if skipClause:
+                break
+        #             print newClause
+        if skipClause:
+            continue
         newClauses.append(newClause)
-#     print newClauses, 'after UP'
+    #     print newClauses, 'after UP'
     # do pure literal elimination
     for lit in pureLiterals:
         for clause in newClauses:
             if lit in clause:
                 newClauses.remove(clause)
-#     print newClauses, 'after PLE'
-    
+    #     print newClauses, 'after PLE'
+
     atom = None
     if len(newClauses) == 0:
         return True
     for c in newClauses:
         for l in c:
-            atom =  l[1:] if l[0] == '!' else l
+            atom = l[1:] if l[0] == "!" else l
             break
-    if atom is None: return False
-    return DPLL(newClauses + [set([atom])]) or DPLL(newClauses + [set(['!%s' % atom])])
+    if atom is None:
+        return False
+    return DPLL(newClauses + [set([atom])]) or DPLL(newClauses + [set(["!%s" % atom])])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     # this is the unicorn example from the AI class
-    c1 = set(['!M', 'U'])
-    c2 = set(['M', '!U'])
-    c3 = set(['M', 'S'])
-    c4 = set(['!U', 'H'])
-    c5 = set(['!S', 'H'])
-    c6 = set(['!H', 'G'])
-    c7 = set(['!M'])
-#     c7 = set(['!G'])
+    c1 = set(["!M", "U"])
+    c2 = set(["M", "!U"])
+    c3 = set(["M", "S"])
+    c4 = set(["!U", "H"])
+    c5 = set(["!S", "H"])
+    c6 = set(["!H", "G"])
+    c7 = set(["!M"])
+    #     c7 = set(['!G'])
     cnf = [c1, c2, c3, c4, c5, c6, c7]
     print(DPLL(cnf))
-                
-            
-            
-    
-        
-    
-    
-    

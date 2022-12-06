@@ -1,7 +1,7 @@
-# 
+#
 #
 # (C) 2011-2015 by Daniel Nyga (nyga@cs.uni-bremen.de)
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -43,14 +43,13 @@ def _setup_learner(xxx_todo_changeme):
 
 
 class MultipleDatabaseLearner(AbstractLearner):
-    '''
+    """
     Learns from multiple databases using an arbitrary sub-learning method for
     each database, assuming independence between individual databases.
-    '''
-
+    """
 
     def __init__(self, mln_, dbs, method, **params):
-        '''
+        """
         :param dbs:         list of :class:`mln.database.Database` objects to
                             be used for learning.
         :param mln_:        the MLN object to be used for learning
@@ -59,7 +58,7 @@ class MultipleDatabaseLearner(AbstractLearner):
                             :class:`mln.methods.LearningMethods`.
         :param **params:    additional parameters handed over to the base
                             learners.
-        '''
+        """
 
         self.dbs = dbs
         self._params = edict(params)
@@ -69,20 +68,24 @@ class MultipleDatabaseLearner(AbstractLearner):
             self.mln = mln_
         self.watch = StopWatch()
         self.learners = [None] * len(dbs)
-        self.watch.tag('setup learners', verbose=self.verbose)
+        self.watch.tag("setup learners", verbose=self.verbose)
         if self.verbose:
-            bar = ProgressBar(steps=len(dbs), color='green')
+            bar = ProgressBar(steps=len(dbs), color="green")
         if self.multicore:
             pool = Pool(maxtasksperchild=1)
-            logger.debug('Setting up multi-core processing for {} cores'.format(pool._processes))
+            logger.debug(
+                "Setting up multi-core processing for {} cores".format(pool._processes)
+            )
             try:
-                for i, learner in pool.imap(with_tracing(_setup_learner), self._iterdbs(method)):
+                for i, learner in pool.imap(
+                    with_tracing(_setup_learner), self._iterdbs(method)
+                ):
                     self.learners[i] = learner
                     if self.verbose:
-                        bar.label('Database %d, %s' % ((i + 1), learner.name))
+                        bar.label("Database %d, %s" % ((i + 1), learner.name))
                         bar.inc()
             except Exception as e:
-                logger.error('Error in child process. Terminating pool...')
+                logger.error("Error in child process. Terminating pool...")
                 pool.close()
                 raise e
             finally:
@@ -94,36 +97,47 @@ class MultipleDatabaseLearner(AbstractLearner):
             self.mln.weights = list(first(self.learners).mrf.mln.weights)
         else:
             for i, db in enumerate(self.dbs):
-                _, learner = _setup_learner((i, self.mln, db, method, self._params + {'multicore': False}))
+                _, learner = _setup_learner(
+                    (i, self.mln, db, method, self._params + {"multicore": False})
+                )
                 self.learners[i] = learner
                 if self.verbose:
-                    bar.label('Database %d, %s' % ((i + 1), learner.name))
+                    bar.label("Database %d, %s" % ((i + 1), learner.name))
                     bar.inc()
         if self.verbose:
-            print('set up', self.name)
-        self.watch.finish('setup learners')
+            print("set up", self.name)
+        self.watch.finish("setup learners")
 
     def _iterdbs(self, method):
         for i, db in enumerate(self.dbs):
             yield i, self.mln, db, method, self._params + {
-                'verbose': not self.multicore, 'multicore': False}
+                "verbose": not self.multicore,
+                "multicore": False,
+            }
 
     @property
     def name(self):
-        return "MultipleDatabaseLearner [{} x {}]".format(len(self.learners), self.learners[0].name)
+        return "MultipleDatabaseLearner [{} x {}]".format(
+            len(self.learners), self.learners[0].name
+        )
 
     def _f(self, w):
-        # it turned out that it doesn't pay off to evaluate the function  
-        # in separate processes, so we turn it off 
+        # it turned out that it doesn't pay off to evaluate the function
+        # in separate processes, so we turn it off
         if False:  # self.multicore:
             likelihood = 0
             pool = Pool()
             try:
-                for i, (f_, d_) in enumerate(pool.imap(with_tracing(_methodcaller('_f', sideeffects=True)), [(l, w) for l in self.learners])):
+                for i, (f_, d_) in enumerate(
+                    pool.imap(
+                        with_tracing(_methodcaller("_f", sideeffects=True)),
+                        [(l, w) for l in self.learners],
+                    )
+                ):
                     self.learners[i].__dict__ = d_
                     likelihood += f_
             except Exception as e:
-                logger.error('Error in child process. Terminating pool...')
+                logger.error("Error in child process. Terminating pool...")
                 pool.close()
                 raise e
             finally:
@@ -136,22 +150,28 @@ class MultipleDatabaseLearner(AbstractLearner):
     def _grad(self, w):
         grad = numpy.zeros(len(self.mln.formulas), numpy.float64)
         if False:  # self.multicore:
-            # it turned out that it doesn't pay off to evaluate the gradient  
-            # in separate processes, so we turn it off 
+            # it turned out that it doesn't pay off to evaluate the gradient
+            # in separate processes, so we turn it off
             pool = Pool()
             try:
-                for i, (grad_, d_) in enumerate(pool.imap(with_tracing(_methodcaller('_grad', sideeffects=True)), [(l, w) for l in self.learners])):
+                for i, (grad_, d_) in enumerate(
+                    pool.imap(
+                        with_tracing(_methodcaller("_grad", sideeffects=True)),
+                        [(l, w) for l in self.learners],
+                    )
+                ):
                     self.learners[i].__dict__ = d_
                     grad += grad_
             except Exception as e:
-                logger.error('Error in child process. Terminating pool...')
+                logger.error("Error in child process. Terminating pool...")
                 pool.close()
                 raise e
             finally:
                 pool.terminate()
                 pool.join()
         else:
-            for learner in self.learners: grad += learner._grad(w)
+            for learner in self.learners:
+                grad += learner._grad(w)
         return grad
 
     def _hessian(self, w):
@@ -160,32 +180,42 @@ class MultipleDatabaseLearner(AbstractLearner):
         if self.multicore:
             pool = Pool()
             try:
-                for h in pool.imap(with_tracing(_methodcaller('_hessian')), [(l, w) for l in self.learners]):
+                for h in pool.imap(
+                    with_tracing(_methodcaller("_hessian")),
+                    [(l, w) for l in self.learners],
+                ):
                     hessian += h
             except Exception as e:
-                logger.error('Error in child process. Terminating pool...')
+                logger.error("Error in child process. Terminating pool...")
                 pool.close()
                 raise e
             finally:
                 pool.terminate()
                 pool.join()
         else:
-            for learner in self.learners: hessian += learner._hessian(w)
+            for learner in self.learners:
+                hessian += learner._hessian(w)
         return hessian
 
     def _prepare(self):
-        self.watch.tag('preparing optimization', verbose=self.verbose)
+        self.watch.tag("preparing optimization", verbose=self.verbose)
         if self.verbose:
-            bar = ProgressBar(steps=len(self.dbs), color='green')
+            bar = ProgressBar(steps=len(self.dbs), color="green")
         if self.multicore:
             pool = Pool(maxtasksperchild=1)
             try:
-                for i, (_, d_) in enumerate(pool.imap(with_tracing(_methodcaller('_prepare', sideeffects=True)), self.learners)):
+                for i, (_, d_) in enumerate(
+                    pool.imap(
+                        with_tracing(_methodcaller("_prepare", sideeffects=True)),
+                        self.learners,
+                    )
+                ):
                     checkmem()
                     self.learners[i].__dict__ = d_
-                    if self.verbose: bar.inc()
+                    if self.verbose:
+                        bar.inc()
             except Exception as e:
-                logger.error('Error in child process. Terminating pool...')
+                logger.error("Error in child process. Terminating pool...")
                 pool.close()
                 raise e
             finally:
@@ -195,16 +225,21 @@ class MultipleDatabaseLearner(AbstractLearner):
             for learner in self.learners:
                 checkmem()
                 learner._prepare()
-                if self.verbose: bar.inc()
+                if self.verbose:
+                    bar.inc()
 
     def _filter_fixweights(self, v):
-        '''
+        """
         Removes from the vector `v` all elements at indices that correspond to
         a fixed weight formula index.
-        '''
+        """
         if len(v) != len(self.mln.formulas):
-            raise Exception('Vector must have same length as formula weights')
-        return [v[i] for i in range(len(self.mln.formulas)) if not self.mln.fixweights[i] and self.mln.weights[i] != HARD]
+            raise Exception("Vector must have same length as formula weights")
+        return [
+            v[i]
+            for i in range(len(self.mln.formulas))
+            if not self.mln.fixweights[i] and self.mln.weights[i] != HARD
+        ]
 
     def _add_fixweights(self, w):
         i = 0
@@ -218,9 +253,11 @@ class MultipleDatabaseLearner(AbstractLearner):
         return w_
 
     def run(self, **params):
-        if 'scipy' not in sys.modules:
-            raise Exception("Scipy was not imported! Install numpy and scipy "
-                            "if you want to use weight learning.")
+        if "scipy" not in sys.modules:
+            raise Exception(
+                "Scipy was not imported! Install numpy and scipy "
+                "if you want to use weight learning."
+            )
         runs = 0
         self._w = [0] * len(self.mln.formulas)
         while runs < self.maxrepeat:
@@ -232,5 +269,6 @@ class MultipleDatabaseLearner(AbstractLearner):
             self._optimize(**self._params)
             self._cleanup()
             runs += 1
-            if not any([l.repeat() for l in self.learners]): break
+            if not any([l.repeat() for l in self.learners]):
+                break
         return self.weights

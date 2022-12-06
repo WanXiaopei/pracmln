@@ -1,7 +1,7 @@
 # Markov Logic Networks - Grounding
 #
 # (C) 2013 by Daniel Nyga (nyga@cs.tum.edu)
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -62,10 +62,18 @@ def create_formula_groundings(formula, unsatfailure=True):
                     truth = gf(world)
                     if truth != 0:
                         stat.append((var.idx, validx, truth))
-                    elif unsatfailure and gf.weight == HARD and gf(global_bpll_grounding.mrf.evidence) != 1:
+                    elif (
+                        unsatfailure
+                        and gf.weight == HARD
+                        and gf(global_bpll_grounding.mrf.evidence) != 1
+                    ):
                         print()
                         gf.print_structure(global_bpll_grounding.mrf.evidence)
-                        raise SatisfiabilityException('MLN is unsatisfiable due to hard constraint violation {} (see above)'.format(global_bpll_grounding.mrf.formulas[gf.idx]))
+                        raise SatisfiabilityException(
+                            "MLN is unsatisfiable due to hard constraint violation {} (see above)".format(
+                                global_bpll_grounding.mrf.formulas[gf.idx]
+                            )
+                        )
             results.append((gf.idx, stat))
     return results
 
@@ -76,12 +84,18 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
     pseudo-likelihood learning.
     """
 
-
     def __init__(self, mrf, formulas=None, cache=None, **params):
-        FastConjunctionGrounding.__init__(self, mrf, simplify=False, unsatfailure=False, formulas=formulas, cache=cache, **params)
+        FastConjunctionGrounding.__init__(
+            self,
+            mrf,
+            simplify=False,
+            unsatfailure=False,
+            formulas=formulas,
+            cache=cache,
+            **params
+        )
         self._stat = {}
         self._varidx2fidx = defaultdict(set)
-
 
     def itergroundings_fast(self, formula):
         """
@@ -91,14 +105,14 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
         """
         # make a copy of the formula to avoid side effects
         formula = formula.ground(self.mrf, {}, partial=True)
-        children = [formula] if not hasattr(formula, 'children') else formula.children
+        children = [formula] if not hasattr(formula, "children") else formula.children
         # make equality constraints access their variable domains
         # this is a _really_ dirty hack but it does the job ;-)
         vardoms = formula.vardoms()
 
-
         def eqvardoms(self, v=None, c=None):
-            if v is None: v = defaultdict(set)
+            if v is None:
+                v = defaultdict(set)
             for a in self.args:
                 if self.mln.logic.isvar(a):
                     v[a] = vardoms[a]
@@ -106,13 +120,16 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
 
         for child in children:
             if isinstance(child, Logic.Equality):
-                setattr(child, 'vardoms', types.MethodType(eqvardoms, child))
+                setattr(child, "vardoms", types.MethodType(eqvardoms, child))
         lits = sorted(children, key=self._conjsort)
-        for gf in self._itergroundings_fast(formula, lits, 0, assignment={}, variables=[]):
+        for gf in self._itergroundings_fast(
+            formula, lits, 0, assignment={}, variables=[]
+        ):
             yield gf
 
-
-    def _itergroundings_fast(self, formula, constituents, cidx, assignment, variables, falsevar=None, level=0):
+    def _itergroundings_fast(
+        self, formula, constituents, cidx, assignment, variables, falsevar=None, level=0
+    ):
         if cidx == len(constituents):
             # no remaining literals to ground. return the ground formula
             # and statistics
@@ -125,14 +142,26 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
             gnd = c.ground(self.mrf, dict_union(varass, assignment))
             # check if it violates a hard constraint
             if formula.weight == HARD and gnd(self.mrf.evidence) < 1:
-                raise SatisfiabilityException('MLN is unsatisfiable by evidence due to hard constraint violation {} (see above)'.format(global_bpll_grounding.mrf.formulas[formula.idx]))
+                raise SatisfiabilityException(
+                    "MLN is unsatisfiable by evidence due to hard constraint violation {} (see above)".format(
+                        global_bpll_grounding.mrf.formulas[formula.idx]
+                    )
+                )
             if isinstance(gnd, Logic.Equality):
                 # if an equality grounding is false in a conjunction, we can
                 # stop since the  conjunction cannot be rendered true in any
                 # grounding that follows
-                if gnd.truth(None) == 0: continue
-                for gf in self._itergroundings_fast(formula, constituents, cidx + 1, dict_union(assignment, varass),
-                                                    variables, falsevar, level + 1):
+                if gnd.truth(None) == 0:
+                    continue
+                for gf in self._itergroundings_fast(
+                    formula,
+                    constituents,
+                    cidx + 1,
+                    dict_union(assignment, varass),
+                    variables,
+                    falsevar,
+                    level + 1,
+                ):
                     yield gf
             else:
                 var = self.mrf.variable(gnd.gndatom)
@@ -174,10 +203,18 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
                     #   both are only true for foo(Y)
                     stat = set(variables).intersection(stat)
                     skip = not bool(stat)  # skip if no values remain
-                if skip: continue
-                for gf in self._itergroundings_fast(formula, constituents, cidx + 1, dict_union(assignment, varass), vars_ + stat, falsevar=falsevar_, level=level + 1):
+                if skip:
+                    continue
+                for gf in self._itergroundings_fast(
+                    formula,
+                    constituents,
+                    cidx + 1,
+                    dict_union(assignment, varass),
+                    vars_ + stat,
+                    falsevar=falsevar_,
+                    level=level + 1,
+                ):
                     yield gf
-
 
     def _itergroundings(self, simplify=False, unsatfailure=False):
         global global_bpll_grounding
@@ -185,7 +222,9 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
         if self.multicore:
             pool = Pool(maxtasksperchild=1)
             try:
-                for gndresult in pool.imap(with_tracing(create_formula_groundings), self.formulas):
+                for gndresult in pool.imap(
+                    with_tracing(create_formula_groundings), self.formulas
+                ):
                     for fidx, stat in gndresult:
                         for (varidx, validx, val) in stat:
                             self._varidx2fidx[varidx].add(fidx)
@@ -193,7 +232,7 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
                         checkmem()
                     yield None
             except Exception as e:
-                logger.error('Error in child process. Terminating pool...')
+                logger.error("Error in child process. Terminating pool...")
                 pool.close()
                 raise e
             finally:
@@ -207,7 +246,6 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
                         self._addstat(fidx, varidx, validx, val)
                 yield None
 
-
     def _addstat(self, fidx, varidx, validx, inc=1):
         if fidx not in self._stat:
             self._stat[fidx] = {}
@@ -217,7 +255,7 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
         d[varidx][validx] += inc
 
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # here comes some very experimental code. which is currently not in use.
 
 
@@ -236,7 +274,6 @@ class FormulaGrounding(object):
                 fg.
     """
 
-
     def __init__(self, formula, mrf, parent=None, assignment=None):
         """
         Instantiates the formula grounding for a given
@@ -248,7 +285,7 @@ class FormulaGrounding(object):
         self.mrf = mrf
         self.formula = formula
         self.parent = Ref(parent)
-        self.trueGroundings = Number(0.)
+        self.trueGroundings = Number(0.0)
         self.processed = Boolean(False)
         if parent is None:
             self.depth = 0
@@ -259,28 +296,36 @@ class FormulaGrounding(object):
         self.domains = ListDict()
         if parent is None:
             for var in self.formula.getVariables(self.mrf.mln):
-                self.domains.extend(var, list(self.mrf.domains[
-                                                  self.formula.getVarDomain(
-                                                      var, self.mrf.mln)]))
+                self.domains.extend(
+                    var,
+                    list(
+                        self.mrf.domains[self.formula.getVarDomain(var, self.mrf.mln)]
+                    ),
+                )
         else:
             for (v, d) in parent.domains.items():
                 self.domains.extend(v, list(d))
         self.domains.epochEndsHere()
 
-
     def epochEndsHere(self):
         for mem in (
-        self.parent, self.trueGroundings, self.children, self.domains,
-        self.processed):
+            self.parent,
+            self.trueGroundings,
+            self.children,
+            self.domains,
+            self.processed,
+        ):
             mem.epochEndsHere()
-
 
     def undoEpoch(self):
         for mem in (
-        self.parent, self.trueGroundings, self.children, self.domains,
-        self.processed):
+            self.parent,
+            self.trueGroundings,
+            self.children,
+            self.domains,
+            self.processed,
+        ):
             mem.undoEpoch()
-
 
     def countGroundings(self):
         """
@@ -293,7 +338,6 @@ class FormulaGrounding(object):
             domain = self.mrf.domains[self.formula.getVarDomain(var, self.mrf)]
             gf_count *= len(domain)
         return gf_count
-
 
     def ground(self, assignment=None):
         """
@@ -308,14 +352,16 @@ class FormulaGrounding(object):
             assignment = {}
         gf_count = 1
         for var in set(self.formula.getVariables(self.mrf.mln)).difference(
-                list(assignment.keys())):
+            list(assignment.keys())
+        ):
             domain = self.domains[var]
-            if domain is None: return 0.
+            if domain is None:
+                return 0.0
             gf_count *= len(domain)
-        gf = self.formula.ground(self.mrf, assignment,
-                                 allowPartialGroundings=True)
+        gf = self.formula.ground(self.mrf, assignment, allowPartialGroundings=True)
         gf.weight = self.formula.weight
-        for var_name, val in assignment.items(): break
+        for var_name, val in assignment.items():
+            break
         self.domains.drop(var_name, val)
         # if the simplified gf reduces to a TrueFalse instance, then
         # we return the no of groundings if it's true, or 0 otherwise.
@@ -330,16 +376,16 @@ class FormulaGrounding(object):
         # if the truth value cannot be determined yet, we return
         # a new formula grounding with the given assignment
         else:
-            new_grounding = FormulaGrounding(gf, self.mrf, parent=self,
-                                             assignment=assignment)
+            new_grounding = FormulaGrounding(
+                gf, self.mrf, parent=self, assignment=assignment
+            )
             self.children.append(new_grounding)
             return new_grounding
 
-
     def __str__(self):
-        return str(self.assignment) + '->' + str(self.formula) + str(
-            self.domains)  # str(self.assignment)
-
+        return (
+            str(self.assignment) + "->" + str(self.formula) + str(self.domains)
+        )  # str(self.assignment)
 
     def __repr__(self):
         return str(self)
@@ -347,7 +393,7 @@ class FormulaGrounding(object):
 
 class SmartGroundingFactory(object):
     """
-    Implements a factory for generating the groundings of one formula. 
+    Implements a factory for generating the groundings of one formula.
     The groundings are created incrementally with one
     particular ground atom being presented at a time.
     fields:
@@ -368,13 +414,12 @@ class SmartGroundingFactory(object):
     groundings that have been performed once.
     """
 
-
     def __init__(self, formula, mrf):
         """
         formula might be a formula or a FormulaGrounding instance.
         """
         self.mrf = mrf
-        self.costs = .0
+        self.costs = 0.0
         if isinstance(formula, Logic.Formula):
             self.formula = formula
             self.root = FormulaGrounding(formula, mrf)
@@ -387,38 +432,45 @@ class SmartGroundingFactory(object):
         self.gndAtom2fgs = ListDict()
         self.manipulatedFgs = List()
 
-
     def epochEndsHere(self):
-        for mem in (self.values_processed, self.variable_stack, self.var2fgs,
-                    self.gndAtom2fgs, self.manipulatedFgs):
+        for mem in (
+            self.values_processed,
+            self.variable_stack,
+            self.var2fgs,
+            self.gndAtom2fgs,
+            self.manipulatedFgs,
+        ):
             mem.epochEndsHere()
         for fg in self.manipulatedFgs:
             fg.epochEndsHere()
 
-
     def undoEpoch(self):
         for fg in self.manipulatedFgs:
             fg.undoEpoch()
-        for mem in (self.values_processed, self.variable_stack, self.var2fgs,
-                    self.gndAtom2fgs, self.manipulatedFgs):
+        for mem in (
+            self.values_processed,
+            self.variable_stack,
+            self.var2fgs,
+            self.gndAtom2fgs,
+            self.manipulatedFgs,
+        ):
             mem.undoEpoch()
-
 
     def ground(self, gndAtom):
         """
-        Expects a ground atom and creates all groundings 
+        Expects a ground atom and creates all groundings
         that can be derived by it in terms of FormulaGroundings.
         """
         self.manipulatedFgs.clear()
-        # get all variable assignments of matching literals in the formula 
+        # get all variable assignments of matching literals in the formula
         var_assignments = {}
         for lit in self.formula.iterLiterals():
             assignment = self.gndAtom2Assignment(lit, gndAtom)
             if assignment is not None:
                 unifyDicts(var_assignments, assignment)
-        cost = .0
+        cost = 0.0
 
-        # first evaluate formula groundings that contain 
+        # first evaluate formula groundings that contain
         # this gnd atom as an artifact
         min_depth = None
         min_depth_fgs = []
@@ -437,7 +489,8 @@ class SmartGroundingFactory(object):
                 if not fg.parent.obj in self.manipulatedFgs:
                     self.manipulatedFgs.append(fg.parent.obj)
                 fg.parent.obj.children.remove(
-                    fg)  # this is just for the visualization/ no real functionality
+                    fg
+                )  # this is just for the visualization/ no real functionality
                 if fg.depth == min_depth or min_depth is None:
                     min_depth_fgs.append(fg)
                     min_depth = fg.depth
@@ -446,7 +499,7 @@ class SmartGroundingFactory(object):
                     min_depth_fgs = []
                     min_depth_fgs.append(fg)
         for fg in min_depth_fgs:
-            # add the costs which are aggregated by the root of the subtree 
+            # add the costs which are aggregated by the root of the subtree
             if fg.formula.isTrue(fg.mrf.evidence) == False:
                 cost += fg.formula.weight * fg.countGroundings()
                 fg.trueGroundings.set(cost)
@@ -470,10 +523,13 @@ class SmartGroundingFactory(object):
                     vars_and_values = [{var: value}]
                 # ...then hinge all previously seen subtrees to the newly
                 # created formula groundings...
-                elif fg.depth >= depth and fg.depth < len( self.variable_stack) - 1:
-                    vars_and_values = [{self.variable_stack[fg.depth + 1]: v}
-                                       for v in self.values_processed[
-                                           self.variable_stack[fg.depth + 1]]]
+                elif fg.depth >= depth and fg.depth < len(self.variable_stack) - 1:
+                    vars_and_values = [
+                        {self.variable_stack[fg.depth + 1]: v}
+                        for v in self.values_processed[
+                            self.variable_stack[fg.depth + 1]
+                        ]
+                    ]
                 # ...and finally all variable values that are not part of
                 # the subtrees i.e. variables that are currently NOT in the
                 # variable_stack (since they have been removed due to falsity
@@ -481,60 +537,68 @@ class SmartGroundingFactory(object):
                 else:
                     vars_and_values = []
                     varNotInTree = None
-                    for varNotInTree in [v for v in
-                                         list(self.values_processed.keys()) if
-                                         v not in self.variable_stack]: break
-                    if varNotInTree is None: continue
+                    for varNotInTree in [
+                        v
+                        for v in list(self.values_processed.keys())
+                        if v not in self.variable_stack
+                    ]:
+                        break
+                    if varNotInTree is None:
+                        continue
                     values = self.values_processed[varNotInTree]
                     for v in values:
                         vars_and_values.append({varNotInTree: v})
                 for var_value in vars_and_values:
-                    for var_name, val in var_value.items(): break
-                    if not fg.domains.contains(var_name, val): continue
+                    for var_name, val in var_value.items():
+                        break
+                    if not fg.domains.contains(var_name, val):
+                        continue
                     gnd_result = fg.ground(var_value)
                     if not fg in self.manipulatedFgs:
                         self.manipulatedFgs.append(fg)
                     # if the truth value of a grounding cannot be determined...
                     if isinstance(gnd_result, FormulaGrounding):
-                        # collect all ground atoms that have been created as 
+                        # collect all ground atoms that have been created as
                         # as artifacts for future evaluation
-                        artifactGndAtoms = [a for a in
-                                            gnd_result.formula.getGroundAtoms()
-                                            if not a == gndAtom]
+                        artifactGndAtoms = [
+                            a
+                            for a in gnd_result.formula.getGroundAtoms()
+                            if not a == gndAtom
+                        ]
                         for artGndAtom in artifactGndAtoms:
                             self.gndAtom2fgs.put(artGndAtom, gnd_result)
                         if not var_name in self.variable_stack:
                             self.variable_stack.append(var_name)
-                        self.var2fgs.put(self.variable_stack[gnd_result.depth],
-                                         gnd_result)
+                        self.var2fgs.put(
+                            self.variable_stack[gnd_result.depth], gnd_result
+                        )
                         queue.append(gnd_result)
                     else:
                         # ...otherwise it's true/false; add its costs and
                         # discard it.
-                        if self.formula.isHard and gnd_result > 0.:
-                            gnd_result = float('inf')
+                        if self.formula.isHard and gnd_result > 0.0:
+                            gnd_result = float("inf")
                         cost += gnd_result
             self.values_processed.put(var, value)
         return cost
 
     def printTree(self):
         queue = [self.root]
-        print('---')
+        print("---")
         while len(queue) > 0:
             n = queue.pop()
-            space = ''
-            for _ in range(n.depth): space += '--'
+            space = ""
+            for _ in range(n.depth):
+                space += "--"
             print(space + str(n))
             queue.extend(n.children.list)
-        print('---')
-
+        print("---")
 
     def gndAtom2Assignment(self, lit, atom):
         """
         Returns None if the literal and the atom do not match.
         """
-        if type(lit) is Logic.Equality or \
-                        lit.predName != atom.predName:
+        if type(lit) is Logic.Equality or lit.predName != atom.predName:
             return None
         assignment = {}
         for p1, p2 in zip(lit.params, atom.params):

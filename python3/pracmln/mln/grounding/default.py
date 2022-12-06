@@ -40,11 +40,19 @@ class DefaultGroundingFactory:
 
     :param simplify:        if `True`, the formula will be simplified according to the
                             evidence given.
-    :param unsatfailure:    raises a :class:`mln.errors.SatisfiabilityException` if a 
+    :param unsatfailure:    raises a :class:`mln.errors.SatisfiabilityException` if a
                             hard logical constraint is violated by the evidence.
     """
-    
-    def __init__(self, mrf, simplify=False, unsatfailure=False, formulas=None, cache=auto, **params):
+
+    def __init__(
+        self,
+        mrf,
+        simplify=False,
+        unsatfailure=False,
+        formulas=None,
+        cache=auto,
+        **params
+    ):
         self.mrf = mrf
         self.formulas = ifnone(formulas, list(self.mrf.formulas))
         self.total_gf = 0
@@ -59,43 +67,44 @@ class DefaultGroundingFactory:
         self.watch = StopWatch()
         self.simplify = simplify
         self.unsatfailure = unsatfailure
-        
-        
+
     @property
     def verbose(self):
-        return self._params.get('verbose', False)
-    
-    
+        return self._params.get("verbose", False)
+
     @property
     def multicore(self):
-        return self._params.get('multicore', False)
-    
-    
+        return self._params.get("multicore", False)
+
     @property
     def iscached(self):
         return self._cache is not None and self.__cacheinit
 
-    
     @property
     def usecache(self):
         return self._cachesize is not None and self._cachesize > 0
-    
-    
+
     def _cacheinit(self):
-        if False:#self.total_gf > self._cachesize:
-            logger.warning('Number of formula groundings (%d) exceeds cache size (%d). Caching is disabled.' % (self.total_gf, self._cachesize))
+        if False:  # self.total_gf > self._cachesize:
+            logger.warning(
+                "Number of formula groundings (%d) exceeds cache size (%d). Caching is disabled."
+                % (self.total_gf, self._cachesize)
+            )
         else:
             self._cache = []
         self.__cacheinit = True
-    
-    
+
     def itergroundings(self):
         """
         Iterates over all formula groundings.
         """
-        self.watch.tag('grounding', verbose=self.verbose)
+        self.watch.tag("grounding", verbose=self.verbose)
         if self.grounder is None:
-            self.grounder = iter(self._itergroundings(simplify=self.simplify, unsatfailure=self.unsatfailure))
+            self.grounder = iter(
+                self._itergroundings(
+                    simplify=self.simplify, unsatfailure=self.unsatfailure
+                )
+            )
         if self.usecache and not self.iscached:
             self._cacheinit()
         counter = -1
@@ -113,57 +122,73 @@ class DefaultGroundingFactory:
                     if self._cache is not None:
                         self._cache.append(gf)
                     yield gf
-            else: return
-        self.watch.finish('grounding')
-        if self.verbose: print()
-            
-            
+            else:
+                return
+        self.watch.finish("grounding")
+        if self.verbose:
+            print()
+
     def _itergroundings(self, simplify=False, unsatfailure=False):
-        if self.verbose: 
-            bar = ProgressBar(color='green')
+        if self.verbose:
+            bar = ProgressBar(color="green")
         for i, formula in enumerate(self.formulas):
-            if self.verbose: bar.update((i+1) / float(len(self.formulas)))
+            if self.verbose:
+                bar.update((i + 1) / float(len(self.formulas)))
             for gndformula in formula.itergroundings(self.mrf, simplify=simplify):
-                if unsatfailure and gndformula.weight == HARD and gndformula(self.mrf.evidence) == 0:
+                if (
+                    unsatfailure
+                    and gndformula.weight == HARD
+                    and gndformula(self.mrf.evidence) == 0
+                ):
                     print()
                     gndformula.print_structure(self.mrf.evidence)
-                    raise SatisfiabilityException('MLN is unsatisfiable due to hard constraint violation %s (see above)' % self.mrf.formulas[gndformula.idx])
+                    raise SatisfiabilityException(
+                        "MLN is unsatisfiable due to hard constraint violation %s (see above)"
+                        % self.mrf.formulas[gndformula.idx]
+                    )
                 yield gndformula
-                
-                
+
+
 class EqualityConstraintGrounder(object):
     """
     Grounding factory for equality constraints only.
     """
-    
+
     def __init__(self, mrf, domains, mode, eq_constraints):
         """
         Initialize the equality constraint grounder with the given MLN
         and formula. A formula is required that contains all variables
         in the equalities in order to infer the respective domain names.
-        
+
         :param mode: either ``alltrue`` or ``allfalse``
         """
         self.constraints = eq_constraints
         self.mrf = mrf
-        self.truth = {'alltrue': 1, 'allfalse': 0}[mode]
+        self.truth = {"alltrue": 1, "allfalse": 0}[mode]
         self.mode = mode
-        eqvars = [c for eq in eq_constraints for c in eq.args if self.mrf.mln.logic.isvar(c)]
-        self.vardomains = dict([(v, d) for v, d in domains.items() if v in eqvars]) 
-    
+        eqvars = [
+            c for eq in eq_constraints for c in eq.args if self.mrf.mln.logic.isvar(c)
+        ]
+        self.vardomains = dict([(v, d) for v, d in domains.items() if v in eqvars])
+
     def iter_valid_variable_assignments(self):
         """
         Yields all variable assignments for which all equality constraints
         evaluate to true.
         """
-        return self._iter_valid_variable_assignments(list(self.vardomains.keys()), {}, self.constraints)
+        return self._iter_valid_variable_assignments(
+            list(self.vardomains.keys()), {}, self.constraints
+        )
 
-    
     def _iter_valid_variable_assignments(self, variables, assignments, eq_groundings):
-        if not variables: 
+        if not variables:
             yield assignments
             return
-        eq_groundings = [eq for eq in eq_groundings if not all([not self.mrf.mln.logic.isvar(a) for a in eq.args])]
+        eq_groundings = [
+            eq
+            for eq in eq_groundings
+            if not all([not self.mrf.mln.logic.isvar(a) for a in eq.args])
+        ]
         variable = variables[0]
         for value in self.mrf.domains[self.vardomains[variable]]:
             new_eq_groundings = []
@@ -175,10 +200,15 @@ class EqualityConstraintGrounder(object):
                     goon = False
                     break
                 new_eq_groundings.append(geq)
-            if not goon: continue
-            for assignment in self._iter_valid_variable_assignments(variables[1:], dict_union(assignments, {variable: value}), new_eq_groundings):
+            if not goon:
+                continue
+            for assignment in self._iter_valid_variable_assignments(
+                variables[1:],
+                dict_union(assignments, {variable: value}),
+                new_eq_groundings,
+            ):
                 yield assignment
-    
+
     @staticmethod
     def vardoms_from_formula(mln, formula, *varnames):
         if isinstance(formula, str):
@@ -187,24 +217,9 @@ class EqualityConstraintGrounder(object):
         f_vardomains = formula.vardoms(mln)
         for var in varnames:
             if var not in f_vardomains:
-                raise Exception('Variable %s not bound to a domain by formula %s' % (var, fstr(formula)))
+                raise Exception(
+                    "Variable %s not bound to a domain by formula %s"
+                    % (var, fstr(formula))
+                )
             vardomains[var] = f_vardomains[var]
         return vardomains
-                
-        
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    

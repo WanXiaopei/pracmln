@@ -3,7 +3,7 @@
 # Markov Logic Networks
 #
 # (C) 2006-2011 by Dominik Jain (jain@cs.tum.edu)
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -36,31 +36,32 @@ from ...logic.common import Logic
 
 
 class GibbsSampler(MCMCInference):
-
     def __init__(self, mrf, queries=ALL, **params):
         MCMCInference.__init__(self, mrf, queries, **params)
         self.var2gf = defaultdict(set)
-        grounder = FastConjunctionGrounding(mrf, simplify=True, unsatfailure=True, cache=None)
+        grounder = FastConjunctionGrounding(
+            mrf, simplify=True, unsatfailure=True, cache=None
+        )
         for gf in grounder.itergroundings():
-            if isinstance(gf, Logic.TrueFalse): continue
+            if isinstance(gf, Logic.TrueFalse):
+                continue
             vars_ = set([self.mrf.variable(a).idx for a in gf.gndatoms()])
-            for v in vars_: self.var2gf[v].add(gf)
-    
+            for v in vars_:
+                self.var2gf[v].add(gf)
+
     @property
     def chains(self):
-        return self._params.get('chains', 1)
-    
+        return self._params.get("chains", 1)
+
     @property
     def maxsteps(self):
-        return self._params.get('maxsteps', 500)
-    
+        return self._params.get("maxsteps", 500)
 
     class Chain(MCMCInference.Chain):
-    
         def __init__(self, infer, queries):
             MCMCInference.Chain.__init__(self, infer, queries)
             mrf = infer.mrf
-            
+
         def _valueprobs(self, var, world):
             sums = [0] * var.valuecount()
             for gf in self.infer.var2gf[var.idx]:
@@ -74,13 +75,14 @@ class GibbsSampler(MCMCInference):
                     elif sums[i] is not None and not gf.ishard:
                         sums[i] += gf.weight * truth
                 # set all impossible values to None (i.e. prob 0) since they
-                # might still be have a value of 0 in sums 
-                for i in [j for j in range(len(sums)) if j not in possible_values]: sums[i] = None
+                # might still be have a value of 0 in sums
+                for i in [j for j in range(len(sums)) if j not in possible_values]:
+                    sums[i] = None
             expsums = numpy.array([numpy.exp(s) if s is not None else 0 for s in sums])
-            Z = sum(expsums) 
+            Z = sum(expsums)
             probs = expsums / Z
             return probs
-        
+
         def step(self):
             mrf = self.infer.mrf
             # reassign values by sampling from the conditional distributions given the Markov blanket
@@ -88,23 +90,23 @@ class GibbsSampler(MCMCInference):
             for var in mrf.variables:
                 # compute distribution to sample from
                 values = list(var.values())
-                if len(values) == 1: # do not sample if we have evidence 
-                    continue  
+                if len(values) == 1:  # do not sample if we have evidence
+                    continue
                 probs = self._valueprobs(var, self.state)
-                # check for soft evidence and greedily satisfy it if possible                
+                # check for soft evidence and greedily satisfy it if possible
                 idx = None
-#                 if isinstance(var, BinaryVariable):
-#                     atom = var.gndatoms[0]
-#                     p = mrf.evidence[var.gndatoms[0]]
-#                     if p is not None:
-#                         belief = self.soft_evidence_frequency(atom)
-#                         if p > belief and expsums[1] > 0:
-#                             idx = 1
-#                         elif p < belief and expsums[0] > 0:
-#                             idx = 0
+                #                 if isinstance(var, BinaryVariable):
+                #                     atom = var.gndatoms[0]
+                #                     p = mrf.evidence[var.gndatoms[0]]
+                #                     if p is not None:
+                #                         belief = self.soft_evidence_frequency(atom)
+                #                         if p > belief and expsums[1] > 0:
+                #                             idx = 1
+                #                         elif p < belief and expsums[0] > 0:
+                #                             idx = 0
                 # sample value
                 if idx is None:
-                    r = random.uniform(0, 1)                    
+                    r = random.uniform(0, 1)
                     idx = 0
                     s = probs[0]
                     while r > s:
@@ -113,7 +115,6 @@ class GibbsSampler(MCMCInference):
                 var.setval(values[idx], self.state)
             # update results
             self.update(self.state)
-    
 
     def _run(self, **params):
         """
@@ -122,23 +123,23 @@ class GibbsSampler(MCMCInference):
         given: a formula as a string (F2)
         set evidence according to given conjunction (if any)
         """
-#         if softEvidence is None:
-#             self.softEvidence = self.mln.softEvidence
-#         else:
-#             self.softEvidence = softEvidence
+        #         if softEvidence is None:
+        #             self.softEvidence = self.mln.softEvidence
+        #         else:
+        #             self.softEvidence = softEvidence
         # initialize chains
         chains = MCMCInference.ChainGroup(self)
         for i in range(self.chains):
             chain = GibbsSampler.Chain(self, self.queries)
             chains.chain(chain)
-#             if self.softEvidence is not None:
-#                 chain.setSoftEvidence(self.softEvidence)
+        #             if self.softEvidence is not None:
+        #                 chain.setSoftEvidence(self.softEvidence)
         # do Gibbs sampling
-#         if verbose and details: print "sampling..."
+        #         if verbose and details: print "sampling..."
         converged = 0
         steps = 0
         if self.verbose:
-            bar = ProgressBar(color='green', steps=self.maxsteps)
+            bar = ProgressBar(color="green", steps=self.maxsteps)
         while converged != self.chains and steps < self.maxsteps:
             converged = 0
             steps += 1
@@ -146,15 +147,15 @@ class GibbsSampler(MCMCInference):
                 chain.step()
             if self.verbose:
                 bar.inc()
-                bar.label('%d / %d' % (steps, self.maxsteps))
-#                 if self.useConvergenceTest:
-#                     if chain.converged and numSteps >= minSteps:
-#                         converged += 1
-#             if verbose and details:
-#                 if numSteps % infoInterval == 0:
-#                     print "step %d (fraction converged: %.2f)" % (numSteps, float(converged) / numChains)
-#                 if numSteps % resultsInterval == 0:
-#                     chainGroup.getResults()
-#                     chainGroup.printResults(shortOutput=True)
+                bar.label("%d / %d" % (steps, self.maxsteps))
+        #                 if self.useConvergenceTest:
+        #                     if chain.converged and numSteps >= minSteps:
+        #                         converged += 1
+        #             if verbose and details:
+        #                 if numSteps % infoInterval == 0:
+        #                     print "step %d (fraction converged: %.2f)" % (numSteps, float(converged) / numChains)
+        #                 if numSteps % resultsInterval == 0:
+        #                     chainGroup.getResults()
+        #                     chainGroup.printResults(shortOutput=True)
         # get the results
         return chains.results()[0]

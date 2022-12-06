@@ -1,7 +1,7 @@
-# 
+#
 #
 # (C) 2011-2015 by Daniel Nyga (nyga@cs.uni-bremen.de)
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -21,15 +21,15 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-HARD = float('inf')
-nan = float('NaN')
+HARD = float("inf")
+nan = float("NaN")
 auto = -1
-infty = float('inf')
+infty = float("inf")
 inherit = -2
-ALL = ''
+ALL = ""
 
 
 # this defines the formats in (bg, fg, bold)
-weight_color = (None, 'magenta', False)
-comment_color = (None, 'green', False)
-predicate_color = (None, 'white', True)
+weight_color = (None, "magenta", False)
+comment_color = (None, "green", False)
+predicate_color = (None, "white", True)

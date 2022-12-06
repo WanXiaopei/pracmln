@@ -1,7 +1,7 @@
 # Markov Logic Networks - Grounding
 #
 # (C) 2013 by Daniel Nyga (nyga@cs.tum.edu)
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -26,23 +26,23 @@ class AbstractGroundingFactory(object):
     """
     Abstract super class for all grounding factories.
     """
-    
+
     def __init__(self, mrf, db, **params):
         self.params = params
         self.mrf = mrf
         self.mln = mrf.mln
         self.db = db
-        
+
     def _createGroundAtoms(self):
-        raise Exception('Not implemented')
-    
+        raise Exception("Not implemented")
+
     def _createGroundFormulas(self, simplify=False):
-        raise Exception('Not implemented')
+        raise Exception("Not implemented")
 
     def groundMRF(self, cwAssumption=False, simplify=False):
         self._createGroundAtoms()
         self.mrf.setEvidence(self.db.evidence, cwAssumption=cwAssumption)
-        self.mln.watch.tag('Grounding formulas', self.mln.verbose)
+        self.mln.watch.tag("Grounding formulas", self.mln.verbose)
         self._createGroundFormulas(simplify=simplify)
         self.mln.watch.finish()
         return self.mrf

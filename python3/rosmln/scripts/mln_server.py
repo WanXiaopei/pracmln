@@ -37,7 +37,9 @@ class MLNInterfaceServer:
             mrf = materialized_mln.ground(db)
             if not request.query:
                 raise Exception("No query provided!")
-            inference = InferenceMethods.clazz(config.method)(mrf, request.query.queries)
+            inference = InferenceMethods.clazz(config.method)(
+                mrf, request.query.queries
+            )
             result = inference.run()
             self.__save_results(config, result)
             tuple_list = []
@@ -54,13 +56,15 @@ class MLNInterfaceServer:
     def __config_changed(self, config):
         if self.__config is None or config is None:
             return True
-        return  not (self.__config.db == config.db and \
-                     self.__config.logic == config.logic and \
-                     self.__config.mlnFiles == config.mlnFiles and \
-                     self.__config.output_filename == config.output_filename and \
-                     self.__config.saveResults == config.saveResults and \
-                     self.__config.grammar == config.grammar and \
-                     os.path.getmtime(config.mlnFiles) == self.__mln_date)
+        return not (
+            self.__config.db == config.db
+            and self.__config.logic == config.logic
+            and self.__config.mlnFiles == config.mlnFiles
+            and self.__config.output_filename == config.output_filename
+            and self.__config.saveResults == config.saveResults
+            and self.__config.grammar == config.grammar
+            and os.path.getmtime(config.mlnFiles) == self.__mln_date
+        )
 
     def __get_config(self, request):
         if self.__config is None and request.config.mlnFiles == "":
@@ -74,9 +78,13 @@ class MLNInterfaceServer:
         if not request.query.evidence and config.db == "":
             raise Exception("No evidence provided!")
         if request.query.evidence and config.db != "":
-            raise Exception("Duplicate evidence; provide either a db in the config or an evidence db in the query")
+            raise Exception(
+                "Duplicate evidence; provide either a db in the config or an evidence db in the query"
+            )
         if request.query.evidence:
-            to_return = parse_db(mln, reduce(lambda x, y: x + "\n" + y, request.query.evidence))
+            to_return = parse_db(
+                mln, reduce(lambda x, y: x + "\n" + y, request.query.evidence)
+            )
         else:
             to_return = Database.load(mln, config.db)
         if len(to_return) != 1:
