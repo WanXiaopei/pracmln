@@ -29,8 +29,12 @@ class Plot(object):
         self.tick_font_size = 7
         self.label_font_size = 7
         # - axes and borders
-        self.tick_extend_into_right_border_chars = 2  # rightmost x-axis tick label may extend into border - this is the number of characters that extend into the border
-        self.left_tick_label_chars = 4  # the number of characters used in the y-axis labels (must make sure there's room for these labels in the border)
+        # rightmost x-axis tick label may extend into border - this is the number
+        # of characters that extend into the border
+        self.tick_extend_into_right_border_chars = 2
+        # the number of characters used in the y-axis labels (must make sure
+        # there's room for these labels in the border)
+        self.left_tick_label_chars = 4
         self.border = 0.05  # fraction of space that is to be taken up by borders around the figure
         self.latex_preamble = None
         self.drawn = False

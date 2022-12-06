@@ -1,6 +1,10 @@
 #!/usr/bin/python2.5
 # Until Python 2.6
 
+import base64
+from PIL import Image
+import tempfile
+import os
 from dnutils import logs
 
 from pracmln.utils import locs
@@ -44,14 +48,10 @@ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
 """
 
-import os
-import tempfile
-from PIL import Image
-import base64
 
 logger = logs.getlogger(__name__, logs.DEBUG)
 
@@ -60,14 +60,14 @@ default_packages = ["amsmath", "amsthm", "amssymb", "bm"]
 
 
 def __build_preamble(packages, declarations):
-    preamble = "\documentclass{article}\n"
+    preamble = "\\documentclass{article}\n"
     for p in packages:
         preamble += "\\usepackage{{{}}}\n".format(p)
 
     for d in declarations:
         preamble += "{}\n".format(d)
 
-    preamble += "\pagestyle{empty}\n\\begin{document}\n"
+    preamble += "\\pagestyle{empty}\n\\begin{document}\n"
     return preamble
 
 
@@ -136,7 +136,7 @@ def math2png(
         content = content.replace("$", r"\$")
 
         # Create the TeX document and save to tempfile
-        fileContent = "{}$${}$$\n\end{{document}}".format(
+        fileContent = "{}$${}$$\n\\end{{document}}".format(
             __build_preamble(packages, declarations), content
         )
 
@@ -150,7 +150,7 @@ def math2png(
             outdir, "{}.{}".format(filename, "svg" if svg else "png")
         )
 
-    except:
+    except BaseException:
         logger.error(
             "Unable to create image. A reason you encounter "
             "this error might be that you are either missing latex "

@@ -155,19 +155,18 @@ def get_cond_prob_png(queries, dbs, filename="cond_prob", filedir="/tmp"):
 
     # escape possibly occurring underscores in predicate names
     query = r"""\\""".join(
-        [r"""\text{{ {0} }} """.format(q.replace("_", "\_")) for q in queries]
+        [r"""\text{{ {0} }} """.format(q.replace("_", "\\_")) for q in queries]
     )
     evidence = r"""\\""".join(
-        [r"""\text{{ {0} }} """.format(e.replace("_", "\_")) for e in evidencelist]
+        [r"""\text{{ {0} }} """.format(e.replace("_", "\\_")) for e in evidencelist]
     )
 
-    underset = "_{{ \\tiny\\begin{{array}}{{c}}{0}\end{{array}} }}".format(query)
+    underset = "_{{ \\tiny\\begin{{array}}{{c}}{0}\\end{{array}} }}".format(query)
 
     # generate actual equation
     head = r"""\argmax{}""".format(underset)
     bracket_term = r"""\Pcond{{ \begin{{array}}{{c}}{0}\end{{array}} & \begin{{array}}{{c}}{1}\end{{array}} }}""".format(
-        query, evidence
-    )
+        query, evidence)
     eq = r"""{} {}""".format(head, bracket_term)
 
     return math2png(

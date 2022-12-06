@@ -43,6 +43,8 @@ global_bpll_grounding = None
 logger = logs.getlogger(__name__)
 
 # multiprocessing function
+
+
 def create_formula_groundings(formula, unsatfailure=True):
     checkmem()
     results = []
@@ -482,11 +484,11 @@ class SmartGroundingFactory(object):
             truth = fg.formula.isTrue(self.mrf.evidence)
             if truth is not None:
                 cost -= fg.trueGroundings.value
-                if not fg in self.manipulatedFgs:
+                if fg not in self.manipulatedFgs:
                     self.manipulatedFgs.append(fg)
                 fg.processed.set(True)
                 self.var2fgs.drop(self.variable_stack[fg.depth], fg)
-                if not fg.parent.obj in self.manipulatedFgs:
+                if fg.parent.obj not in self.manipulatedFgs:
                     self.manipulatedFgs.append(fg.parent.obj)
                 fg.parent.obj.children.remove(
                     fg
@@ -510,7 +512,7 @@ class SmartGroundingFactory(object):
                 self.variable_stack.remove(var)
         for var, value in var_assignments.items():
             # skip the variables with values that have already been processed
-            if not var in self.variable_stack:
+            if var not in self.variable_stack:
                 depth = len(self.variable_stack)
             else:
                 depth = self.variable_stack.index(var)
@@ -554,7 +556,7 @@ class SmartGroundingFactory(object):
                     if not fg.domains.contains(var_name, val):
                         continue
                     gnd_result = fg.ground(var_value)
-                    if not fg in self.manipulatedFgs:
+                    if fg not in self.manipulatedFgs:
                         self.manipulatedFgs.append(fg)
                     # if the truth value of a grounding cannot be determined...
                     if isinstance(gnd_result, FormulaGrounding):
@@ -567,7 +569,7 @@ class SmartGroundingFactory(object):
                         ]
                         for artGndAtom in artifactGndAtoms:
                             self.gndAtom2fgs.put(artGndAtom, gnd_result)
-                        if not var_name in self.variable_stack:
+                        if var_name not in self.variable_stack:
                             self.variable_stack.append(var_name)
                         self.var2fgs.put(
                             self.variable_stack[gnd_result.depth], gnd_result
@@ -598,7 +600,7 @@ class SmartGroundingFactory(object):
         """
         Returns None if the literal and the atom do not match.
         """
-        if type(lit) is Logic.Equality or lit.predName != atom.predName:
+        if isinstance(lit, Logic.Equality) or lit.predName != atom.predName:
             return None
         assignment = {}
         for p1, p2 in zip(lit.params, atom.params):

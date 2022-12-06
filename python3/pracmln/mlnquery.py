@@ -151,7 +151,7 @@ class MLNQuery(object):
     @property
     def cw_preds(self):
         preds = self._config.get("cw_preds", "")
-        if type(preds) is str:
+        if isinstance(preds, str):
             preds = preds.split(",")
         return list(map(str.strip, preds))
 
@@ -234,9 +234,9 @@ class MLNQuery(object):
                     )
                 )
             )
-        if type(db) is list and len(db) > 1:
+        if isinstance(db, list) and len(db) > 1:
             raise Exception("Inference can only handle one database at a time")
-        elif type(db) is list:
+        elif isinstance(db, list):
             db = db[0]
         params["cw_preds"] = [x for x in self.cw_preds if bool(x)]
         # extract and remove all non-algorithm
@@ -563,10 +563,10 @@ class MLNQueryGUI(object):
         self.project_dir = os.path.abspath(
             ifnone(directory, ifnone(gconf["prev_query_path"], os.getcwd()))
         )
-        if gconf["prev_query_project" : self.project_dir] is not None:
+        if gconf["prev_query_project": self.project_dir] is not None:
             self.load_project(
                 os.path.join(
-                    self.project_dir, gconf["prev_query_project" : self.project_dir]
+                    self.project_dir, gconf["prev_query_project": self.project_dir]
                 )
             )
         else:
@@ -1001,7 +1001,7 @@ class MLNQueryGUI(object):
 
     def write_gconfig(self, savegeometry=True):
         self.gconf["prev_query_path"] = self.dir
-        self.gconf["prev_query_project" : self.dir] = self.project.name
+        self.gconf["prev_query_project": self.dir] = self.project.name
 
         # save geometry
         if savegeometry:
@@ -1091,7 +1091,7 @@ class MLNQueryGUI(object):
                 )
             else:
                 logger.debug("No output file given - results have not been saved.")
-        except:
+        except BaseException:
             traceback.print_exc()
 
         # restore main window

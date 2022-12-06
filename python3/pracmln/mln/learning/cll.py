@@ -85,7 +85,7 @@ class CLL(AbstractLearner):
             self.valuecounts[partidx] = partition.valuecount()
             self.partitions.append(partition)
             self.evidx[partidx] = partition.evidenceidx()
-            variables = variables[len(partition.variables) :]
+            variables = variables[len(partition.variables):]
         logger.debug("CLL created %d partitions" % len(self.partitions))
         self._compute_statistics()
 
@@ -374,7 +374,7 @@ class CLL(AbstractLearner):
             """
             if isinstance(atom, Logic.GroundAtom):
                 return atom in self.gndatoms
-            elif type(atom) is int:
+            elif isinstance(atom, int):
                 return self.mrf.gndatom(atom) in self
             else:
                 raise Exception("Invalid type of atom: %s" % type(atom))

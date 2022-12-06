@@ -97,7 +97,7 @@ class Node(object):
         graph.nodes.append(self)
         self.id = graph.nextId()
         self.shape = "rectangle"  # "ellipse"
-        if type(color) is str:
+        if isinstance(color, str):
             if not model == "rgb":
                 raise Exception("string colors must be in RGB space.")
             self.color = color
@@ -107,7 +107,7 @@ class Node(object):
         self.xpos = 0
         self.ypos = 0
         for key, value in kwargs.items():
-            if type(value) == str:
+            if isinstance(value, str):
                 value = value.replace("<", "").replace(">", "")
             self.__setattr__(key, value)
 

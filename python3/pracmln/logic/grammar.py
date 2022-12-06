@@ -77,14 +77,14 @@ class TreeBuilder(object):
         elif op == "^":
             if len(toks) > 1:
                 formula = self.logic.conjunction(
-                    self.stack[-len(toks) :], self.logic.mln
+                    self.stack[-len(toks):], self.logic.mln
                 )
                 self.stack = self.stack[: -len(toks)]
                 self.stack.append(formula)
         elif op == "v":
             if len(toks) > 1:
                 formula = self.logic.disjunction(
-                    self.stack[-len(toks) :], self.logic.mln
+                    self.stack[-len(toks):], self.logic.mln
                 )
                 self.stack = self.stack[: -len(toks)]
 
@@ -181,7 +181,7 @@ class Grammar(object):
         Returns None if it cannot be parsed.
         """
         m = re.match(r"(\w+)\s*=\s*{(.*?)}", s)
-        if m == None:
+        if m is None:
             return None
         #             raise Exception("Could not parse the domain declaration '%s'" % line)
         return (m.group(1), list(map(str.strip, m.group(2).split(","))))

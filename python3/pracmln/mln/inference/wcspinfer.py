@@ -300,9 +300,8 @@ class WCSPConverter(object):
                 worlds *= len(d)
             if worlds > 1000000:
                 logger.warning(
-                    "!!! WARNING: %d POSSIBLE WORLDS ARE GOING TO BE EVALUATED. KEEP IN SIGHT YOUR MEMORY CONSUMPTION !!!"
-                    % worlds
-                )
+                    "!!! WARNING: %d POSSIBLE WORLDS ARE GOING TO BE EVALUATED. KEEP IN SIGHT YOUR MEMORY CONSUMPTION !!!" %
+                    worlds)
             for c in combinations(domains):
                 world = [0] * len(self.mrf.gndatoms)
                 assignment = []
@@ -344,8 +343,8 @@ class WCSPConverter(object):
         """
         atomidx = (
             atom
-            if type(atom) is int
-            else (self.mrf.gndatom(atom).idx if type(atom) is str else atom.idx)
+            if isinstance(atom, int)
+            else (self.mrf.gndatom(atom).idx if isinstance(atom, str) else atom.idx)
         )
         varidx = self.atom2var[atomidx]
         variable = self.variables[varidx]
@@ -390,7 +389,7 @@ class WCSPConverter(object):
                 valIndices.remove(val)
                 cost.append(c)
                 atoms.append(atom)
-        except:
+        except BaseException:
             pass
         c_max = max(cost)
         for i, c in enumerate(cost):

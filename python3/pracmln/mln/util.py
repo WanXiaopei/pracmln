@@ -24,6 +24,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import math
+from math import sqrt
 import re
 import time
 import logging
@@ -49,17 +51,13 @@ try:
 
         mpmath.mp.dps = 80
         from mpmath import exp, fsum, log  # @UnresolvedImport
-except:
+except BaseException:
     from math import exp, log
 
     if imputil.find_spec("math", "fsum") is not None:
         from math import fsum
     else:
         fsum = sum
-
-from math import sqrt
-
-import math
 
 
 def crash(*args, **kwargs):
@@ -74,9 +72,9 @@ def flip(value):
 
     Works with ints and booleans.
     """
-    if type(value) is bool:
+    if isinstance(value, bool):
         return True if value is False else False
-    elif type(value) is int:
+    elif isinstance(value, int):
         return 1 - value
     else:
         TypeError("type {} not allowed".format(type(value)))
@@ -146,7 +144,7 @@ def parse_queries(mln, query_str):
                 literals = f.literals()
                 prednames = [lit.predname for lit in literals]
                 query_preds.update(prednames)
-            except:
+            except BaseException:
                 # not a formula, must be a pure predicate name
                 query_preds.add(s)
             queries.append(q)

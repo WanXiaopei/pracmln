@@ -9,6 +9,7 @@ import os
 from pracmln.mln.base import MLN
 from pracmln.mln.database import parse_db, Database
 from pracmln.mln.methods import InferenceMethods
+from functools import reduce
 
 
 class MLNInterfaceServer:

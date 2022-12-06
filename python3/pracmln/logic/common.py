@@ -25,7 +25,6 @@ import sys
 
 from dnutils import logs, ifnone
 
-from .grammar import StandardGrammar, PRACGrammar
 from ..mln.util import fstr, dict_union, colorize
 from ..mln.errors import NoSuchDomainError, NoSuchPredicateError
 from ..mln.constants import HARD, predicate_color, inherit, auto
@@ -197,7 +196,7 @@ class Logic(object):
             Returns a list of the indices of all ground atoms that
             are contained in this formula.
             """
-            if l == None:
+            if l is None:
                 l = []
             if not hasattr(self, "children"):
                 return l
@@ -292,6 +291,7 @@ class Logic(object):
                     group.append(dict([(variable, value)]))
                 assignments.append(group)
             # generate the combinations of values
+
             def product(assign, result=[]):
                 if len(assign) == 0:
                     yield result
@@ -682,7 +682,7 @@ class Logic(object):
             Get the constants appearing in the formula in a dict that maps the constant
             name to the domain name the constant belongs to.
             """
-            if constants == None:
+            if constants is None:
                 constants = defaultdict
             for child in self.children:
                 if not hasattr(child, "constants"):
@@ -738,7 +738,7 @@ class Logic(object):
             return final_variants
 
         def template_variables(self, variables=None):
-            if variables == None:
+            if variables is None:
                 variables = {}
             for child in self.children:
                 child.template_variables(variables)
@@ -793,7 +793,7 @@ class Logic(object):
             )
 
         def latex(self):
-            return " \land ".join(
+            return " \\land ".join(
                 [
                     ("(%s)" % c.latex())
                     if isinstance(c, Logic.ComplexFormula)
@@ -847,7 +847,8 @@ class Logic(object):
                         litSet = set(map(str, clause.children))
                     else:  # unit clause
                         litSet = set([str(clause)])
-                    # check if the clause is equivalent to another (subset/superset of the set of literals) -> always keep the smaller one
+                    # check if the clause is equivalent to another (subset/superset of the set
+                    # of literals) -> always keep the smaller one
                     doAdd = True
                     i = 0
                     while i < len(litSets):
@@ -924,7 +925,7 @@ class Logic(object):
             )
 
         def latex(self):
-            return " \lor ".join(
+            return " \\lor ".join(
                 [
                     ("(%s)" % c.latex())
                     if isinstance(c, Logic.ComplexFormula)
@@ -956,11 +957,12 @@ class Logic(object):
         def cnf(self, level=0):
             disj = []
             conj = []
-            # convert children to CNF and group by disjunction/conjunction; flatten nested disjunction, remove duplicates, check for tautology
+            # convert children to CNF and group by disjunction/conjunction; flatten
+            # nested disjunction, remove duplicates, check for tautology
             for child in self.children:
-                c = child.cnf(
-                    level + 1
-                )  # convert child to CNF -> must be either conjunction of clauses, disjunction of literals, literal or boolean constant
+                # convert child to CNF -> must be either conjunction of clauses,
+                # disjunction of literals, literal or boolean constant
+                c = child.cnf(level + 1)
                 if isinstance(c, Logic.Conjunction):
                     conj.append(c)
                 else:
@@ -969,7 +971,8 @@ class Logic(object):
                     else:  # literal or boolean constant
                         lits = [c]
                     for l in lits:
-                        # if the literal is always true, the disjunction is always true; if it's always false, it can be ignored
+                        # if the literal is always true, the disjunction is always true; if it's
+                        # always false, it can be ignored
                         if isinstance(l, Logic.TrueFalse):
                             if l.truth():
                                 return self.mln.logic.true_false(
@@ -1105,7 +1108,7 @@ class Logic(object):
             )
 
         def vardoms(self, variables=None, constants=None):
-            if variables == None:
+            if variables is None:
                 variables = {}
             argdoms = self.mln.predicate(self.predname).argdoms
             if len(argdoms) != len(self.args):
@@ -1135,7 +1138,7 @@ class Logic(object):
             return variables
 
         def template_variables(self, variables=None):
-            if variables == None:
+            if variables is None:
                 variables = {}
             for i, arg in enumerate(self.args):
                 if self.mln.logic.istemplvar(arg):
@@ -1189,9 +1192,8 @@ class Logic(object):
                     print("\nground atoms:")
                     mrf.print_gndatoms()
                     raise Exception(
-                        "Could not ground formula containing '%s' - this atom is not among the ground atoms (see above)."
-                        % self.predname
-                    )
+                        "Could not ground formula containing '%s' - this atom is not among the ground atoms (see above)." %
+                        self.predname)
 
         def _ground_template(self, assignment):
             args = [assignment.get(x, x) for x in self.args]
@@ -1238,7 +1240,7 @@ class Logic(object):
                 if values is None:
                     values = []
                     constants[domname] = values
-                if not self.mln.logic.isvar(c) and not c in values:
+                if not self.mln.logic.isvar(c) and c not in values:
                     values.append(c)
             return constants
 
@@ -1352,7 +1354,7 @@ class Logic(object):
             )
 
         def vardoms(self, variables=None, constants=None):
-            if variables == None:
+            if variables is None:
                 variables = {}
             argdoms = self.mln.predicate(self.predname[0]).argdoms
             if len(argdoms) != len(self.args):
@@ -1381,7 +1383,7 @@ class Logic(object):
             return variables
 
         def template_variables(self, variables=None):
-            if variables == None:
+            if variables is None:
                 variables = {}
             for i, arg in enumerate(self.args):
                 if self.mln.logic.istemplvar(arg):
@@ -1449,7 +1451,7 @@ class Logic(object):
                 if values is None:
                     values = []
                     constants[domname] = values
-                if not self.mln.logic.isvar(c) and not c in values:
+                if not self.mln.logic.isvar(c) and c not in values:
                     values.append(c)
             return constants
 
@@ -1543,21 +1545,21 @@ class Logic(object):
                 if values is None:
                     values = []
                     constants[domname] = values
-                if not c in values:
+                if c not in values:
                     values.append(c)
             return constants
 
         def gndatom_indices(self, l=None):
-            if l == None:
+            if l is None:
                 l = []
             if self.gndatom.idx not in l:
                 l.append(self.gndatom.idx)
             return l
 
         def gndatoms(self, l=None):
-            if l == None:
+            if l is None:
                 l = []
-            if not self.gndatom in l:
+            if self.gndatom not in l:
                 l.append(self.gndatom)
             return l
 
@@ -1838,7 +1840,7 @@ class Logic(object):
 
         def simplify(self, world):
             truth = self.truth(world)
-            if truth != None:
+            if truth is not None:
                 return self.mln.logic.true_false(truth, mln=self.mln, idx=self.idx)
             return self.mln.logic.equality(
                 list(self.args), negated=self.negated, mln=self.mln, idx=self.idx
@@ -2268,13 +2270,13 @@ class Logic(object):
             )
 
         def latex(self):
-            return "\exists\ %s (%s)" % (
+            return "\\exists\\ %s (%s)" % (
                 ", ".join(map(latexsym, self.vars)),
                 self.formula.latex(),
             )
 
         def vardoms(self, variables=None, constants=None):
-            if variables == None:
+            if variables is None:
                 variables = {}
             # get the child's variables:
             newvars = self.formula.vardoms(None, constants)
@@ -2282,7 +2284,7 @@ class Logic(object):
             for var in self.vars:
                 try:
                     del newvars[var]
-                except:
+                except BaseException:
                     raise Exception(
                         "Variable '%s' in '%s' not bound to a domain!"
                         % (var, str(self))

@@ -168,7 +168,7 @@ class MRF(object):
         return list(range(idxFirst, idxFirst + numGroundings))
 
     def domsize(self, domname):
-        if not domname in self.domains:
+        if domname not in self.domains:
             raise NoSuchDomainError(domname)
         return len(self.domains[domname])
 
@@ -186,7 +186,7 @@ class MRF(object):
                         w, numReplacements = re.subn(
                             r"\%s" % var, self.mln.vars[var], w
                         )
-                    except:
+                    except BaseException:
                         raise Exception(
                             "Error substituting variable references in '%s'\n" % w
                         )
@@ -195,7 +195,7 @@ class MRF(object):
                 w = re.sub(r"domSize\((.*?)\)", r'self.domsize("\1")', w)
                 try:
                     f.weight = float(eval(w))
-                except:
+                except BaseException:
                     sys.stderr.write(
                         "Evaluation error while trying to compute '%s'\n" % w
                     )
@@ -352,7 +352,7 @@ class MRF(object):
                     return self._gndatoms.get(atomstr)
                 else:
                     return atom
-            elif type(identifier) is int:
+            elif isinstance(identifier, int):
                 return self._gndatoms_by_idx.get(identifier)
             elif isinstance(identifier, Logic.GroundAtom):
                 return self._gndatoms.get(str(identifier))
@@ -371,7 +371,7 @@ class MRF(object):
         :param identifier:    (string/int/:class:`logic.common.Logic.GroundAtom`) the name or index of the variable,
                               or the instance of a ground atom that is part of the desired variable.
         """
-        if type(identifier) is int:
+        if isinstance(identifier, int):
             return self._variables_by_idx.get(identifier)
         elif isinstance(identifier, Logic.GroundAtom):
             return self._variables_by_gndatomidx[identifier.idx]
@@ -571,7 +571,7 @@ class MRF(object):
             return (
                 se
                 if (
-                    True == worldValues[gndAtom.idx] or None == worldValues[gndAtom.idx]
+                    True == worldValues[gndAtom.idx] or None is worldValues[gndAtom.idx]
                 )
                 else 1.0 - se
             )  # TODO allSoft currently unsupported
@@ -621,7 +621,7 @@ class MRF(object):
         inferenceParams[
             "doProbabilityFitting"
         ] = False  # avoid recursive fitting calls when calling embedded inference method
-        if given == None:
+        if given is None:
             given = ""
         if queries is None:
             queries = []
@@ -636,9 +636,9 @@ class MRF(object):
         # determine relevant formulas
         for req in constraints:
             # if we don't yet have a ground formula to fit, create one
-            if not "gndFormula" in req:
+            if "gndFormula" not in req:
                 # if we don't yet have a formula to use, search for one that matches the expression to fit
-                if not "idxFormula" in req:
+                if "idxFormula" not in req:
                     idxFormula = None
                     for idxF, formula in enumerate(self.formulas):
                         # print strFormula(formula), req["expr"]
@@ -647,9 +647,8 @@ class MRF(object):
                             break
                     if idxFormula is None:
                         raise Exception(
-                            "Probability constraint on '%s' cannot be applied because the formula is not part of the MLN!"
-                            % req["expr"]
-                        )
+                            "Probability constraint on '%s' cannot be applied because the formula is not part of the MLN!" %
+                            req["expr"])
                     req["idxFormula"] = idxFormula
                 # instantiate a ground formula
                 formula = self.formulas[req["idxFormula"]]
@@ -701,7 +700,7 @@ class MRF(object):
                     "Requested inference method (%s) not supported by probability constraint fitting"
                     % InferenceMethods.getName(method)
                 )
-            if type(results) != list:
+            if not isinstance(results, list):
                 results = [results]
             # compute deviations
             diffs = [abs(r["p"] - results[i]) for (i, r) in enumerate(constraints)]
@@ -758,7 +757,7 @@ class MRF(object):
             fittingStep += 1
 
         # write resulting mln:
-        if probabilityFittingResultFileName != None:
+        if probabilityFittingResultFileName is not None:
             mlnFile = file(probabilityFittingResultFileName, "w")
             self.mln.write(mlnFile)
             mlnFile.close()
@@ -768,7 +767,7 @@ class MRF(object):
             )
 
         return (
-            results[len(constraints) :],
+            results[len(constraints):],
             {
                 "steps": min(step, steps),
                 "fittingSteps": fittingStep,
@@ -797,10 +796,9 @@ class MRF(object):
                 atomindices = gf.gndatom_indices()
                 for i in range(len(atomindices)):
                     for j in range(i + 1, len(atomindices)):
-                        edge = [atomindices[i], atomindices[j]]
-                        edge.sort()
+                        edge = sorted([atomindices[i], atomindices[j]])
                         edge = tuple(edge)
-                        if not edge in graph:
+                        if edge not in graph:
                             f.write("  ga%d -- ga%d\n" % edge)
                             graph[edge] = True
             for atom in list(self.gndatoms.values()):
@@ -824,9 +822,9 @@ class MRF(object):
             print(gf)
             idxGAs = sorted(gf.idxGroundAtoms())
             for idx, i in enumerate(idxGAs):
-                for j in idxGAs[idx + 1 :]:
+                for j in idxGAs[idx + 1:]:
                     t = (i, j)
-                    if not t in links:
+                    if t not in links:
                         print("  %s -- %s" % (nodes[i], nodes[j]))
                         graphml.UndirectedEdge(G, nodes[i], nodes[j])
                         links[t] = True

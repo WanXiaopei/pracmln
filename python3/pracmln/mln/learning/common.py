@@ -33,7 +33,7 @@ from ..constants import HARD
 
 try:
     import numpy
-except:
+except BaseException:
     pass
 
 logger = logs.getlogger(__name__)
@@ -178,7 +178,7 @@ class AbstractLearner(object):
         Learn the weights of the MLN given the training data previously
         loaded
         """
-        if not "scipy" in sys.modules:
+        if "scipy" not in sys.modules:
             raise Exception(
                 "Scipy was not imported! Install numpy and scipy if you want to use weight learning."
             )

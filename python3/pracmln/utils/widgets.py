@@ -73,7 +73,7 @@ try:
         havePMW = True
     else:
         havePMW = False
-except:
+except BaseException:
     havePMW = False
 
 BOLDFONT = "*-Monospace-Bold-R-Normal-*-12-*"
@@ -323,7 +323,7 @@ class SyntaxHighlightingText(ScrolledText2):
             ranges = self.tag_ranges("mlcom")
             i = 0
             while i < len(ranges):
-                r = ranges[i : i + 2]
+                r = ranges[i: i + 2]
                 second_range = (
                     self.index(str(r[0]) + " + 1 char"),
                     self.index(str(r[1]) + " - 1 char"),
@@ -411,18 +411,18 @@ class SyntaxHighlightingText(ScrolledText2):
                 # operators
                 if False:
                     for op in self.highlighter.operators:
-                        if buffer[i : i + len(op)] == op:
+                        if buffer[i: i + len(op)] == op:
                             self.tag_add(
                                 "op",
                                 "%s.%d" % (cline, i),
                                 "%s.%d" % (cline, i + len(op)),
                             )
                 # comments
-                if buffer[i : i + 2] == "//":
+                if buffer[i: i + 2] == "//":
                     self.tag_add("com", "%s.%d" % (cline, i), "%s.end" % cline)
                 # multiline comments
-                elif buffer[i : i + 2] == "/*":
-                    if not here in self.tag_ranges("mlcom"):
+                elif buffer[i: i + 2] == "/*":
+                    if here not in self.tag_ranges("mlcom"):
                         end_pos = self.search(
                             "*/", here, forwards=True
                         )  # get the end of the comment
@@ -435,9 +435,9 @@ class SyntaxHighlightingText(ScrolledText2):
                         #!!! make sure the area does not contain any "/*", because the "*/" is not the right one otherwise
                         # print "multiline comment from %s to %s" % (here, str(end_pos))
                         self.tag_add("mlcom", here, str(end_pos) + " + 2 chars")
-                elif buffer[i : i + 2] == "*/":
+                elif buffer[i: i + 2] == "*/":
                     end_pos = self.index(here + " + 2 chars")
-                    if not end_pos in self.tag_ranges("mlcom"):
+                    if end_pos not in self.tag_ranges("mlcom"):
                         start_pos = self.search(
                             "/*", here, backwards=True
                         )  # get the beginning of the comment
@@ -454,7 +454,7 @@ class SyntaxHighlightingText(ScrolledText2):
                     idxBracketType = self.highlighter.open_brackets.index(buffer[i])
                     openb, closeb = self.highlighter.brackets[idxBracketType]
                     stack = 1
-                    for j, c in enumerate(buffer[i + 1 :]):
+                    for j, c in enumerate(buffer[i + 1:]):
                         if c == openb:
                             stack += 1
                         elif c == closeb:
@@ -494,7 +494,7 @@ class SyntaxHighlightingText(ScrolledText2):
         obj_flag = 0
 
         # variable and predicate highlighting
-        for match in re.finditer("(\\?[a-zA-Z0-9]+|[\w]*[a-zA-Z]\\()", buffer):
+        for match in re.finditer("(\\?[a-zA-Z0-9]+|[\\w]*[a-zA-Z]\\()", buffer):
             token = match.group(0)
             if self.grammar is not None and self.grammar.isvar(token):
                 self.tag_add(
@@ -860,10 +860,10 @@ class FilePickEdit(Frame):
         self.unmodified = True
         self.allowNone = allowNone
         self.file_extension = ""
-        if type(file_mask) != list:
+        if not isinstance(file_mask, list):
             file_mask = [file_mask]
         if "." in file_mask[0]:
-            self.file_extension = file_mask[0][file_mask[0].rfind(".") :]
+            self.file_extension = file_mask[0][file_mask[0].rfind("."):]
         # read filenames
         self.file_mask = file_mask
         self.updateList()
@@ -995,9 +995,9 @@ class FilePickEdit(Frame):
         num = 0
         if hpos != -1:
             try:
-                num = int(base[hpos + 1 :])
+                num = int(base[hpos + 1:])
                 base = base[:hpos]
-            except:
+            except BaseException:
                 pass
         while True:
             num += 1
@@ -1079,7 +1079,7 @@ class FilePickEdit(Frame):
     def get(self):
         """gets the name of the currently selected file, saving it first if necessary"""
         filename = self.save_name.get()
-        if self.unmodified == False:
+        if not self.unmodified:
             self.unmodified = True
             # save the file
             f = open(os.path.join(self.directory, filename), "w")
@@ -1142,8 +1142,8 @@ class FilePick(Frame):
         self.unmodified = True
         self.file_extension = ""
         if "." in file_mask:
-            self.file_extension = file_mask[file_mask.rfind(".") :]
-        if type(file_mask) != list:
+            self.file_extension = file_mask[file_mask.rfind("."):]
+        if not isinstance(file_mask, list):
             file_mask = [file_mask]
         self.file_masks = file_mask
         self.allowNone = allowNone
@@ -1155,7 +1155,7 @@ class FilePick(Frame):
 
     def onSelChange(self, name, index=0, mode=0):
         filename = self.picked_name.get()
-        if self.user_onChange != None:
+        if self.user_onChange is not None:
             self.user_onChange(filename)
 
     def updateList(self):
@@ -1174,7 +1174,7 @@ class FilePick(Frame):
                             else:
                                 path = filename
                             self.files.append(path)
-                except:
+                except BaseException:
                     pass
         self.files.sort()
         if len(self.files) == 0:
@@ -1236,7 +1236,7 @@ class DropdownList:
         self.directory = directory
         self.list_frame = master
         self.onchange = onselchange
-        if type(filemask) != list:
+        if not isinstance(filemask, list):
             filemask = [filemask]
         self.file_mask = filemask
         self.updateList()
@@ -1315,7 +1315,7 @@ class DropdownList:
 
     def onSelChange(self, name, index=0, mode=0):
         filename = self.picked_name.get()
-        if self.onchange != None:
+        if self.onchange is not None:
             self.onchange(filename)
 
 

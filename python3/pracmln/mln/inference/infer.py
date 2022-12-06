@@ -67,7 +67,7 @@ class Inference(object):
             ]
         else:
             # check for single/multiple query and expand
-            if type(queries) is not list:
+            if not isinstance(queries, list):
                 queries = [queries]
             self.queries = self._expand_queries(queries)
         # fill in the missing truth values of variables that have only one remaining value
@@ -166,7 +166,7 @@ class Inference(object):
         """
         equeries = []
         for query in queries:
-            if type(query) == str:
+            if isinstance(query, str):
                 prevLen = len(equeries)
                 if "(" in query:  # a fully or partially grounded formula
                     f = self.mln.logic.parse_formula(query)

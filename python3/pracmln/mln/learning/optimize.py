@@ -18,7 +18,7 @@ try:
         fmin,
         fmin_powell,
     )
-except:
+except BaseException:
     sys.stderr.write(
         "Warning: Failed to import SciPy/NumPy (http://www.scipy.org)! Parameter learning with PyMLNs is disabled.\n"
     )
@@ -102,7 +102,7 @@ class DiagonalNewton(object):
 
     def run(self):
         p = self.problem
-        grad_fct = lambda wt: p.grad(wt)
+        def grad_fct(wt): return p.grad(wt)
         wt = numpy.matrix(self.wt).transpose()
         wtarray = numpy.asarray(wt.transpose())[0]
         N = len(wt)
@@ -213,15 +213,15 @@ class SciPyOpt(object):
         grad = p.grad
 
         # coerce return types
-        f = lambda wt: numpy.float64(p.f(wt))
-        grad = lambda wt: numpy.array(list(map(numpy.float64, p.grad(wt))))
+        def f(wt): return numpy.float64(p.f(wt))
+        def grad(wt): return numpy.array(list(map(numpy.float64, p.grad(wt))))
 
         # negate for minimization
-        neg_f = lambda wt: -f(wt)
-        neg_grad = lambda wt: -grad(wt)
+        def neg_f(wt): return -f(wt)
+        def neg_grad(wt): return -grad(wt)
         # if not useGrad or not p.useGrad(): neg_grad = None
         if not p.usef:
-            neg_f = lambda wt: -p._fDummy(wt)
+            def neg_f(wt): return -p._fDummy(wt)
         log = logs.getlogger(self.__class__.__name__)
         if optimizer == "bfgs":
             params = dict(

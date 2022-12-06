@@ -267,9 +267,9 @@ class MLN(object):
         :param unique_templvars:    specifies a list of template variables that will create
                                     only unique combinations of expanded formulas
         """
-        if type(formula) is str:
+        if isinstance(formula, str):
             formula = self.logic.parse_formula(formula)
-        elif type(formula) is int:
+        elif isinstance(formula, int):
             return self._formulas[formula]
         constants = {}
         formula.vardoms(None, constants)
@@ -348,7 +348,7 @@ class MLN(object):
             predicates_used.update(f.prednames())
         for predicate in self.iterpreds():
             remove = False
-            if any([not dom in fulldomain for dom in predicate.argdoms]):
+            if any([dom not in fulldomain for dom in predicate.argdoms]):
                 logger.debug(
                     "Discarding predicate %s, since it cannot be grounded."
                     % (predicate.name)
@@ -446,11 +446,11 @@ class MLN(object):
         for db in databases:
             if isinstance(db, str):
                 db = Database.load(self, db)
-                if type(db) is list:
+                if isinstance(db, list):
                     dbs.extend(db)
                 else:
                     dbs.append(db)
-            elif type(db) is list:
+            elif isinstance(db, list):
                 dbs.extend(db)
             else:
                 dbs.append(db)
@@ -560,7 +560,7 @@ class MLN(object):
                     w = colorize("%-10.6f", weight_color, color) % float(
                         eval(str(formula.weight))
                     )
-                except:
+                except BaseException:
                     w = colorize(str(formula.weight), weight_color, color)
                 stream.write("%s  %s\n" % (w, fstr(formula.cstr(color))))
 
@@ -579,7 +579,7 @@ class MLN(object):
         for f in formulas:
             if f.weight == HARD:
                 yield "%s." % fstr(f)
-            elif type(f.weight) is float:
+            elif isinstance(f.weight, float):
                 yield "%-10.6f\t%s" % (f.weight, fstr(f))
             else:
                 yield "%s\t%s" % (str(f.weight), fstr(f))
@@ -597,7 +597,7 @@ class MLN(object):
         # read MLN file
         text = ""
         if files is not None:
-            if not type(files) is list:
+            if not isinstance(files, list):
                 files = [files]
             projectpath = None
             for f in files:
@@ -690,7 +690,7 @@ def parse_mln(
                     fuzzy = True
                 continue
             elif line.startswith("#include"):
-                filename = line[len("#include ") :].strip()
+                filename = line[len("#include "):].strip()
                 m = re.match(r'"(?P<filename>.+)"', filename)
                 if m is not None:
                     filename = m.group("filename")
@@ -738,7 +738,7 @@ def parse_mln(
                     uniVars = uniVars.groups()[0]
                     uniVars = list(map(str.strip, uniVars.split(",")))
                     uniquevars = uniVars
-                except:
+                except BaseException:
                     raise MLNParsingError('Malformed #unique expression: "%s"' % line)
                 continue
             elif line.startswith(
@@ -863,7 +863,7 @@ def parse_mln(
                         fixweight = False
                         if inGroup:
                             templateIdx2GroupIdx[idxTemplate] = idxGroup
-                        if fixWeightOfNextFormula == True:
+                        if fixWeightOfNextFormula:
                             fixWeightOfNextFormula = False
                             fixweight = True
                             fixedWeightTemplateIndices.append(idxTemplate)

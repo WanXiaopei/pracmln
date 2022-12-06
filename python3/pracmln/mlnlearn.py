@@ -319,7 +319,7 @@ class MLNLearn(object):
             raise Exception("No MLN specified")
 
         # load the training databases
-        if type(self.db) is list and all([isinstance(e, Database) for e in self.db]):
+        if isinstance(self.db, list) and all([isinstance(e, Database) for e in self.db]):
             dbs = self.db
         elif isinstance(self.db, Database):
             dbs = [self.db]
@@ -341,7 +341,7 @@ class MLNLearn(object):
         if self.verbose:
             confg = dict(self._config)
             confg.update(eval("dict(%s)" % self.params))
-            if type(confg.get("db", None)) is list:
+            if isinstance(confg.get("db", None), list):
                 confg["db"] = "%d Databases" % len(confg["db"])
             print(
                 (
@@ -726,10 +726,10 @@ class MLNLearnGUI:
         self.project_dir = os.path.abspath(
             ifnone(directory, ifnone(gconf["prev_learnwts_path"], os.getcwd()))
         )
-        if gconf["prev_learnwts_project" : self.project_dir] is not None:
+        if gconf["prev_learnwts_project": self.project_dir] is not None:
             self.load_project(
                 os.path.join(
-                    self.project_dir, gconf["prev_learnwts_project" : self.project_dir]
+                    self.project_dir, gconf["prev_learnwts_project": self.project_dir]
                 )
             )
         else:
@@ -1164,7 +1164,7 @@ class MLNLearnGUI:
 
     def write_gconfig(self, savegeometry=True):
         self.gconf["prev_learnwts_path"] = self.project_dir
-        self.gconf["prev_learnwts_project" : self.project_dir] = self.project.name
+        self.gconf["prev_learnwts_project": self.project_dir] = self.project.name
 
         # save geometry
         if savegeometry:
@@ -1282,7 +1282,7 @@ class MLNLearnGUI:
                 )
             else:
                 logger.debug("No output file given - results have not been saved.")
-        except:
+        except BaseException:
             traceback.print_exc()
 
         # restore gui

@@ -224,7 +224,7 @@ class ListDictExtend(UndoableAction):
 class ListDictSetItem(UndoableAction):
     def do(self, key, el):
         self.key = key
-        if not key in self.struct.d:
+        if key not in self.struct.d:
             self.none = True
         else:
             self.none = False
@@ -261,7 +261,7 @@ class ListDictRemove(UndoableAction):
 
     def undo(self):
         l = self.struct.d.get(self.key, None)
-        if not self.key in self.struct.d:
+        if self.key not in self.struct.d:
             self.struct.d[self.key] = self.l
         self.l.insert(self.idx, self.el)
 
@@ -441,7 +441,7 @@ class Number(Undoable):
     def __value(number):
         if isinstance(number, Number):
             return number.value
-        elif type(number) is int or type(number) is float:
+        elif isinstance(number, int) or isinstance(number, float):
             return number
 
     def __init__(self, value):

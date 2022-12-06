@@ -291,7 +291,9 @@ class MCSAT(MCMCInference):
                         add = True
                     if add:
                         M.extend(list(range(*se["idxClausePositive"])))
-                    # print "positive case: add=%s, %s, %f should become %f" % (add, map(str, [map(str, self.clauses[i]) for i in range(*se["idxClausePositive"])]), p, se["p"])
+                    # print "positive case: add=%s, %s, %f should become %f" % (add, map(str,
+                    # [map(str, self.clauses[i]) for i in range(*se["idxClausePositive"])]),
+                    # p, se["p"])
                 else:
                     # print "false case"
                     add = False
@@ -361,7 +363,8 @@ class SampleSAT:
         #         self.variables = [v for v in self.mrf.variables if v.valuecount(self.mrf.evidence) > 1]
         # list of unsatisfied constraints
         self.unsatisfied = set()
-        # keep a map of bottlenecks: index of the ground atom -> list of constraints where the corresponding lit is a bottleneck
+        # keep a map of bottlenecks: index of the ground atom -> list of
+        # constraints where the corresponding lit is a bottleneck
         self.bottlenecks = defaultdict(
             list
         )  # bottlenecks are clauses with exactly one true literal
@@ -678,10 +681,9 @@ class SampleSAT:
             # remove all the bottlenecks (if any)
             if wasSatisfied:
                 for idxGndAtom in self.trueOnes + self.falseOnes:
-                    if (
-                        idxGndAtom in self.ss.bottlenecks
-                        and self in self.ss.bottlenecks[idxGndAtom]
-                    ):  # TODO perhaps have a smarter method to know which ones actually were bottlenecks (or even info about whether we had bottlenecks)
+                    # TODO perhaps have a smarter method to know which ones actually were
+                    # bottlenecks (or even info about whether we had bottlenecks)
+                    if (idxGndAtom in self.ss.bottlenecks and self in self.ss.bottlenecks[idxGndAtom]):
                         if idxGA != idxGndAtom:
                             self.ss.bottlenecks[idxGndAtom].remove(self)
                 # the constraint was added to the list of unsatisfied ones in SampleSAT._flipGndAtom (bottleneck flip)

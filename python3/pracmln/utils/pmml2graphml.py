@@ -18,11 +18,11 @@ class Node:
 
     def parse(self, desc):
         name = re.compile('name="(.*)" optype')
-        nodeId = re.compile('id="(\S*)"')
-        nodeType = re.compile("<X-NodeType>(\S*)</X-NodeType>")
-        x = re.compile('x="(\S*)"')
-        y = re.compile('y="(\S*)"')
-        parents = re.compile("<X-Given>(\d*)</X-Given>")
+        nodeId = re.compile('id="(\\S*)"')
+        nodeType = re.compile("<X-NodeType>(\\S*)</X-NodeType>")
+        x = re.compile('x="(\\S*)"')
+        y = re.compile('y="(\\S*)"')
+        parents = re.compile("<X-Given>(\\d*)</X-Given>")
         reDict = {
             "name": name,
             "id": nodeId,
@@ -61,9 +61,8 @@ class Node:
         ret.append('<y:Fill color="%s" transparent="false"/>' % (color))
         ret.append('<y:BorderStyle color="#000000" type="line" width="1.0"/>')
         ret.append(
-            '<y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="56.0078125" x="18.49609375" y="5.6494140625">%s</y:NodeLabel>'
-            % (self.nodeDict["name"])
-        )
+            '<y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="56.0078125" x="18.49609375" y="5.6494140625">%s</y:NodeLabel>' %
+            (self.nodeDict["name"]))
         ret.append('<y:Shape type="%s"/>' % (shapeType))
         ret.append("</y:ShapeNode>")
         ret.append("</data>")
@@ -135,9 +134,9 @@ if __name__ == "__main__":
         nodeStart = re.compile("<DataField")
         nodeEnd = re.compile("</DataField")
         for i in range(len(lines)):
-            if nodeStart.search(lines[i]) != None:
+            if nodeStart.search(lines[i]) is not None:
                 startLine = i
-            if nodeEnd.search(lines[i]) != None:
+            if nodeEnd.search(lines[i]) is not None:
                 endLine = i
                 nodes.append(Node(lines[startLine:endLine]))
 

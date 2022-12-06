@@ -30,9 +30,9 @@ def KLDivergence(p, q):
     """
     Computes the Kullback-Leibler Divergence of two distributions p and q.
     """
-    if type(p) is str:
+    if isinstance(p, str):
         p = pickle.load(open(p))
-    if type(q) is str:
+    if isinstance(q, str):
         q = pickle.load(open(q))
     kl_div = 0
     for p_, q_ in zip(p, q):
@@ -62,9 +62,9 @@ class ConfusionMatrix(object):
         - prediction:	the predicted class label of an example
         - inc:		the increment (default: 1)
         """
-        if not prediction in self.labels:
+        if prediction not in self.labels:
             self.labels.append(prediction)
-        if not groundTruth in self.labels:
+        if groundTruth not in self.labels:
             self.labels.append(groundTruth)
 
         gndTruths = self.matrix.get(prediction, None)
@@ -314,7 +314,7 @@ class ConfusionMatrix(object):
         endl = "\n"
         # draw the table
         table = outerHLine + endl
-        table += createTableRow(["P\C"] + sorted(self.matrix.keys())) + endl
+        table += createTableRow(["P\\C"] + sorted(self.matrix.keys())) + endl
         table += hline + endl
         for i, clazz in enumerate(sorted(self.labels)):
             table += (

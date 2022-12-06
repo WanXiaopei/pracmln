@@ -326,7 +326,7 @@ class PRACMLNConfig(object):
         self._dirty = True
 
     def __getitem__(self, s):
-        if type(s) is slice:
+        if isinstance(s, slice):
             prim = s.start
             sec = s.stop
             if self.config.get(prim) is not None:
@@ -337,7 +337,7 @@ class PRACMLNConfig(object):
             return self.config.get(s)
 
     def __setitem__(self, s, v):
-        if type(s) is slice:
+        if isinstance(s, slice):
             prim = s.start
             sec = s.stop
             p = self.config.get(prim)

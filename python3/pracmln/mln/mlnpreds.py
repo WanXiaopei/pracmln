@@ -92,7 +92,7 @@ class Predicate(object):
 
     def __eq__(self, other):
         return (
-            type(other) == type(self)
+            isinstance(other, type(self))
             and other.name == self.name
             and other.argdoms == self.argdoms
         )

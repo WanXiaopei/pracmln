@@ -49,7 +49,7 @@ def DPLL(clauses):
             unitClauses.add(l)
         for lit in clause:
             (pol, atom) = (False, lit[1:]) if lit[0] == "!" else (True, lit)
-            if not atom in polarities:
+            if atom not in polarities:
                 pureLiterals.add(lit)
             pureLit = polarities.get(atom, pol) == pol
             satisfiable = satisfiable and pureLit
@@ -57,7 +57,7 @@ def DPLL(clauses):
             if not pureLit:
                 try:
                     pureLiterals.remove(lit[1:] if lit[0] == "!" else "!%s" % lit)
-                except:
+                except BaseException:
                     pass
     #     print 'pureLits:', pureLiterals
     if satisfiable:

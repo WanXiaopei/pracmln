@@ -182,7 +182,7 @@ class MRFVariable(object):
                      actual index obtained by `MRFVariable.valueidx()`.
 
         """
-        if type(evidence) is list:
+        if isinstance(evidence, list):
             evidence = dict([(i, v) for i, v in enumerate(evidence)])
         for tup in self._itervalues(evidence):
             yield self.valueidx(tup), tup
@@ -207,7 +207,7 @@ class MRFVariable(object):
         :param evidence:     a possible world of truth values of all ground atoms in the MRF.
         :returns:
         """
-        if type(evidence) is not dict:
+        if not isinstance(evidence, dict):
             raise Exception("evidence must be of type dict, is %s" % type(evidence))
         if evidence is None:
             evidence = self.mrf.evidence_dicti()

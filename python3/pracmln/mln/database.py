@@ -86,7 +86,7 @@ class Database(object):
         """
         Converts gndatom into a valid ground atom string representation.
         """
-        if type(gndatom) is str:
+        if isinstance(gndatom, str):
             _, predname, args = self.mln.logic.parse_literal(gndatom)
             atomstr = str(self.mln.logic.gnd_atom(predname, args, self.mln))
         elif isinstance(gndatom, Logic.GroundAtom):
@@ -119,9 +119,9 @@ class Database(object):
 
         :param domain:     the name of the domain to be returned.
         """
-        if type(domain) is dict:
+        if isinstance(domain, dict):
             for domname, values in domain.items():
-                if type(values) is not list:
+                if not isinstance(values, list):
                     values = [values]
                 dom = self.domain(domname)
                 if dom is None:
@@ -161,9 +161,9 @@ class Database(object):
         be used.
         """
         db_ = Database(mln if mln is not None else self.mln)
-        if type(dbs) is list:
+        if isinstance(dbs, list):
             dbs = [e for d in dbs for e in list(d)] + list(self)
-        if type(dbs) is Database:
+        if isinstance(dbs, Database):
             dbs = list(dbs) + list(self)
 
         for atom, truth in dbs:
@@ -185,7 +185,7 @@ class Database(object):
         for atom, truth in self:
             if prednames is not None:
                 _, predname, _ = self.mln.logic.parse_literal(atom)
-                if not predname in prednames:
+                if predname not in prednames:
                     continue
             yield atom, truth
 
@@ -292,7 +292,7 @@ class Database(object):
         :param gndatom:     a string representation of the ground atom to be
                             removed from the database or a :class:`logic.common.Logic.GroundAtom` instance.
         """
-        if type(gndatom) is str:
+        if isinstance(gndatom, str):
             _, predname, args = self.mln.logic.parse_literal(gndatom)
             atom_str = str(self.mln.logic.gnd_atom(predname, args, self.mln))
         elif isinstance(gndatom, Logic.GroundAtom):
@@ -361,11 +361,11 @@ class Database(object):
         return self.evidence.get(atom)
 
     def __lshift__(self, arg):
-        if type(arg) is tuple:
+        if isinstance(arg, tuple):
             if len(arg) != 2:
                 raise Exception("Illegal argument arg: %s" % str(arg))
             self.add(arg[0], float(arg[1]))
-        elif type(arg) == str:
+        elif isinstance(arg, str):
             self.add(arg)
 
     def __rshift__(self, atom):
@@ -450,7 +450,7 @@ class Database(object):
           >>> mln = MLN()
           >>> db = Database.load(mln, './example.db')
         """
-        if type(dbfiles) is not list:
+        if not isinstance(dbfiles, list):
             dbfiles = [dbfiles]
         dbs = []
         for dbpath in dbfiles:
@@ -594,7 +594,7 @@ def parse_db(
             domnames = [domname for _ in constants]
         # include
         elif l.startswith("#include"):
-            filename = l[len("#include ") :].strip()
+            filename = l[len("#include "):].strip()
             m = re.match(r'"(?P<filename>.+)"', filename)
             if m is not None:
                 filename = m.group("filename")
@@ -640,7 +640,7 @@ def parse_db(
         # valued evidence
         elif l[0] in "0123456789":
             s = l.find(" ")
-            gndatom = l[s + 1 :].replace(" ", "")
+            gndatom = l[s + 1:].replace(" ", "")
             value = float(l[:s])
             if value < 0 or value > 1:
                 raise Exception("Valued evidence must be in [0,1]")
@@ -718,7 +718,7 @@ def readall_dbs(mln, path):
             p = os.path.join(dirname, f)
             print(" reading database %s" % p)
             dbs = Database.load(mln, p)
-            if type(dbs) == list:
+            if isinstance(dbs, list):
                 for db in dbs:
                     yield db
             else:

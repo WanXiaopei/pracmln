@@ -52,7 +52,7 @@ class _methodcaller:
 
     def __call__(self, args):
         checkmem()
-        if type(args) is list or type(args) is tuple:
+        if isinstance(args, list) or isinstance(args, tuple):
             inst = args[0]
             args = args[1:]
         else:

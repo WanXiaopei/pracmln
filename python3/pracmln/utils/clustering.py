@@ -85,7 +85,7 @@ class Cluster(object):
         if distance == "auto" and self.type == "str":
             dist = editDistance
         elif distance == "auto" and self.type == "number":
-            dist = lambda x, y: math.sqrt(
+            def dist(x, y): return math.sqrt(
                 sum(map(lambda x_1, x_2: (x_1 - x_2) ** 2, list(zip(x, y))))
             )
         elif type(distance) is callable:

@@ -33,7 +33,7 @@ import math
 
 from dnutils import logs, stop, out
 
-from .mln.methods import LearningMethods, InferenceMethods
+from .mln.methods import InferenceMethods
 from .utils.eval import ConfusionMatrix
 from multiprocessing import Pool
 import logging
@@ -201,7 +201,7 @@ class XValFold(object):
             #                 for e, v in trueDB.evidence.iteritems():
             #                     if v is not None:
             #                         db.addGroundAtom('%s%s' % ('' if v is True else '!', e))
-            except:
+            except BaseException:
                 logger.critical("".join(traceback.format_exception(*sys.exc_info())))
 
     def run(self):
@@ -327,7 +327,7 @@ class XValFold(object):
 def runFold(fold):
     try:
         fold.run()
-    except:
+    except BaseException:
         raise Exception("".join(traceback.format_exception(*sys.exc_info())))
     return fold
 
@@ -405,7 +405,7 @@ if __name__ == "__main__":
     partSize = int(math.ceil(len(dbs) / float(folds)))
     partition = []
     for i in range(folds):
-        partition.append(dbs[i * partSize : (i + 1) * partSize])
+        partition.append(dbs[i * partSize: (i + 1) * partSize])
 
     foldRunnables = []
     for fold_idx in range(folds):
@@ -452,7 +452,7 @@ if __name__ == "__main__":
             workerPool.terminate()
             workerPool.join()
             exit(1)
-        except:
+        except BaseException:
             logger.error("\n" + "".join(traceback.format_exception(*sys.exc_info())))
             exit(1)
     #     startTime = time.time()
