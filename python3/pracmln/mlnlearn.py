@@ -355,11 +355,11 @@ class MLNLearn(object):
             [
                 (k, getattr(self, k))
                 for k in (
-                "multicore",
-                "verbose",
-                "profile",
-                "ignore_zero_weight_formulas",
-            )
+                    "multicore",
+                    "verbose",
+                    "profile",
+                    "ignore_zero_weight_formulas",
+                )
             ]
         )
 

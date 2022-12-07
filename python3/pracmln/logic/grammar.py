@@ -228,9 +228,9 @@ class StandardGrammar(Grammar):
         )
 
         constant = (
-                Word(identifierCharacter)
-                | Word(nums)
-                | Combine(Literal('"') + Word(printables.replace('"', "")) + Literal('"'))
+            Word(identifierCharacter)
+            | Word(nums)
+            | Combine(Literal('"') + Word(printables.replace('"', "")) + Literal('"'))
         )
         variable = Word(lcCharacter, identifierCharacter)
 
@@ -249,27 +249,27 @@ class StandardGrammar(Grammar):
 
         varList = Group(delimitedList(variable))
         count_constraint = (
-                Literal("count(").suppress()
-                + atom
-                + Optional(Literal("|").suppress() + varList)
-                + Literal(")").suppress()
-                + (Literal("=") | Literal(">=") | Literal("<="))
-                + Word(nums)
+            Literal("count(").suppress()
+            + atom
+            + Optional(Literal("|").suppress() + varList)
+            + Literal(")").suppress()
+            + (Literal("=") | Literal(">=") | Literal("<="))
+            + Word(nums)
         )
 
         formula = Forward()
         exist = (
-                Literal("EXIST ").suppress()
-                + Group(delimitedList(variable))
-                + openRB
-                + Group(formula)
-                + closeRB
+            Literal("EXIST ").suppress()
+            + Group(delimitedList(variable))
+            + openRB
+            + Group(formula)
+            + closeRB
         )
         equality = (
-                (constant | variable) + Literal("=").suppress() + (constant | variable)
+            (constant | variable) + Literal("=").suppress() + (constant | variable)
         )
         inequality = (
-                (constant | variable) + Literal("=/=").suppress() + (constant | variable)
+            (constant | variable) + Literal("=/=").suppress() + (constant | variable)
         )
         negation = Literal("!").suppress() + openRB + Group(formula) + closeRB
         item = literal | exist | equality | openRB + formula + closeRB | negation
@@ -351,19 +351,19 @@ class PRACGrammar(Grammar):
         # grammar
 
         identifierCharacter = (
-                alphanums
-                + "ÄÖÜäöü"
-                + "_"
-                + "-"
-                + "'"
-                + "."
-                + ":"
-                + ";"
-                + "$"
-                + "~"
-                + "\\"
-                + "!"
-                + "/"
+            alphanums
+            + "ÄÖÜäöü"
+            + "_"
+            + "-"
+            + "'"
+            + "."
+            + ":"
+            + ";"
+            + "$"
+            + "~"
+            + "\\"
+            + "!"
+            + "/"
         )
         lcCharacter = alphas.lower()
         ucCharacter = alphas.upper()
@@ -379,11 +379,11 @@ class PRACGrammar(Grammar):
             Optional(Literal(":")) + lcName + Optional(Literal("!") | Literal("?"))
         )
         constant = (
-                Word(identifierCharacter)
-                | Word(nums)
-                | Combine(
-            Literal('"') + Word((printables + " ").replace('"', "")) + Literal('"')
-        )
+            Word(identifierCharacter)
+            | Word(nums)
+            | Combine(
+                Literal('"') + Word((printables + " ").replace('"', "")) + Literal('"')
+            )
         )  # QuotedString(quoteChar = '"', escChar = '\\')
         variable = Word(qMark, identifierCharacter)
 
@@ -404,28 +404,28 @@ class PRACGrammar(Grammar):
 
         formula = Forward()
         exist = (
-                Literal("EXIST ").suppress()
-                + Group(delimitedList(variable))
-                + openRB
-                + Group(formula)
-                + closeRB
+            Literal("EXIST ").suppress()
+            + Group(delimitedList(variable))
+            + openRB
+            + Group(formula)
+            + closeRB
         )
         equality = (
-                (constant | variable) + Literal("=").suppress() + (constant | variable)
+            (constant | variable) + Literal("=").suppress() + (constant | variable)
         )
         inequality = (
-                (constant | variable) + Literal("=/=").suppress() + (constant | variable)
+            (constant | variable) + Literal("=/=").suppress() + (constant | variable)
         )
         negation = Literal("!").suppress() + openRB + Group(formula) + closeRB
 
         item = (
-                litgroup
-                | literal
-                | exist
-                | inequality
-                | equality
-                | openRB + formula + closeRB
-                | negation
+            litgroup
+            | literal
+            | exist
+            | inequality
+            | equality
+            | openRB + formula + closeRB
+            | negation
         )
         conjunction = Group(item) + ZeroOrMore(Literal("^").suppress() + Group(item))
         disjunction = Group(conjunction) + ZeroOrMore(

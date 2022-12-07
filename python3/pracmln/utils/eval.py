@@ -198,11 +198,11 @@ class ConfusionMatrix(object):
                     )
                 )
             result += (
-                    clazz.replace("_", r"\_")
-                    + " & "
-                    + " & ".join(values)
-                    + r"\\ \hline"
-                    + endl
+                clazz.replace("_", r"\_")
+                + " & "
+                + " & ".join(values)
+                + r"\\ \hline"
+                + endl
             )
 
         result += r"\end{tabular}" + endl
@@ -305,11 +305,11 @@ class ConfusionMatrix(object):
 
         def createTableRow(args):
             return (
-                    sep
-                    + sep.join(
-                [str(a).rjust(cellwidth - padding) + " " * padding for a in args]
-            )
-                    + sep
+                sep
+                + sep.join(
+                    [str(a).rjust(cellwidth - padding) + " " * padding for a in args]
+                )
+                + sep
             )
 
         endl = "\n"
@@ -319,11 +319,11 @@ class ConfusionMatrix(object):
         table += hline + endl
         for i, clazz in enumerate(sorted(self.labels)):
             table += (
-                    createTableRow(
-                        [clazz]
-                        + [self.getMatrixEntry(clazz, x) for x in sorted(self.labels)]
-                    )
-                    + endl
+                createTableRow(
+                    [clazz]
+                    + [self.getMatrixEntry(clazz, x) for x in sorted(self.labels)]
+                )
+                + endl
             )
             if i < len(list(self.matrix.keys())) - 1:
                 table += hline + endl

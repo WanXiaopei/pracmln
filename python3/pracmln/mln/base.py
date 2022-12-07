@@ -126,7 +126,7 @@ class MLN(object):
             wts = map(
                 lambda w: float("%-10.6f" % float(eval(str(w))))
                 if type(w) in (float, int)
-                   and w not in (HARD, float("inf"), -float("inf"))
+                and w not in (HARD, float("inf"), -float("inf"))
                 else w,
                 wts,
             )

@@ -102,6 +102,5 @@ if __name__ == "__main__":
     def f(x):
         return x * x
 
-
     pool = multiprocessing.Pool(processes=4)  # start 4 worker processes
     print(pool.map(with_tracing(f), list(range(10))))  # prints "[0, 1, 4,..., 81]"

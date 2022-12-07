@@ -388,8 +388,8 @@ class Database(object):
         AND all domains are empty.
         """
         return (
-                not any([x >= 0 and x <= 1 for x in list(self._evidence.values())])
-                and len(self.domains) == 0
+            not any([x >= 0 and x <= 1 for x in list(self._evidence.values())])
+            and len(self.domains) == 0
         )
 
     def query(self, formula, thr=1):

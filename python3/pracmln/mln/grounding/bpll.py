@@ -386,7 +386,7 @@ class FormulaGrounding(object):
 
     def __str__(self):
         return (
-                str(self.assignment) + "->" + str(self.formula) + str(self.domains)
+            str(self.assignment) + "->" + str(self.formula) + str(self.domains)
         )  # str(self.assignment)
 
     def __repr__(self):

@@ -102,7 +102,7 @@ class ScrolledText2(Text):
         # methods -- hack!
         text_meths = list(vars(Text).keys())
         methods = (
-                list(vars(Pack).keys()) + list(vars(Grid).keys()) + list(vars(Place).keys())
+            list(vars(Pack).keys()) + list(vars(Grid).keys()) + list(vars(Place).keys())
         )
         methods = set(methods).difference(text_meths)
 
@@ -984,7 +984,7 @@ class FilePickEdit(Frame):
         filename = self.picked_name.get()
         if filename == "":
             filename = (
-                    "new" + self.file_extension
+                "new" + self.file_extension
             )  # if no file selected, create new filename
         ext = ""
         extpos = filename.rfind(".")

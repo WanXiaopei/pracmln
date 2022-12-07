@@ -91,9 +91,9 @@ class Predicate(object):
 
     def __eq__(self, other):
         return (
-                isinstance(other, type(self))
-                and other.name == self.name
-                and other.argdoms == self.argdoms
+            isinstance(other, type(self))
+            and other.name == self.name
+            and other.argdoms == self.argdoms
         )
 
     def __ne__(self, other):

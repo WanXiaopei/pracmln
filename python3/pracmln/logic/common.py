@@ -1083,29 +1083,29 @@ class Logic(object):
 
         def __str__(self):
             return (
-                    {True: "!", False: "", 2: "*"}[self.negated]
-                    + self.predname
-                    + "("
-                    + ",".join(self.args)
-                    + ")"
+                {True: "!", False: "", 2: "*"}[self.negated]
+                + self.predname
+                + "("
+                + ",".join(self.args)
+                + ")"
             )
 
         def cstr(self, color=False):
             return (
-                    {True: "!", False: "", 2: "*"}[self.negated]
-                    + colorize(self.predname, predicate_color, color)
-                    + "("
-                    + ",".join(self.args)
-                    + ")"
+                {True: "!", False: "", 2: "*"}[self.negated]
+                + colorize(self.predname, predicate_color, color)
+                + "("
+                + ",".join(self.args)
+                + ")"
             )
 
         def latex(self):
             return (
-                    {True: r"\lnot ", False: "", 2: "*"}[self.negated]
-                    + latexsym(self.predname)
-                    + "("
-                    + ",".join(map(latexsym, self.args))
-                    + ")"
+                {True: r"\lnot ", False: "", 2: "*"}[self.negated]
+                + latexsym(self.predname)
+                + "("
+                + ",".join(map(latexsym, self.args))
+                + ")"
             )
 
         def vardoms(self, variables=None, constants=None):
@@ -1329,29 +1329,29 @@ class Logic(object):
 
         def __str__(self):
             return (
-                    {True: "!", False: "", 2: "*"}[self.negated]
-                    + "|".join(self.predname)
-                    + "("
-                    + ",".join(self.args)
-                    + ")"
+                {True: "!", False: "", 2: "*"}[self.negated]
+                + "|".join(self.predname)
+                + "("
+                + ",".join(self.args)
+                + ")"
             )
 
         def cstr(self, color=False):
             return (
-                    {True: "!", False: "", 2: "*"}[self.negated]
-                    + colorize("|".join(self.predname), predicate_color, color)
-                    + "("
-                    + ",".join(self.args)
-                    + ")"
+                {True: "!", False: "", 2: "*"}[self.negated]
+                + colorize("|".join(self.predname), predicate_color, color)
+                + "("
+                + ",".join(self.args)
+                + ")"
             )
 
         def latex(self):
             return (
-                    {True: r"\lnot ", False: "", 2: "*"}[self.negated]
-                    + latexsym("|".join(self.predname))
-                    + "("
-                    + ",".join(map(latexsym, self.args))
-                    + ")"
+                {True: r"\lnot ", False: "", 2: "*"}[self.negated]
+                + latexsym("|".join(self.predname))
+                + "("
+                + ",".join(map(latexsym, self.args))
+                + ")"
             )
 
         def vardoms(self, variables=None, constants=None):
@@ -1408,12 +1408,12 @@ class Logic(object):
             # args = map(lambda x: assignment.get(x, x), self.args)
             if self.negated == 2:  # template
                 return [
-                           self.mln.logic.lit(False, predname, self.args, mln=self.mln)
-                           for predname in self.predname
-                       ] + [
-                           self.mln.logic.lit(True, predname, self.args, mln=self.mln)
-                           for predname in self.predname
-                       ]
+                    self.mln.logic.lit(False, predname, self.args, mln=self.mln)
+                    for predname in self.predname
+                ] + [
+                    self.mln.logic.lit(True, predname, self.args, mln=self.mln)
+                    for predname in self.predname
+                ]
             else:
                 return [
                     self.mln.logic.lit(self.negated, predname, self.args, mln=self.mln)
@@ -1874,17 +1874,17 @@ class Logic(object):
             c1 = self.children[0]
             c2 = self.children[1]
             return (
-                    (
-                        str(c1)
-                        if not isinstance(c1, Logic.ComplexFormula)
-                        else "(%s)" % str(c1)
-                    )
-                    + " => "
-                    + (
-                        str(c2)
-                        if not isinstance(c2, Logic.ComplexFormula)
-                        else "(%s)" % str(c2)
-                    )
+                (
+                    str(c1)
+                    if not isinstance(c1, Logic.ComplexFormula)
+                    else "(%s)" % str(c1)
+                )
+                + " => "
+                + (
+                    str(c2)
+                    if not isinstance(c2, Logic.ComplexFormula)
+                    else "(%s)" % str(c2)
+                )
             )
 
         def cstr(self, color=False):
@@ -1899,7 +1899,7 @@ class Logic(object):
 
         def latex(self):
             return (
-                    self.children[0].latex() + r" \rightarrow " + self.children[1].latex()
+                self.children[0].latex() + r" \rightarrow " + self.children[1].latex()
             )
 
         def cnf(self, level=0):
@@ -1961,13 +1961,13 @@ class Logic(object):
             c1 = self.children[0]
             c2 = self.children[1]
             return (
-                    (
-                        str(c1)
-                        if not isinstance(c1, Logic.ComplexFormula)
-                        else "(%s)" % str(c1)
-                    )
-                    + " <=> "
-                    + (str(c2) if not isinstance(c2, Logic.ComplexFormula) else str(c2))
+                (
+                    str(c1)
+                    if not isinstance(c1, Logic.ComplexFormula)
+                    else "(%s)" % str(c1)
+                )
+                + " <=> "
+                + (str(c2) if not isinstance(c2, Logic.ComplexFormula) else str(c2))
             )
 
         def cstr(self, color=False):
@@ -2064,13 +2064,13 @@ class Logic(object):
 
         def __str__(self):
             return (
-                       "!(%s)" if isinstance(self.children[0], Logic.ComplexFormula) else "!%s"
-                   ) % str(self.children[0])
+                "!(%s)" if isinstance(self.children[0], Logic.ComplexFormula) else "!%s"
+            ) % str(self.children[0])
 
         def cstr(self, color=False):
             return (
-                       "!(%s)" if isinstance(self.children[0], Logic.ComplexFormula) else "!%s"
-                   ) % self.children[0].cstr(color)
+                "!(%s)" if isinstance(self.children[0], Logic.ComplexFormula) else "!%s"
+            ) % self.children[0].cstr(color)
 
         def latex(self):
             return r"\lnot (%s)" % self.children[0].latex()
@@ -2263,11 +2263,11 @@ class Logic(object):
 
         def cstr(self, color=False):
             return (
-                    colorize("EXIST ", predicate_color, color)
-                    + ", ".join(self.vars)
-                    + " ("
-                    + self.formula.cstr(color)
-                    + ")"
+                colorize("EXIST ", predicate_color, color)
+                + ", ".join(self.vars)
+                + " ("
+                + self.formula.cstr(color)
+                + ")"
             )
 
         def latex(self):
@@ -2599,9 +2599,9 @@ class Logic(object):
         Determines whether or not a formula is a literal.
         """
         return (
-                isinstance(f, Logic.GroundLit)
-                or isinstance(f, Logic.Lit)
-                or isinstance(f, Logic.GroundAtom)
+            isinstance(f, Logic.GroundLit)
+            or isinstance(f, Logic.Lit)
+            or isinstance(f, Logic.GroundAtom)
         )
 
     def iseq(self, f):

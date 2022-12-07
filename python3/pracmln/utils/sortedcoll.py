@@ -214,14 +214,12 @@ if __name__ == "__main__":
         except ValueError:
             return -1
 
-
     def slow_index(seq, k):
         "Location of match or -1 if not found"
         for i, item in enumerate(seq):
             if item == k:
                 return i
         return -1
-
 
     def slow_find(seq, k):
         "First item with a key equal to k. -1 if not found"
@@ -230,14 +228,12 @@ if __name__ == "__main__":
                 return item
         return -1
 
-
     def slow_find_le(seq, k):
         "Last item with a key less-than or equal to k."
         for item in reversed(seq):
             if item <= k:
                 return item
         return -1
-
 
     def slow_find_lt(seq, k):
         "Last item with a key less-than k."
@@ -246,7 +242,6 @@ if __name__ == "__main__":
                 return item
         return -1
 
-
     def slow_find_ge(seq, k):
         "First item with a key-value greater-than or equal to k."
         for item in seq:
@@ -254,14 +249,12 @@ if __name__ == "__main__":
                 return item
         return -1
 
-
     def slow_find_gt(seq, k):
         "First item with a key-value greater-than or equal to k."
         for item in seq:
             if item > k:
                 return item
         return -1
-
 
     from random import choice
 
@@ -295,8 +288,8 @@ if __name__ == "__main__":
     assert sd._items == ["Brown", "Fox", "jumped", "quick", "The"]
     assert sd._key == str.lower
     assert (
-            repr(sd)
-            == "SortedCollection(['Brown', 'Fox', 'jumped', 'quick', 'The'], key=lower)"
+        repr(sd)
+        == "SortedCollection(['Brown', 'Fox', 'jumped', 'quick', 'The'], key=lower)"
     )
     sd.key = str.upper
     assert sd._key == str.upper

@@ -242,9 +242,9 @@ class MRF(object):
             if isinstance(self.mln.logic, FuzzyLogic):
                 if (
                         (
-                                isinstance(var, MutexVariable)
-                                or isinstance(var, SoftMutexVariable)
-                                or isinstance(var, BinaryVariable)
+                            isinstance(var, MutexVariable)
+                            or isinstance(var, SoftMutexVariable)
+                            or isinstance(var, BinaryVariable)
                         )
                         and value is not None
                         and value in Interval("]0,1[")
@@ -569,7 +569,7 @@ class MRF(object):
             return (
                 se
                 if (
-                        True == worldValues[gndAtom.idx] or None is worldValues[gndAtom.idx]
+                    True == worldValues[gndAtom.idx] or None is worldValues[gndAtom.idx]
                 )
                 else 1.0 - se
             )  # TODO allSoft currently unsupported

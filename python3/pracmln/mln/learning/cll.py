@@ -248,7 +248,7 @@ class CLL(AbstractLearner):
             # partition, we can stop the grounding process here. The gnd conjunction
             # will never ever be rendered true by any of this partitions values (criterion no. 5)
             isevidence = (
-                    hasattr(self, "qpreds") and gndlit_.gndatom.predname not in self.qpreds
+                hasattr(self, "qpreds") and gndlit_.gndatom.predname not in self.qpreds
             )
             # assert isEvidence == False
             if isconj and truth == 0:
