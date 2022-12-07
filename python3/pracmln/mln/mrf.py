@@ -27,20 +27,18 @@
 import re
 import sys
 import time
-from math import *
 
 from dnutils import out, logs
 
+from .constants import HARD
 from .database import Database
 from .errors import MRFValueException, NoSuchDomainError, NoSuchPredicateError
 from .methods import InferenceMethods
-from .constants import HARD
 from .mrfvars import MutexVariable, SoftMutexVariable, FuzzyVariable, BinaryVariable
 from .util import fstr, logx, mergedom, CallByRef, Interval
 from ..logic import FirstOrderLogic
 from ..logic.common import Logic
 from ..logic.fuzzy import FuzzyLogic
-from .grounding import *
 
 logger = logs.getlogger(__name__)
 
@@ -243,13 +241,13 @@ class MRF(object):
             var = self.variable(gndatom)
             if isinstance(self.mln.logic, FuzzyLogic):
                 if (
-                    (
-                        isinstance(var, MutexVariable)
-                        or isinstance(var, SoftMutexVariable)
-                        or isinstance(var, BinaryVariable)
-                    )
-                    and value is not None
-                    and value in Interval("]0,1[")
+                        (
+                                isinstance(var, MutexVariable)
+                                or isinstance(var, SoftMutexVariable)
+                                or isinstance(var, BinaryVariable)
+                        )
+                        and value is not None
+                        and value in Interval("]0,1[")
                 ):
                     raise MRFValueException(
                         'Illegal value for the  (soft-) mutex or binary variable "%s": %s'
@@ -478,10 +476,10 @@ class MRF(object):
         :returns:    a generator of (idx, possible world) tuples.
         """
         for res in self._iterworlds(
-            [v for v in self.variables if v.valuecount(self.evidence) > 1],
-            list(self.evidence),
-            CallByRef(0),
-            self.evidence_dicti(),
+                [v for v in self.variables if v.valuecount(self.evidence) > 1],
+                list(self.evidence),
+                CallByRef(0),
+                self.evidence_dicti(),
         ):
             yield res
 
@@ -495,14 +493,14 @@ class MRF(object):
             world_ = list(world)
             value = variable.evidence_value(evidence)
             for res in self._iterworlds(
-                variables[1:], variable.setval(value, world_), worldidx, evidence
+                    variables[1:], variable.setval(value, world_), worldidx, evidence
             ):
                 yield res
         else:
             for _, value in variable.itervalues(evidence):
                 world_ = list(world)
                 for res in self._iterworlds(
-                    variables[1:], variable.setval(value, world_), worldidx, evidence
+                        variables[1:], variable.setval(value, world_), worldidx, evidence
                 ):
                     yield res
 
@@ -526,7 +524,7 @@ class MRF(object):
             yield i, w
 
     def itergroundings(
-        self, simplify=False, grounding_factory="DefaultGroundingFactory"
+            self, simplify=False, grounding_factory="DefaultGroundingFactory"
     ):
         """
         Iterates over all groundings of all formulas of this MRF.
@@ -571,7 +569,7 @@ class MRF(object):
             return (
                 se
                 if (
-                    True == worldValues[gndAtom.idx] or None is worldValues[gndAtom.idx]
+                        True == worldValues[gndAtom.idx] or None is worldValues[gndAtom.idx]
                 )
                 else 1.0 - se
             )  # TODO allSoft currently unsupported
@@ -587,19 +585,19 @@ class MRF(object):
             stream.write(str(ga) + "\n")
 
     def apply_prob_constraints(
-        self,
-        constraints,
-        method=InferenceMethods.EnumerationAsk,
-        thr=1.0e-3,
-        steps=20,
-        fittingMCSATSteps=5000,
-        fittingParams=None,
-        given=None,
-        queries=None,
-        maxThreshold=None,
-        greedy=False,
-        probabilityFittingResultFileName=None,
-        **args
+            self,
+            constraints,
+            method=InferenceMethods.EnumerationAsk,
+            thr=1.0e-3,
+            steps=20,
+            fittingMCSATSteps=5000,
+            fittingParams=None,
+            given=None,
+            queries=None,
+            maxThreshold=None,
+            greedy=False,
+            probabilityFittingResultFileName=None,
+            **args
     ):
         """
         Applies the given probability constraints (if any), dynamically
@@ -655,10 +653,10 @@ class MRF(object):
                 variables = formula.getVariables(self)
                 groundVars = {}
                 for (
-                    varName,
-                    domName,
+                        varName,
+                        domName,
                 ) in (
-                    variables.items()
+                        variables.items()
                 ):  # instantiate vars arbitrarily (just use first element of domain)
                     groundVars[varName] = self.domains[domName][0]
                 gndFormula = formula.ground(self, groundVars)

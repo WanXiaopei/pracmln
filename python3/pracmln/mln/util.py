@@ -24,20 +24,19 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import logging
 import math
-from math import sqrt
+import random
 import re
 import time
-import logging
 import traceback
-import colored
-
-from dnutils import out, ifnone
-
 from collections import defaultdict
-import random
 from functools import reduce
 from importlib import util as imputil
+from math import sqrt
+
+import colored
+from dnutils import out, ifnone
 
 # math functions
 
@@ -305,11 +304,11 @@ def headline(s):
 
 
 def gaussianZeroMean(x, sigma):
-    return 1.0 / sqrt(2 * math.pi * sigma**2) * math.exp(-(x**2) / (2 * sigma**2))
+    return 1.0 / sqrt(2 * math.pi * sigma ** 2) * math.exp(-(x ** 2) / (2 * sigma ** 2))
 
 
 def gradGaussianZeroMean(x, sigma):
-    return -(0.3990434423 * x * math.exp(-0.5 * x**2 / sigma**2)) / (sigma**3)
+    return -(0.3990434423 * x * math.exp(-0.5 * x ** 2 / sigma ** 2)) / (sigma ** 3)
 
 
 def mergedom(*domains):
@@ -548,7 +547,6 @@ class temporary_evidence:
 
 
 if __name__ == "__main__":
-
     l = [1, 2, 3]
     upto = 2
     out(ifnone(upto, len(l)))

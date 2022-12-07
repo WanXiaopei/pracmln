@@ -3,15 +3,15 @@ Created on Sep 11, 2014
 
 @author: nyga
 """
+import _thread
 import os
 
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import rc
 from numpy.ma.core import floor, ceil
-import _thread
-from .latexmath2png import math2png
 
+from .latexmath2png import math2png
 
 COLORS = ["blue", "green", "red", "orange"]
 CVALUE = {"blue": "#355FD6", "green": "#47A544", "red": "#A54D44", "orange": "#D0742F"}

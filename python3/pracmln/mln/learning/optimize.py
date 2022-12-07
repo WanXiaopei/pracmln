@@ -1,9 +1,6 @@
 import sys
-import time
-import math
 
 from dnutils import logs
-
 
 try:
     import numpy
@@ -30,7 +27,7 @@ class DirectDescent(object):
     """
 
     def __init__(
-        self, wt, learner, gtol=1e-3, maxiter=None, learningRate=0.1, **params
+            self, wt, learner, gtol=1e-3, maxiter=None, learningRate=0.1, **params
     ):
         self.learner = learner
         self.wt = wt
@@ -102,7 +99,10 @@ class DiagonalNewton(object):
 
     def run(self):
         p = self.problem
-        def grad_fct(wt): return p.grad(wt)
+
+        def grad_fct(wt):
+            return p.grad(wt)
+
         wt = numpy.matrix(self.wt).transpose()
         wtarray = numpy.asarray(wt.transpose())[0]
         N = len(wt)
@@ -132,7 +132,7 @@ class DiagonalNewton(object):
             for i in range(N):
                 v = H[i][i]
                 if (
-                    v == 0.0
+                        v == 0.0
                 ):  # HACK: if any variance component is zero, set corresponding gradient component to zero
                     sgrad[i] = g[i] = 0.0
                 else:
@@ -213,12 +213,19 @@ class SciPyOpt(object):
         grad = p.grad
 
         # coerce return types
-        def f(wt): return numpy.float64(p.f(wt))
-        def grad(wt): return numpy.array(list(map(numpy.float64, p.grad(wt))))
+        def f(wt):
+            return numpy.float64(p.f(wt))
+
+        def grad(wt):
+            return numpy.array(list(map(numpy.float64, p.grad(wt))))
 
         # negate for minimization
-        def neg_f(wt): return -f(wt)
-        def neg_grad(wt): return -grad(wt)
+        def neg_f(wt):
+            return -f(wt)
+
+        def neg_grad(wt):
+            return -grad(wt)
+
         # if not useGrad or not p.useGrad(): neg_grad = None
         if not p.usef:
             def neg_f(wt): return -p._fDummy(wt)
@@ -316,7 +323,6 @@ class SciPyOpt(object):
             raise Exception("Unknown optimizer '%s'" % optimizer)
 
         return wt
-
 
 # try:
 #     from playdoh import Fitness, maximize, MAXCPU, GA, PSO, print_table

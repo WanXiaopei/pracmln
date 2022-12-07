@@ -28,7 +28,9 @@
 import argparse
 import fnmatch
 import io
+import os
 import pstats
+import sys
 import tkinter.messagebox
 import traceback
 from cProfile import Profile
@@ -36,9 +38,7 @@ from tkinter import *
 from tkinter.filedialog import asksaveasfilename
 
 from dnutils import logs, out, ifnone
-from tabulate import tabulate
-
-from pracmln import MLN
+from pracmln.mln import MLN
 from pracmln.mln.base import parse_mln
 from pracmln.mln.database import Database, parse_db
 from pracmln.mln.learning.common import DiscriminativeLearner
@@ -48,8 +48,7 @@ from pracmln.utils import config, locs
 from pracmln.utils.config import global_config_filename
 from pracmln.utils.project import MLNProject, PRACMLNConfig
 from pracmln.utils.widgets import *
-import logging  # import used in eval, do not remove
-
+from tabulate import tabulate
 
 logger = logs.getlogger(__name__)
 
@@ -356,11 +355,11 @@ class MLNLearn(object):
             [
                 (k, getattr(self, k))
                 for k in (
-                    "multicore",
-                    "verbose",
-                    "profile",
-                    "ignore_zero_weight_formulas",
-                )
+                "multicore",
+                "verbose",
+                "profile",
+                "ignore_zero_weight_formulas",
+            )
             ]
         )
 
@@ -844,7 +843,7 @@ class MLNLearnGUI:
 
     def noask_save_project(self):
         if self.project.name and not self.project.name == DEFAULTNAME.format(
-            ".pracmln"
+                ".pracmln"
         ):
             self.save_project(os.path.join(self.project_dir, self.project.name))
         else:

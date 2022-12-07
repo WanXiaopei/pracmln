@@ -318,8 +318,8 @@ class BinaryVariable(MRFVariable):
             )
         gndatom = self.gndatoms[0]
         if evidence.get(gndatom.idx) is not None and evidence.get(gndatom.idx) in (
-            0,
-            1,
+                0,
+                1,
         ):
             yield (evidence[gndatom.idx],)
             return
@@ -372,7 +372,7 @@ class MutexVariable(MRFVariable):
                 "More than one ground atom in mutex variable is true: %s" % str(self)
             )
         if (
-            trues == 1
+                trues == 1
         ):  # if the true value of the mutex var is in the evidence, we have only one possibility
             yield tuple([1 if x == 1 else 0 for x in valpattern])
             return
@@ -381,7 +381,7 @@ class MutexVariable(MRFVariable):
                 "Illegal value for a MutexVariable %s: %s" % (self, valpattern)
             )
         for i, val in enumerate(
-            valpattern
+                valpattern
         ):  # generate a value tuple with a truth value for each atom which is not set to false by evidence
             if val == 0:
                 continue
@@ -427,12 +427,12 @@ class SoftMutexVariable(MRFVariable):
                 "More than one ground atom in mutex variable is true: %s" % str(self)
             )
         if (
-            trues == 1
+                trues == 1
         ):  # if the true value of the mutex var is in the evidence, we have only one possibility
             yield tuple([1 if x == 1 else 0 for x in valpattern])
             return
         for i, val in enumerate(
-            valpattern
+                valpattern
         ):  # generate a value tuple with a true value for each atom which is not set to false by evidence
             if val == 0:
                 continue

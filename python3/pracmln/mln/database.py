@@ -22,23 +22,23 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."""
+import os
+import re
+import sys
+import traceback
+from collections import defaultdict
+from io import StringIO
+
 from dnutils import ifnone, logs
 from dnutils.console import barstr
 
+from .errors import MLNParsingError
+from .errors import NoSuchPredicateError
+from .util import colorize
 from .util import stripComments, mergedom
 from ..logic.common import Logic
 from ..logic.fol import FirstOrderLogic
-from .errors import NoSuchPredicateError
-import os
-from io import StringIO
-import sys
-from .util import colorize
-from .errors import MLNParsingError
-import traceback
-from collections import defaultdict
-import re
 from ..utils.project import mlnpath
-
 
 logger = logs.getlogger(__name__)
 
@@ -388,8 +388,8 @@ class Database(object):
         AND all domains are empty.
         """
         return (
-            not any([x >= 0 and x <= 1 for x in list(self._evidence.values())])
-            and len(self.domains) == 0
+                not any([x >= 0 and x <= 1 for x in list(self._evidence.values())])
+                and len(self.domains) == 0
         )
 
     def query(self, formula, thr=1):
@@ -544,13 +544,13 @@ class Database(object):
             given this Pseudo-MRF.
             """
             for assignment in formula.iter_true_var_assignments(
-                self, self.evidence, truth_thr=truth_thr
+                    self, self.evidence, truth_thr=truth_thr
             ):
                 yield assignment
 
 
 def parse_db(
-    mln, content, ignore_unknown_preds=False, db=None, dirs=["."], projectpath=None
+        mln, content, ignore_unknown_preds=False, db=None, dirs=["."], projectpath=None
 ):
     """
     Reads one or more databases in a string representation and returns

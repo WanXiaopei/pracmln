@@ -22,12 +22,12 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import re
-import os
 import ntpath
-from fnmatch import fnmatch
+import os
+import re
 import tkinter.messagebox
 import tkinter.simpledialog
+from fnmatch import fnmatch
 from importlib import util as imputil
 from string import ascii_letters, digits, punctuation
 from tkinter import (
@@ -102,7 +102,7 @@ class ScrolledText2(Text):
         # methods -- hack!
         text_meths = list(vars(Text).keys())
         methods = (
-            list(vars(Pack).keys()) + list(vars(Grid).keys()) + list(vars(Place).keys())
+                list(vars(Pack).keys()) + list(vars(Grid).keys()) + list(vars(Place).keys())
         )
         methods = set(methods).difference(text_meths)
 
@@ -343,9 +343,9 @@ class SyntaxHighlightingText(ScrolledText2):
         # 0x0200     Mouse button 2.
         # 0x0400     Mouse button 3.
         if (
-            key.char != ""
-            and not (key.state & 4)
-            or key.keysym in ("BackSpace", "Delete")
+                key.char != ""
+                and not (key.state & 4)
+                or key.keysym in ("BackSpace", "Delete")
         ):
             self.onChange()
         else:
@@ -429,10 +429,10 @@ class SyntaxHighlightingText(ScrolledText2):
                         if not end_pos:
                             continue
                         if self.search(
-                            "/*", here + " + 2 chars", stopindex=end_pos
+                                "/*", here + " + 2 chars", stopindex=end_pos
                         ):  # if there's a nested comment, ignore it (it might just be a nested /* with a */)
                             continue
-                        #!!! make sure the area does not contain any "/*", because the "*/" is not the right one otherwise
+                        # !!! make sure the area does not contain any "/*", because the "*/" is not the right one otherwise
                         # print "multiline comment from %s to %s" % (here, str(end_pos))
                         self.tag_add("mlcom", here, str(end_pos) + " + 2 chars")
                 elif buffer[i: i + 2] == "*/":
@@ -444,7 +444,7 @@ class SyntaxHighlightingText(ScrolledText2):
                         if not start_pos:
                             continue
                         if self.search(
-                            "*/", here, stopindex=start_pos, backwards=True
+                                "*/", here, stopindex=start_pos, backwards=True
                         ):  # if there's a nested comment, ignore it (it might just be a nested */ without a /*)
                             continue
                         # print "multiline comment from %s to %s" % (start_pos, end_pos)
@@ -468,8 +468,8 @@ class SyntaxHighlightingText(ScrolledText2):
                                 )
                                 break
                 elif (
-                    buffer[i] in self.highlighter.close_brackets
-                    and self.index(here + " + 1 char") == cursorPos
+                        buffer[i] in self.highlighter.close_brackets
+                        and self.index(here + " + 1 char") == cursorPos
                 ):
                     idxBracketType = self.highlighter.close_brackets.index(buffer[i])
                     openb, closeb = self.highlighter.brackets[idxBracketType]
@@ -545,19 +545,19 @@ class SyntaxHighlightingText(ScrolledText2):
 
 class FileEditBar(Frame, object):
     def __init__(
-        self,
-        master,
-        directory=".",
-        filesettings=None,
-        defaultname="*unknown{}",
-        importhook=None,
-        deletehook=None,
-        projecthook=None,
-        filecontenthook=None,
-        selectfilehook=None,
-        fileslisthook=None,
-        updatehook=None,
-        onchangehook=None,
+            self,
+            master,
+            directory=".",
+            filesettings=None,
+            defaultname="*unknown{}",
+            importhook=None,
+            deletehook=None,
+            projecthook=None,
+            filecontenthook=None,
+            selectfilehook=None,
+            fileslisthook=None,
+            updatehook=None,
+            onchangehook=None,
     ):
 
         self.master = master
@@ -836,18 +836,18 @@ class FileEditBar(Frame, object):
 
 class FilePickEdit(Frame):
     def __init__(
-        self,
-        master,
-        file_mask,
-        default_file,
-        edit_height=None,
-        user_onChange=None,
-        rename_on_edit=0,
-        font=None,
-        coloring=True,
-        allowNone=False,
-        highlighter=None,
-        directory=".",
+            self,
+            master,
+            file_mask,
+            default_file,
+            edit_height=None,
+            user_onChange=None,
+            rename_on_edit=0,
+            font=None,
+            coloring=True,
+            allowNone=False,
+            highlighter=None,
+            directory=".",
     ):
         """
         file_mask: file mask (e.g. "*.foo") or list of file masks (e.g. ["*.foo", "*.abl"])
@@ -984,7 +984,7 @@ class FilePickEdit(Frame):
         filename = self.picked_name.get()
         if filename == "":
             filename = (
-                "new" + self.file_extension
+                    "new" + self.file_extension
             )  # if no file selected, create new filename
         ext = ""
         extpos = filename.rfind(".")
@@ -1125,14 +1125,14 @@ class FilePickEdit(Frame):
 
 class FilePick(Frame):
     def __init__(
-        self,
-        master,
-        file_mask,
-        default_file,
-        user_onChange=None,
-        font=None,
-        dirs=(".",),
-        allowNone=False,
+            self,
+            master,
+            file_mask,
+            default_file,
+            user_onChange=None,
+            font=None,
+            dirs=(".",),
+            allowNone=False,
     ):
         """file_mask: file mask or list of file masks"""
         self.master = master
@@ -1224,13 +1224,13 @@ class FilePick(Frame):
 
 class DropdownList:
     def __init__(
-        self,
-        master,
-        filemask="*.mln",
-        default=None,
-        allowNone=False,
-        onselchange=None,
-        directory=".",
+            self,
+            master,
+            filemask="*.mln",
+            default=None,
+            allowNone=False,
+            onselchange=None,
+            directory=".",
     ):
         self.allowNone = allowNone
         self.directory = directory

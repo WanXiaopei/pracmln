@@ -28,7 +28,6 @@ infty = float("inf")
 inherit = -2
 ALL = ""
 
-
 # this defines the formats in (bg, fg, bold)
 weight_color = (None, "magenta", False)
 comment_color = (None, "green", False)

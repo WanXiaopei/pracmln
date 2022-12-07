@@ -26,9 +26,9 @@
 from dnutils import ProgressBar
 
 from .common import *
-from ..grounding.default import DefaultGroundingFactory
 from ..constants import HARD
 from ..errors import SatisfiabilityException
+from ..grounding.default import DefaultGroundingFactory
 
 
 class LL(AbstractLearner):

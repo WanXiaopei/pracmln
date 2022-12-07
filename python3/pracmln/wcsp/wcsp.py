@@ -21,22 +21,21 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import sys
-import os
-from subprocess import Popen, PIPE
-import bisect
-import re
-from collections import defaultdict
 import _thread
+import bisect
+import os
 import platform
+import re
+import sys
+import tempfile
+from collections import defaultdict
+from functools import reduce
+from subprocess import Popen, PIPE
 
 from dnutils import logs
 
-from ..utils import locs
 from ..mln.errors import NoConstraintsError
-import tempfile
-from functools import reduce
-
+from ..utils import locs
 
 logger = logs.getlogger(__name__)
 
@@ -240,7 +239,7 @@ class WCSP(object):
             # if the constraint is fully specified by its tuples,
             # simplify it by introducing default costs
             if reduce(
-                lambda x, y: x * y, [self.domsizes[x] for x in varindices]
+                    lambda x, y: x * y, [self.domsizes[x] for x in varindices]
             ) == len(cold.tuples):
                 cost2assignments = defaultdict(list)
                 for t, c in cold.tuples.items():

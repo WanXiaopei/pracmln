@@ -36,7 +36,6 @@ from ..grounding.fastconj import FastConjunctionGrounding
 from ..util import item
 from ...logic.common import Logic
 
-
 logger = logs.getlogger(__name__)
 
 
@@ -698,7 +697,6 @@ class SampleSAT:
 
         def getFormula(self):
             return self.cc
-
 
 # class FuzzyMCSAT(Inference):
 #     """

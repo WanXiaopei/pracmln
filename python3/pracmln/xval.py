@@ -21,32 +21,30 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import time
+import logging
+import math
 import os
-import sys
-import traceback
 import shutil
-
+import sys
+import time
+import traceback
+from logging import FileHandler
+from multiprocessing import Pool
 from optparse import OptionParser
 from random import shuffle, sample
-import math
 
 from dnutils import logs, stop, out
 
-from .mln.methods import InferenceMethods
-from .utils.eval import ConfusionMatrix
-from multiprocessing import Pool
-import logging
 from . import praclog
-from logging import FileHandler
 from .mln.database import Database
-from .mlnquery import MLNQuery
-from .mlnlearn import MLNLearn
+from .mln.methods import InferenceMethods
 from .mln.mlnpreds import FuzzyPredicate
+from .mlnlearn import MLNLearn
+from .mlnquery import MLNQuery
+from .utils.eval import ConfusionMatrix
 from .utils.project import MLNProject
 
 logger = logs.getlogger(__name__)
-
 
 usage = """Usage: %prog [options] <predicate> <mlnproject> <dbfile>"""
 
@@ -128,11 +126,11 @@ class XValFold(object):
         self.confmat = ConfusionMatrix()
         # write the training and testing databases into a file
         with open(
-            os.path.join(params.directory, "train_dbs_%d.db" % params.fold_idx), "w+"
+                os.path.join(params.directory, "train_dbs_%d.db" % params.fold_idx), "w+"
         ) as dbfile:
             Database.write_dbs(params.learn_dbs, dbfile)
         with open(
-            os.path.join(params.directory, "test_dbs_%d.db" % params.fold_idx), "w+"
+                os.path.join(params.directory, "test_dbs_%d.db" % params.fold_idx), "w+"
         ) as dbfile:
             Database.write_dbs(params.test_dbs, dbfile)
 
@@ -230,7 +228,7 @@ class XValFold(object):
             # apply closed world for fuzzy atoms
             for db in learn_dbs:
                 for a, v in db.gndatoms(
-                    [p.name for p in mln.predicates if isinstance(p, FuzzyPredicate)]
+                        [p.name for p in mln.predicates if isinstance(p, FuzzyPredicate)]
                 ):
                     if v != 1:
                         db[a] = 0

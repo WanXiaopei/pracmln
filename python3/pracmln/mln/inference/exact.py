@@ -23,20 +23,20 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+from multiprocessing import Pool
+
 from dnutils import logs, ProgressBar
+from numpy.ma.core import exp
 
 from .infer import Inference
-from multiprocessing import Pool
-from ..mrfvars import FuzzyVariable
 from ..constants import auto, HARD
 from ..errors import SatisfiabilityException
 from ..grounding.fastconj import FastConjunctionGrounding
+from ..mrfvars import FuzzyVariable
 from ..util import Interval, colorize
-from ...utils.multicore import with_tracing
-from ...logic.fol import FirstOrderLogic
 from ...logic.common import Logic
-from numpy.ma.core import exp
-
+from ...logic.fol import FirstOrderLogic
+from ...utils.multicore import with_tracing
 
 logger = logs.getlogger(__name__)
 
@@ -160,7 +160,7 @@ class EnumerationAsk(Inference):
             )
             try:
                 for num, denum in pool.imap(
-                    with_tracing(eval_queries), self.mrf.worlds()
+                        with_tracing(eval_queries), self.mrf.worlds()
                 ):
                     denominator += denum
                     k += 1

@@ -8,7 +8,6 @@ __all__ = [
     "VERSION_MAJOR",
     "VERSION_MINOR",
     "VERSION_PATCH",
-    "VERSION_STRING",
     "APPNAME",
     "APPAUTHOR",
     "__version__",

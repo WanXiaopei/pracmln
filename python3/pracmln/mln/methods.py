@@ -20,14 +20,14 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from .inference.gibbs import GibbsSampler
-from .inference.mcsat import MCSAT
 from .inference.exact import EnumerationAsk
-from .inference.wcspinfer import WCSPInference
+from .inference.gibbs import GibbsSampler
 from .inference.maxwalk import SAMaxWalkSAT
+from .inference.mcsat import MCSAT
+from .inference.wcspinfer import WCSPInference
+from .learning.bpll import BPLL, DPLL, BPLL_CG, DBPLL_CG
 from .learning.cll import CLL, DCLL
 from .learning.ll import LL
-from .learning.bpll import BPLL, DPLL, BPLL_CG, DBPLL_CG
 
 
 class Enum(object):
@@ -83,7 +83,6 @@ InferenceMethods = Enum(
     )
 )
 
-
 LearningMethods = Enum(
     (
         (CLL, "composite-log-likelihood"),
@@ -120,9 +119,7 @@ LearningMethods = Enum(
     )
 )
 
-
 if __name__ == "__main__":
-
     print(InferenceMethods.id2clazz)
     print(InferenceMethods.id2name)
     print(InferenceMethods.name2id)

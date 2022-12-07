@@ -25,10 +25,13 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import argparse
-import os
-import sys
+import io
 import ntpath
+import os
+import pstats
+import sys
 import traceback
+from cProfile import Profile
 from tkinter import (
     Frame,
     BOTH,
@@ -49,23 +52,16 @@ from tkinter import (
 from tkinter.filedialog import askopenfilename, asksaveasfilename, StringVar
 
 from dnutils import logs, ifnone, out
-
 from pracmln import ALL
-from pracmln.utils.project import MLNProject, PRACMLNConfig, mlnpath
-from pracmln.mln.methods import InferenceMethods
-from pracmln.utils.widgets import FileEditBar
-from pracmln.utils import config, locs
-from pracmln.mln.util import parse_queries, headline, StopWatch
-from pracmln.utils.config import global_config_filename
 from pracmln.mln.base import parse_mln, MLN
 from pracmln.mln.database import parse_db, Database
+from pracmln.mln.methods import InferenceMethods
+from pracmln.mln.util import parse_queries, headline, StopWatch
+from pracmln.utils import config, locs
+from pracmln.utils.config import global_config_filename
+from pracmln.utils.project import MLNProject, PRACMLNConfig, mlnpath
+from pracmln.utils.widgets import FileEditBar
 from tabulate import tabulate
-from cProfile import Profile
-import pstats
-import io
-
-import logging  # import used in eval, do not remove
-
 
 logger = logs.getlogger(__name__)
 
@@ -695,7 +691,7 @@ class MLNQueryGUI(object):
 
     def noask_save_project(self):
         if self.project.name and not self.project.name == DEFAULTNAME.format(
-            ".pracmln"
+                ".pracmln"
         ):
             self.save_project(os.path.join(self.project_dir, self.project.name))
         else:
@@ -957,9 +953,9 @@ class MLNQueryGUI(object):
 
     def set_outputfilename(self):
         if (
-            not hasattr(self, "output_filename")
-            or not hasattr(self, "db_filename")
-            or not hasattr(self, "mln_filename")
+                not hasattr(self, "output_filename")
+                or not hasattr(self, "db_filename")
+                or not hasattr(self, "mln_filename")
         ):
             return
         mln = self.mln_container.selected_file.get()

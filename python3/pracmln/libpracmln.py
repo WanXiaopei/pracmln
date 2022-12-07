@@ -1,9 +1,7 @@
 import os
-
 import shutil
 
 from pracmln.utils import locs
-
 
 envSetup = '''
 export LD_LIBRARY_PATH="{0}/lib:${{LD_LIBRARY_PATH}}"
@@ -14,7 +12,6 @@ export CMAKE_INCLUDE_PATH="{0}/include:${{CMAKE_INCLUDE_PATH}}"'''
 
 
 def createcpplibs():
-
     lib_home = os.path.join(locs.app_data, "libpracmln")
 
     oldwd = os.getcwd()

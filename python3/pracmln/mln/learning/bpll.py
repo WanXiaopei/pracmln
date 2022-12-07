@@ -23,21 +23,19 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-from dnutils import logs
-from dnutils.console import barstr
 
 from collections import defaultdict
 
 import numpy
-from dnutils import logs, out
+from dnutils import logs
 from dnutils.console import barstr
 from numpy.ma.core import sqrt, log
 
+from .common import DiscriminativeLearner, AbstractLearner
 from ..constants import HARD
 from ..errors import SatisfiabilityException
 from ..grounding.bpll import BPLLGroundingFactory
 from ..grounding.default import DefaultGroundingFactory
-from .common import DiscriminativeLearner, AbstractLearner
 from ..util import fsum, temporary_evidence
 
 logger = logs.getlogger(__name__)
@@ -74,7 +72,7 @@ class BPLL(AbstractLearner):
         values = var.valuecount()
         gfs = self._varidx2fidx.get(varidx)
         if (
-            gfs is None
+                gfs is None
         ):  # no list was saved, so the truth of all formulas is unaffected by the variable's value
             # uniform distribution applies
             p = 1.0 / values

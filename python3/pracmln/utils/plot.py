@@ -85,23 +85,23 @@ class Plot(object):
             border = self.border
             tick_font_width = 0.75 * tick_font_size
             yaxis_tick_width = (
-                self.left_tick_label_chars * tick_font_width / fig_width_pt
+                    self.left_tick_label_chars * tick_font_width / fig_width_pt
             )  # tick labels
             yaxis_label_width = (
-                float(label_font_size) / fig_width_pt
+                    float(label_font_size) / fig_width_pt
             )  # axis label (font is rotated 90 degrees, so height=size applies)
             left = border + yaxis_tick_width + yaxis_label_width
             xaxis_label_height = label_font_size * 1.4 / fig_height_pt
             xaxis_tick_height = tick_font_size * 1.4 / fig_height_pt
             bottom = border + xaxis_tick_height + xaxis_label_height
             right = (
-                border
-                + self.tick_extend_into_right_border_chars
-                * tick_font_width
-                / fig_width_pt
+                    border
+                    + self.tick_extend_into_right_border_chars
+                    * tick_font_width
+                    / fig_width_pt
             )
             top = (
-                border + tick_font_size * 0.5 / fig_height_pt
+                    border + tick_font_size * 0.5 / fig_height_pt
             )  # (half a character always extends into the top border)
             # - compute actual graph dimensions (relative to total dimensions of figure)
             width = 1.0 - left - right
@@ -144,7 +144,6 @@ def showPlots():
 
 # example plots
 if __name__ == "__main__":
-
     # drawing multiple plots (non-blocking)
     plot = Plot("test", LaTeX=False)
     plot.plotFunction(lambda x: x * x, -5, 5, 50)

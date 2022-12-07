@@ -20,16 +20,15 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+import collections
 import copy
-from zipfile import ZipFile, ZIP_DEFLATED
+import json
 import os
 import sys
+from zipfile import ZipFile, ZIP_DEFLATED
+
 from dnutils import ifnone, logs
-import json
-import collections
-
 from pracmln.utils import locs
-
 
 logger = logs.getlogger(__name__)
 
@@ -363,8 +362,8 @@ class PRACMLNConfig(object):
             project.save(project.resolve_path())
         else:
             with open(
-                os.path.join(self.config_file.resolve_path(), self.config_file.file),
-                "w+",
+                    os.path.join(self.config_file.resolve_path(), self.config_file.file),
+                    "w+",
             ) as cf:
                 cf.write(json.dumps(self.config))
         self._dirty = False
@@ -522,5 +521,5 @@ if __name__ == "__main__":
     #     proj.add_db('data.db', 'foox(X)')
     #     proj.save()
     proj = MLNProject.open(os.path.join(locs.examples, "smokers", "smokers.pracmln"))
-    proj.write()
+    proj.save()
     print(proj.queryconf.config)

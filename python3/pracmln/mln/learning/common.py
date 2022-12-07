@@ -23,13 +23,13 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-from dnutils import logs, out
+import sys
+
+from dnutils import logs
+from numpy.ma.core import exp
 
 from . import optimize
-import sys
-from numpy.ma.core import exp
 from ..constants import HARD
-
 
 try:
     import numpy
@@ -106,7 +106,7 @@ class AbstractLearner(object):
         prior = 0
         if self.prior_stdev is not None:
             for w_ in w:  # we have to use the log of the prior here
-                prior -= 1.0 / (2.0 * (self.prior_stdev**2)) * w_**2
+                prior -= 1.0 / (2.0 * (self.prior_stdev ** 2)) * w_ ** 2
         # compute log likelihood
         likelihood = self._f(w)
         if self.verbose:
@@ -128,7 +128,7 @@ class AbstractLearner(object):
         # add gaussian prior
         if self.prior_stdev is not None:
             for i, weight in enumerate(w):
-                grad[i] -= 1.0 / (self.prior_stdev**2) * weight
+                grad[i] -= 1.0 / (self.prior_stdev ** 2) * weight
         return self._filter_fixweights(grad)
 
     def __call__(self, weights):
@@ -186,9 +186,9 @@ class AbstractLearner(object):
         self._w = [0] * len(self.mrf.formulas)
         for f in self.mrf.formulas:
             if (
-                self.mrf.mln.fixweights[f.idx]
-                or self.use_init_weights
-                or f.weight == HARD
+                    self.mrf.mln.fixweights[f.idx]
+                    or self.use_init_weights
+                    or f.weight == HARD
             ):
                 self._w[f.idx] = f.weight
         runs = 0

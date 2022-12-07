@@ -1,11 +1,13 @@
 import multiprocessing
-from multiprocessing import pool
-import traceback
-import sys
-import signal
 import os
-from ..mln.errors import OutOfMemoryError
+import signal
+import sys
+import traceback
+from multiprocessing import pool
+
 import psutil
+
+from ..mln.errors import OutOfMemoryError
 
 
 class CtrlCException(Exception):
@@ -97,9 +99,9 @@ class NonDaemonicPool(pool.Pool):
 
 # exmaple how to be used
 if __name__ == "__main__":
-
     def f(x):
         return x * x
+
 
     pool = multiprocessing.Pool(processes=4)  # start 4 worker processes
     print(pool.map(with_tracing(f), list(range(10))))  # prints "[0, 1, 4,..., 81]"

@@ -29,7 +29,6 @@ from pracmln.mln.mrfvars import (
     MutexVariable,
 )
 
-
 logger = logs.getlogger(__name__)
 
 
@@ -86,15 +85,15 @@ class Predicate(object):
             return
         for value in dom:
             for gndatom in self._groundatoms(
-                mln, domains, values + [value], argdoms[1:]
+                    mln, domains, values + [value], argdoms[1:]
             ):
                 yield gndatom
 
     def __eq__(self, other):
         return (
-            isinstance(other, type(self))
-            and other.name == self.name
-            and other.argdoms == self.argdoms
+                isinstance(other, type(self))
+                and other.name == self.name
+                and other.argdoms == self.argdoms
         )
 
     def __ne__(self, other):

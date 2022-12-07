@@ -21,16 +21,16 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import itertools
 import sys
+from collections import defaultdict
+from functools import reduce
 
 from dnutils import logs, ifnone
 
-from ..mln.util import fstr, dict_union, colorize
-from ..mln.errors import NoSuchDomainError, NoSuchPredicateError
 from ..mln.constants import HARD, predicate_color, inherit, auto
-from collections import defaultdict
-import itertools
-from functools import reduce
+from ..mln.errors import NoSuchDomainError, NoSuchPredicateError
+from ..mln.util import fstr, dict_union, colorize
 
 logger = logs.getlogger(__name__)
 
@@ -290,6 +290,7 @@ class Logic(object):
                 for value in self.mln.domains[domain]:
                     group.append(dict([(variable, value)]))
                 assignments.append(group)
+
             # generate the combinations of values
 
             def product(assign, result=[]):
@@ -303,9 +304,9 @@ class Logic(object):
             for assignment in product(assignments):
                 if assignment:
                     for t in self._ground_template(
-                        reduce(
-                            lambda x, y: dict_union(x, y), itertools.chain(assignment)
-                        )
+                            reduce(
+                                lambda x, y: dict_union(x, y), itertools.chain(assignment)
+                            )
                     ):
                         yield t
                 else:
@@ -379,18 +380,18 @@ class Logic(object):
             except Exception as e:
                 raise Exception("Error grounding '%s': %s" % (str(self), str(e)))
             for grounding in self._itergroundings(
-                mrf, variables, {}, simplify, domains
+                    mrf, variables, {}, simplify, domains
             ):
                 yield grounding
 
         def iter_true_var_assignments(
-            self,
-            mrf,
-            world=None,
-            truth_thr=1.0,
-            strict=False,
-            unknown=False,
-            partial=None,
+                self,
+                mrf,
+                world=None,
+                truth_thr=1.0,
+                strict=False,
+                unknown=False,
+                partial=None,
         ):
             """
             Iteratively yields the variable assignments (as a dict) for which this
@@ -418,35 +419,35 @@ class Logic(object):
             except Exception as e:
                 raise Exception("Error grounding '%s': %s" % (str(self), str(e)))
             for assignment in self._iter_true_var_assignments(
-                mrf,
-                variables,
-                partial,
-                world,
-                dict(variables),
-                truth_thr=truth_thr,
-                strict=strict,
-                unknown=unknown,
+                    mrf,
+                    variables,
+                    partial,
+                    world,
+                    dict(variables),
+                    truth_thr=truth_thr,
+                    strict=strict,
+                    unknown=unknown,
             ):
                 yield assignment
 
         def _iter_true_var_assignments(
-            self,
-            mrf,
-            variables,
-            assignment,
-            world,
-            allvars,
-            truth_thr=1.0,
-            strict=False,
-            unknown=False,
+                self,
+                mrf,
+                variables,
+                assignment,
+                world,
+                allvars,
+                truth_thr=1.0,
+                strict=False,
+                unknown=False,
         ):
             # if all variables have been grounded...
             if variables == {}:
                 gf = self.ground(mrf, assignment)
                 truth = gf(world)
                 if (
-                    ((truth >= truth_thr) if not strict else (truth > truth_thr))
-                    and truth is not None
+                        ((truth >= truth_thr) if not strict else (truth > truth_thr))
+                        and truth is not None
                 ) or (truth is None and unknown):
                     true_assignment = {}
                     for v in allvars:
@@ -465,19 +466,19 @@ class Logic(object):
                 assignment_[varname] = value
                 # recursive descent to ground further variables
                 for ass in self._iter_true_var_assignments(
-                    mrf,
-                    dict(variables),
-                    assignment_,
-                    world,
-                    allvars,
-                    truth_thr=truth_thr,
-                    strict=strict,
-                    unknown=unknown,
+                        mrf,
+                        dict(variables),
+                        assignment_,
+                        world,
+                        allvars,
+                        truth_thr=truth_thr,
+                        strict=strict,
+                        unknown=unknown,
                 ):
                     yield ass
 
         def _itergroundings(
-            self, mrf, variables, assignment, simplify=False, domains=None
+                self, mrf, variables, assignment, simplify=False, domains=None
         ):
             # if all variables have been grounded...
             if not variables:
@@ -491,7 +492,7 @@ class Logic(object):
                 assignment[varname] = value
                 # recursive descent to ground further variables
                 for gf in self._itergroundings(
-                    mrf, dict(variables), assignment, simplify, domains
+                        mrf, dict(variables), assignment, simplify, domains
                 ):
                     yield gf
 
@@ -832,7 +833,7 @@ class Logic(object):
                 else:
                     l = [c]
                 for (
-                    clause
+                        clause
                 ) in l:  # (clause is either a disjunction, a literal or a constant)
                     # if the clause is always true, it can be ignored; if it's always false, then so is the conjunction
                     if isinstance(clause, Logic.TrueFalse):
@@ -1067,7 +1068,7 @@ class Logic(object):
         @args.setter
         def args(self, args):
             if self.mln is not None and len(args) != len(
-                self.mln.predicate(self.predname).argdoms
+                    self.mln.predicate(self.predname).argdoms
             ):
                 raise Exception(
                     "Illegal argument length: %s. %s requires %d arguments: %s"
@@ -1082,29 +1083,29 @@ class Logic(object):
 
         def __str__(self):
             return (
-                {True: "!", False: "", 2: "*"}[self.negated]
-                + self.predname
-                + "("
-                + ",".join(self.args)
-                + ")"
+                    {True: "!", False: "", 2: "*"}[self.negated]
+                    + self.predname
+                    + "("
+                    + ",".join(self.args)
+                    + ")"
             )
 
         def cstr(self, color=False):
             return (
-                {True: "!", False: "", 2: "*"}[self.negated]
-                + colorize(self.predname, predicate_color, color)
-                + "("
-                + ",".join(self.args)
-                + ")"
+                    {True: "!", False: "", 2: "*"}[self.negated]
+                    + colorize(self.predname, predicate_color, color)
+                    + "("
+                    + ",".join(self.args)
+                    + ")"
             )
 
         def latex(self):
             return (
-                {True: r"\lnot ", False: "", 2: "*"}[self.negated]
-                + latexsym(self.predname)
-                + "("
-                + ",".join(map(latexsym, self.args))
-                + ")"
+                    {True: r"\lnot ", False: "", 2: "*"}[self.negated]
+                    + latexsym(self.predname)
+                    + "("
+                    + ",".join(map(latexsym, self.args))
+                    + ")"
             )
 
         def vardoms(self, variables=None, constants=None):
@@ -1121,9 +1122,9 @@ class Logic(object):
                     varname = arg
                     domain = argdoms[i]
                     if (
-                        varname in variables
-                        and variables[varname] != domain
-                        and variables[varname] is not None
+                            varname in variables
+                            and variables[varname] != domain
+                            and variables[varname] is not None
                     ):
                         raise Exception(
                             "Variable '%s' bound to more than one domain: %s"
@@ -1286,7 +1287,7 @@ class Logic(object):
             predname is a list of predicate names, of which each is tested if it is None
             """
             if self.mln is not None and any(
-                self.mln.predicate(p) is None for p in prednames
+                    self.mln.predicate(p) is None for p in prednames
             ):
                 erroneouspreds = [p for p in prednames if self.mln.predicate(p) is None]
                 raise NoSuchPredicateError(
@@ -1313,7 +1314,7 @@ class Logic(object):
             # arbitrary predicate
             predname = self.predname[0]
             if self.mln is not None and len(args) != len(
-                self.mln.predicate(predname).argdoms
+                    self.mln.predicate(predname).argdoms
             ):
                 raise Exception(
                     "Illegal argument length: %s. %s requires %d arguments: %s"
@@ -1328,29 +1329,29 @@ class Logic(object):
 
         def __str__(self):
             return (
-                {True: "!", False: "", 2: "*"}[self.negated]
-                + "|".join(self.predname)
-                + "("
-                + ",".join(self.args)
-                + ")"
+                    {True: "!", False: "", 2: "*"}[self.negated]
+                    + "|".join(self.predname)
+                    + "("
+                    + ",".join(self.args)
+                    + ")"
             )
 
         def cstr(self, color=False):
             return (
-                {True: "!", False: "", 2: "*"}[self.negated]
-                + colorize("|".join(self.predname), predicate_color, color)
-                + "("
-                + ",".join(self.args)
-                + ")"
+                    {True: "!", False: "", 2: "*"}[self.negated]
+                    + colorize("|".join(self.predname), predicate_color, color)
+                    + "("
+                    + ",".join(self.args)
+                    + ")"
             )
 
         def latex(self):
             return (
-                {True: r"\lnot ", False: "", 2: "*"}[self.negated]
-                + latexsym("|".join(self.predname))
-                + "("
-                + ",".join(map(latexsym, self.args))
-                + ")"
+                    {True: r"\lnot ", False: "", 2: "*"}[self.negated]
+                    + latexsym("|".join(self.predname))
+                    + "("
+                    + ",".join(map(latexsym, self.args))
+                    + ")"
             )
 
         def vardoms(self, variables=None, constants=None):
@@ -1367,9 +1368,9 @@ class Logic(object):
                     varname = arg
                     domain = argdoms[i]
                     if (
-                        varname in variables
-                        and variables[varname] != domain
-                        and variables[varname] is not None
+                            varname in variables
+                            and variables[varname] != domain
+                            and variables[varname] is not None
                     ):
                         raise Exception(
                             "Variable '%s' bound to more than one domain" % varname
@@ -1407,12 +1408,12 @@ class Logic(object):
             # args = map(lambda x: assignment.get(x, x), self.args)
             if self.negated == 2:  # template
                 return [
-                    self.mln.logic.lit(False, predname, self.args, mln=self.mln)
-                    for predname in self.predname
-                ] + [
-                    self.mln.logic.lit(True, predname, self.args, mln=self.mln)
-                    for predname in self.predname
-                ]
+                           self.mln.logic.lit(False, predname, self.args, mln=self.mln)
+                           for predname in self.predname
+                       ] + [
+                           self.mln.logic.lit(True, predname, self.args, mln=self.mln)
+                           for predname in self.predname
+                       ]
             else:
                 return [
                     self.mln.logic.lit(self.negated, predname, self.args, mln=self.mln)
@@ -1873,17 +1874,17 @@ class Logic(object):
             c1 = self.children[0]
             c2 = self.children[1]
             return (
-                (
-                    str(c1)
-                    if not isinstance(c1, Logic.ComplexFormula)
-                    else "(%s)" % str(c1)
-                )
-                + " => "
-                + (
-                    str(c2)
-                    if not isinstance(c2, Logic.ComplexFormula)
-                    else "(%s)" % str(c2)
-                )
+                    (
+                        str(c1)
+                        if not isinstance(c1, Logic.ComplexFormula)
+                        else "(%s)" % str(c1)
+                    )
+                    + " => "
+                    + (
+                        str(c2)
+                        if not isinstance(c2, Logic.ComplexFormula)
+                        else "(%s)" % str(c2)
+                    )
             )
 
         def cstr(self, color=False):
@@ -1898,7 +1899,7 @@ class Logic(object):
 
         def latex(self):
             return (
-                self.children[0].latex() + r" \rightarrow " + self.children[1].latex()
+                    self.children[0].latex() + r" \rightarrow " + self.children[1].latex()
             )
 
         def cnf(self, level=0):
@@ -1960,13 +1961,13 @@ class Logic(object):
             c1 = self.children[0]
             c2 = self.children[1]
             return (
-                (
-                    str(c1)
-                    if not isinstance(c1, Logic.ComplexFormula)
-                    else "(%s)" % str(c1)
-                )
-                + " <=> "
-                + (str(c2) if not isinstance(c2, Logic.ComplexFormula) else str(c2))
+                    (
+                        str(c1)
+                        if not isinstance(c1, Logic.ComplexFormula)
+                        else "(%s)" % str(c1)
+                    )
+                    + " <=> "
+                    + (str(c2) if not isinstance(c2, Logic.ComplexFormula) else str(c2))
             )
 
         def cstr(self, color=False):
@@ -2063,13 +2064,13 @@ class Logic(object):
 
         def __str__(self):
             return (
-                "!(%s)" if isinstance(self.children[0], Logic.ComplexFormula) else "!%s"
-            ) % str(self.children[0])
+                       "!(%s)" if isinstance(self.children[0], Logic.ComplexFormula) else "!%s"
+                   ) % str(self.children[0])
 
         def cstr(self, color=False):
             return (
-                "!(%s)" if isinstance(self.children[0], Logic.ComplexFormula) else "!%s"
-            ) % self.children[0].cstr(color)
+                       "!(%s)" if isinstance(self.children[0], Logic.ComplexFormula) else "!%s"
+                   ) % self.children[0].cstr(color)
 
         def latex(self):
             return r"\lnot (%s)" % self.children[0].latex()
@@ -2262,11 +2263,11 @@ class Logic(object):
 
         def cstr(self, color=False):
             return (
-                colorize("EXIST ", predicate_color, color)
-                + ", ".join(self.vars)
-                + " ("
-                + self.formula.cstr(color)
-                + ")"
+                    colorize("EXIST ", predicate_color, color)
+                    + ", ".join(self.vars)
+                    + " ("
+                    + self.formula.cstr(color)
+                    + ")"
             )
 
         def latex(self):
@@ -2463,7 +2464,7 @@ class Logic(object):
                 gndAtoms = []
                 # generate a count constraint with all the atoms we obtain by grounding the other params
                 for full_assignment in self._iterAssignment(
-                    mrf, list(other_params), assignment
+                        mrf, list(other_params), assignment
                 ):
                     gndLit = self.literal.ground(mrf, full_assignment, None)
                     gndAtoms.append(gndLit.gndAtom)
@@ -2598,9 +2599,9 @@ class Logic(object):
         Determines whether or not a formula is a literal.
         """
         return (
-            isinstance(f, Logic.GroundLit)
-            or isinstance(f, Logic.Lit)
-            or isinstance(f, Logic.GroundAtom)
+                isinstance(f, Logic.GroundLit)
+                or isinstance(f, Logic.Lit)
+                or isinstance(f, Logic.GroundAtom)
         )
 
     def iseq(self, f):
@@ -2617,19 +2618,19 @@ class Logic(object):
             return True
         if not isinstance(f, Logic.Conjunction):
             if (
-                not isinstance(f, Logic.Lit)
-                and not isinstance(f, Logic.GroundLit)
-                and not isinstance(f, Logic.Equality)
-                and not isinstance(f, Logic.TrueFalse)
+                    not isinstance(f, Logic.Lit)
+                    and not isinstance(f, Logic.GroundLit)
+                    and not isinstance(f, Logic.Equality)
+                    and not isinstance(f, Logic.TrueFalse)
             ):
                 return False
             return True
         for child in f.children:
             if (
-                not isinstance(child, Logic.Lit)
-                and not isinstance(child, Logic.GroundLit)
-                and not isinstance(child, Logic.Equality)
-                and not isinstance(child, Logic.TrueFalse)
+                    not isinstance(child, Logic.Lit)
+                    and not isinstance(child, Logic.GroundLit)
+                    and not isinstance(child, Logic.Equality)
+                    and not isinstance(child, Logic.TrueFalse)
             ):
                 return False
         return True
@@ -2642,19 +2643,19 @@ class Logic(object):
             return True
         if not isinstance(f, Logic.Disjunction):
             if (
-                not isinstance(f, Logic.Lit)
-                and not isinstance(f, Logic.GroundLit)
-                and not isinstance(f, Logic.Equality)
-                and not isinstance(f, Logic.TrueFalse)
+                    not isinstance(f, Logic.Lit)
+                    and not isinstance(f, Logic.GroundLit)
+                    and not isinstance(f, Logic.Equality)
+                    and not isinstance(f, Logic.TrueFalse)
             ):
                 return False
             return True
         for child in f.children:
             if (
-                not isinstance(child, Logic.Lit)
-                and not isinstance(child, Logic.GroundLit)
-                and not isinstance(child, Logic.Equality)
-                and not isinstance(child, Logic.TrueFalse)
+                    not isinstance(child, Logic.Lit)
+                    and not isinstance(child, Logic.GroundLit)
+                    and not isinstance(child, Logic.Equality)
+                    and not isinstance(child, Logic.TrueFalse)
             ):
                 return False
         return True
@@ -2739,7 +2740,7 @@ class Logic(object):
         domain = mrf.domains[domName]
         for value in domain:
             for assignment in Logic._iter_eq_varassignments(
-                mrf, variables, dict_union(assignment, {variable: value})
+                    mrf, variables, dict_union(assignment, {variable: value})
             ):
                 yield assignment
 
@@ -2792,7 +2793,7 @@ class Logic(object):
         for gf in gfs:
             # non-logical constraint
             if (
-                not gf.islogical()
+                    not gf.islogical()
             ):  # don't apply any transformations to non-logical constraints
                 if gf.idx in negated:
                     gf.negate()
@@ -2804,7 +2805,7 @@ class Logic(object):
             else:
                 cnf = gf.cnf()
             if isinstance(
-                cnf, Logic.TrueFalse
+                    cnf, Logic.TrueFalse
             ):  # formulas that are always true or false can be ignored
                 continue
             cnf.idx = gf.idx

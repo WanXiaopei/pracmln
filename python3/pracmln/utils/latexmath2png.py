@@ -2,13 +2,12 @@
 # Until Python 2.6
 
 import base64
-from PIL import Image
-import tempfile
 import os
+import tempfile
+
+from PIL import Image
 from dnutils import logs
-
 from pracmln.utils import locs
-
 
 """
 Converts LaTeX math to png images.
@@ -51,7 +50,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
 """
-
 
 logger = logs.getlogger(__name__, logs.DEBUG)
 
@@ -107,13 +105,13 @@ def __write_output(infile, outdir, workdir=".", filename="", size=1, svg=True):
 
 
 def math2png(
-    content,
-    outdir,
-    packages=default_packages,
-    declarations=[],
-    filename="",
-    size=1,
-    svg=True,
+        content,
+        outdir,
+        packages=default_packages,
+        declarations=[],
+        filename="",
+        size=1,
+        svg=True,
 ):
     """
     Generate png images from $$...$$ style math environment equations.

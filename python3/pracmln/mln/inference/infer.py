@@ -21,18 +21,19 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+import sys
+from functools import reduce
+
 from dnutils import logs
 from dnutils.console import barstr
 
-from ...logic.common import Logic
-from ..database import Database
 from ..constants import ALL
-from ..mrfvars import MutexVariable, SoftMutexVariable, FuzzyVariable
-from ..util import StopWatch, elapsed_time_str, headline, tty, edict
-import sys
+from ..database import Database
 from ..errors import NoSuchPredicateError
 from ..mlnpreds import SoftFunctionalPredicate, FunctionalPredicate
-from functools import reduce
+from ..mrfvars import MutexVariable, SoftMutexVariable, FuzzyVariable
+from ..util import StopWatch, elapsed_time_str, headline, tty, edict
+from ...logic.common import Logic
 
 logger = logs.getlogger(__name__)
 
@@ -73,7 +74,7 @@ class Inference(object):
         # fill in the missing truth values of variables that have only one remaining value
         for variable in self.mrf.variables:
             if (
-                variable.valuecount(self.mrf.evidence_dicti()) == 1
+                    variable.valuecount(self.mrf.evidence_dicti()) == 1
             ):  # the var is fully determined by the evidence
                 for _, value in variable.itervalues(self.mrf.evidence):
                     break
@@ -104,14 +105,14 @@ class Inference(object):
                 qpreds.update(q.prednames())
             for gndatom in self.mrf.gndatoms:
                 if isinstance(
-                    self.mln.predicate(gndatom.predname), FunctionalPredicate
+                        self.mln.predicate(gndatom.predname), FunctionalPredicate
                 ) or isinstance(
                     self.mln.predicate(gndatom.predname), SoftFunctionalPredicate
                 ):
                     continue
                 if (
-                    gndatom.predname not in qpreds
-                    and self.mrf.evidence[gndatom.idx] is None
+                        gndatom.predname not in qpreds
+                        and self.mrf.evidence[gndatom.idx] is None
                 ):
                     self.mrf.evidence[gndatom.idx] = 0
         for var in self.mrf.variables:
@@ -180,7 +181,7 @@ class Inference(object):
                         )
                         continue
                     for gndatom in self.mln.predicate(query).groundatoms(
-                        self.mln, self.mrf.domains
+                            self.mln, self.mrf.domains
                     ):
                         equeries.append(
                             self.mln.logic.gnd_lit(
@@ -216,7 +217,7 @@ class Inference(object):
         return self
 
     def write(
-        self, stream=sys.stdout, color=None, sort="prob", group=True, reverse=True
+            self, stream=sys.stdout, color=None, sort="prob", group=True, reverse=True
     ):
         barwidth = 30
         if tty(stream) and color is None:
@@ -282,7 +283,7 @@ class Inference(object):
         print()
         self._watch.finish()
         for t in sorted(
-            list(self._watch.tags.values()), key=lambda t: t.elapsedtime, reverse=True
+                list(self._watch.tags.values()), key=lambda t: t.elapsedtime, reverse=True
         ):
             stream.write(
                 "%s %s %s\n"

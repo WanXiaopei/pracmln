@@ -25,12 +25,10 @@ from dnutils import logs
 
 logger = logs.getlogger(__name__)
 
-
 fixed_width_font = ("Monospace", -12)
 learn_config_pattern = "%s.learn.conf"
 query_config_pattern = "%s.query.conf"
 global_config_filename = ".pracmln.conf"
-
 
 # --- settings for the parameter learning tool ---
 

@@ -20,7 +20,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from .multidb import MultipleDatabaseLearner
-from .ll import *
 from .bpll import *
 from .cll import *
+from .ll import *
+from .multidb import MultipleDatabaseLearner

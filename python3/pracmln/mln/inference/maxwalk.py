@@ -65,7 +65,7 @@ class SAMaxWalkSAT(MCMCInference):
             for v in vars_:
                 self.var2gf[v].add(gf)
             self.sum += (self.hardw if gf.weight == HARD else gf.weight) * (
-                1 - gf(self.state)
+                    1 - gf(self.state)
             )
 
     @property
@@ -97,7 +97,7 @@ class SAMaxWalkSAT(MCMCInference):
             sum_before = 0
             for gf in self.var2gf[var.idx]:
                 sum_before += (self.hardw if gf.weight == HARD else gf.weight) * (
-                    1 - gf(self.state)
+                        1 - gf(self.state)
                 )
             # modify the state
             validx = random.randint(0, valuecount - 1)
@@ -108,7 +108,7 @@ class SAMaxWalkSAT(MCMCInference):
             sum_after = 0
             for gf in self.var2gf[var.idx]:
                 sum_after += (self.hardw if gf.weight == HARD else gf.weight) * (
-                    1 - gf(self.state)
+                        1 - gf(self.state)
                 )
             # determine whether to keep the new state
             keep = False
@@ -118,7 +118,7 @@ class SAMaxWalkSAT(MCMCInference):
                 keep = True
             else:
                 prob = (1.0 - min(1.0, abs(improvement / self.sum))) * (
-                    1 - (float(i) / i_max)
+                        1 - (float(i) / i_max)
                 )
                 keep = random.uniform(0.0, 1.0) <= prob
             #                 keep = False # !!! no annealing

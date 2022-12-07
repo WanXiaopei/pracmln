@@ -23,36 +23,35 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-import pyparsing
-from dnutils import logs, ifnone, out
-
-from ..logic import FirstOrderLogic, FuzzyLogic
-
-import platform
-from .mrf import MRF
-from .errors import MLNParsingError
-from pyparsing import ParseException
-from .constants import HARD, comment_color, predicate_color, weight_color
 import copy
 import os
-from .util import StopWatch, mergedom, fstr, colorize, stripComments
+import platform
+import re
+import sys
+import traceback
+from importlib import util as imputil
+
+import pyparsing
+from dnutils import logs, ifnone
+from pyparsing import ParseException
+
+from .constants import HARD, comment_color, predicate_color, weight_color
+from .database import Database
+from .errors import MLNParsingError
+from .learning.bpll import BPLL
+from .learning.multidb import MultipleDatabaseLearner
 from .mlnpreds import (
     Predicate,
     FuzzyPredicate,
     SoftFunctionalPredicate,
     FunctionalPredicate,
 )
-from .database import Database
-from .learning.multidb import MultipleDatabaseLearner
-import sys
-import re
-import traceback
-from .learning.bpll import BPLL
+from .mrf import MRF
+from .util import StopWatch, mergedom, fstr, colorize, stripComments
+from ..logic import FirstOrderLogic, FuzzyLogic
 from ..utils.project import mlnpath
-from importlib import util as imputil
 
 logger = logs.getlogger(__name__)
-
 
 if platform.architecture()[0] == "32bit":
     if imputil.find_spec("psyco") is not None:
@@ -127,7 +126,7 @@ class MLN(object):
             wts = map(
                 lambda w: float("%-10.6f" % float(eval(str(w))))
                 if type(w) in (float, int)
-                and w not in (HARD, float("inf"), -float("inf"))
+                   and w not in (HARD, float("inf"), -float("inf"))
                 else w,
                 wts,
             )
@@ -541,8 +540,8 @@ class MLN(object):
         stream.write(colorize("\n// predicate declarations\n", comment_color, color))
         for predicate in self.iterpreds():
             if (
-                isinstance(predicate, FuzzyPredicate)
-                or predicate.name in self.fuzzypreds
+                    isinstance(predicate, FuzzyPredicate)
+                    or predicate.name in self.fuzzypreds
             ):
                 stream.write("#fuzzy\n")
             stream.write(
@@ -623,12 +622,12 @@ class MLN(object):
 
 
 def parse_mln(
-    text,
-    searchpaths=["."],
-    projectpath=None,
-    logic="FirstOrderLogic",
-    grammar="PRACGrammar",
-    mln=None,
+        text,
+        searchpaths=["."],
+        projectpath=None,
+        logic="FirstOrderLogic",
+        grammar="PRACGrammar",
+        mln=None,
 ):
     """
     Reads an MLN from a stream providing a 'read' method.
@@ -742,7 +741,7 @@ def parse_mln(
                     raise MLNParsingError('Malformed #unique expression: "%s"' % line)
                 continue
             elif line.startswith(
-                "#AdaptiveMLNDependency"
+                    "#AdaptiveMLNDependency"
             ):  # declared as "#AdaptiveMLNDependency:pred:domain"; seems to be deprecated
                 depPredicate, domain = line.split(":")[1:3]
                 if hasattr(mln, "AdaptiveDependencyMap"):

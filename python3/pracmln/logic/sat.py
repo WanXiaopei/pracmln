@@ -112,7 +112,6 @@ def DPLL(clauses):
 
 
 if __name__ == "__main__":
-
     # this is the unicorn example from the AI class
     c1 = set(["!M", "U"])
     c2 = set(["M", "!U"])

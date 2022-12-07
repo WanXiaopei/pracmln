@@ -25,13 +25,11 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import random
 
-
 from dnutils import logs
 
 from .infer import Inference
-from ..util import fstr
 from ..constants import ALL
-
+from ..util import fstr
 
 logger = logs.getlogger(__name__)
 
@@ -149,7 +147,6 @@ class MCMCInference(Inference):
             for c in self.chains:
                 t += formula(c.state)
             return t / len(self.chains)
-
 
 #         def write(self, short=False):
 #             if len(self.chains) > 1:

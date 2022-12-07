@@ -22,7 +22,8 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import pickle
-from subprocess import Popen, PIPE
+from subprocess import Popen
+
 from ..mln.util import logx
 
 
@@ -82,8 +83,8 @@ class ConfusionMatrix(object):
         Returns the matrix entry for the prediction pred and ground truth clazz.
         """
         if (
-            self.matrix.get(pred, None) is None
-            or self.matrix[pred].get(clazz, None) is None
+                self.matrix.get(pred, None) is None
+                or self.matrix[pred].get(clazz, None) is None
         ):
             return 0
         return self.matrix[pred][clazz]
@@ -197,11 +198,11 @@ class ConfusionMatrix(object):
                     )
                 )
             result += (
-                clazz.replace("_", r"\_")
-                + " & "
-                + " & ".join(values)
-                + r"\\ \hline"
-                + endl
+                    clazz.replace("_", r"\_")
+                    + " & "
+                    + " & ".join(values)
+                    + r"\\ \hline"
+                    + endl
             )
 
         result += r"\end{tabular}" + endl
@@ -304,11 +305,11 @@ class ConfusionMatrix(object):
 
         def createTableRow(args):
             return (
-                sep
-                + sep.join(
-                    [str(a).rjust(cellwidth - padding) + " " * padding for a in args]
-                )
-                + sep
+                    sep
+                    + sep.join(
+                [str(a).rjust(cellwidth - padding) + " " * padding for a in args]
+            )
+                    + sep
             )
 
         endl = "\n"
@@ -318,11 +319,11 @@ class ConfusionMatrix(object):
         table += hline + endl
         for i, clazz in enumerate(sorted(self.labels)):
             table += (
-                createTableRow(
-                    [clazz]
-                    + [self.getMatrixEntry(clazz, x) for x in sorted(self.labels)]
-                )
-                + endl
+                    createTableRow(
+                        [clazz]
+                        + [self.getMatrixEntry(clazz, x) for x in sorted(self.labels)]
+                    )
+                    + endl
             )
             if i < len(list(self.matrix.keys())) - 1:
                 table += hline + endl

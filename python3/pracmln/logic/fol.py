@@ -56,8 +56,8 @@ class FirstOrderLogic(Logic):
                 return (
                     se
                     if (
-                        True == worldValues[gndAtom.idx]
-                        or None is worldValues[gndAtom.idx]
+                            True == worldValues[gndAtom.idx]
+                            or None is worldValues[gndAtom.idx]
                     )
                     else 1.0 - se
                 )  # TODO allSoft currently unsupported

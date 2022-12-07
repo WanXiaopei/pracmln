@@ -20,18 +20,18 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-from dnutils import logs
-
-from .common import AbstractLearner, DiscriminativeLearner
 import random
 from collections import defaultdict
-from ..util import fsum, dict_union, temporary_evidence
-from numpy.ma.core import log, sqrt
+
 import numpy
-from ...logic.common import Logic
+from dnutils import logs
+from numpy.ma.core import log, sqrt
+
+from .common import AbstractLearner, DiscriminativeLearner
 from ..constants import HARD
 from ..errors import SatisfiabilityException
-
+from ..util import fsum, dict_union, temporary_evidence
+from ...logic.common import Logic
 
 logger = logs.getlogger(__name__)
 
@@ -120,14 +120,14 @@ class CLL(AbstractLearner):
             self._compute_stat_rec(literals, [], {}, formula, isconj=isconj)
 
     def _compute_stat_rec(
-        self,
-        literals,
-        gndliterals,
-        var_assign,
-        formula,
-        f_gndlit_parts=None,
-        processed=None,
-        isconj=False,
+            self,
+            literals,
+            gndliterals,
+            var_assign,
+            formula,
+            f_gndlit_parts=None,
+            processed=None,
+            isconj=False,
     ):
         """
         TODO: make sure that there are no equality constraints in the conjunction!
@@ -141,9 +141,9 @@ class CLL(AbstractLearner):
             part_with_f_lit = None
             for gndlit in gndliterals:
                 if (
-                    isinstance(gndlit, Logic.Equality)
-                    or hasattr(self, "qpreds")
-                    and gndlit.gndatom.predname not in self.qpreds
+                        isinstance(gndlit, Logic.Equality)
+                        or hasattr(self, "qpreds")
+                        and gndlit.gndatom.predname not in self.qpreds
                 ):
                     continue
                 part = self.atomidx2partition[gndlit.gndatom.idx]
@@ -159,7 +159,7 @@ class CLL(AbstractLearner):
                 gndlits = part2gndlits[part_with_f_lit]
                 part2gndlits = {part_with_f_lit: gndlits}
             if (
-                not isconj
+                    not isconj
             ):  # if we don't have a conjunction, ground the formula with the given variable assignment
                 # print 'formula', formula
                 gndformula = formula.ground(self.mrf, var_assign)
@@ -198,9 +198,9 @@ class CLL(AbstractLearner):
         # ground the literal with the existing assignments
         gndlit = lit.ground(self.mrf, var_assign, partial=True)
         for assign in (
-            Logic.iter_eq_varassignments(gndlit, formula, self.mrf)
-            if isinstance(gndlit, Logic.Equality)
-            else gndlit.itervargroundings(self.mrf)
+                Logic.iter_eq_varassignments(gndlit, formula, self.mrf)
+                if isinstance(gndlit, Logic.Equality)
+                else gndlit.itervargroundings(self.mrf)
         ):
             # copy the arguments to avoid side effects
             # if f_gndlit_parts is None: f_gndlit_parts = set()
@@ -248,7 +248,7 @@ class CLL(AbstractLearner):
             # partition, we can stop the grounding process here. The gnd conjunction
             # will never ever be rendered true by any of this partitions values (criterion no. 5)
             isevidence = (
-                hasattr(self, "qpreds") and gndlit_.gndatom.predname not in self.qpreds
+                    hasattr(self, "qpreds") and gndlit_.gndatom.predname not in self.qpreds
             )
             # assert isEvidence == False
             if isconj and truth == 0:
@@ -442,7 +442,7 @@ class CLL(AbstractLearner):
             var = variables[0]
             for _, val in var.itervalues(evidence):
                 for world in self._itervalues(
-                    variables[1:], assignment + [val], evidence
+                        variables[1:], assignment + [val], evidence
                 ):
                     yield world
 

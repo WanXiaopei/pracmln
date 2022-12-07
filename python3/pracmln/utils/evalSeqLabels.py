@@ -7,7 +7,7 @@ from sys import argv, exit
 
 def lagDist(x):
     # return float(x)/10
-    return float(x**2) / 25**2
+    return float(x ** 2) / 25 ** 2
 
 
 def editDistance(s, t):
@@ -87,11 +87,11 @@ def evalLabels(groundTruthFile, resultsFile, verbose=True):
             while l < len(labels2) and labels2[l] == l2:
                 l += 1  # next segment start in classification
             if (
-                j >= 0
-                and k < len(labels1)
-                and labels2[j] == l1
-                and labels1[k] == l2
-                and l > k
+                    j >= 0
+                    and k < len(labels1)
+                    and labels2[j] == l1
+                    and labels1[k] == l2
+                    and l > k
             ):
                 lag = i - j
                 d2 = lagDist(lag)

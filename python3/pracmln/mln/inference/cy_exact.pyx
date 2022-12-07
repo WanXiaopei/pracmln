@@ -23,20 +23,20 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+from multiprocessing import Pool
+
 from dnutils import logs, ProgressBar
+from numpy.ma.core import exp
 
 from .infer import Inference
-from multiprocessing import Pool
-from ..mrfvars import FuzzyVariable
 from ..constants import auto, HARD
 from ..errors import SatisfiabilityException
 from ..grounding.fastconj import FastConjunctionGrounding
+from ..mrfvars import FuzzyVariable
 from ..util import Interval, colorize
-from ...utils.multicore import with_tracing
-from ...logic.fol import FirstOrderLogic
 from ...logic.common import Logic
-from numpy.ma.core import exp
-
+from ...logic.fol import FirstOrderLogic
+from ...utils.multicore import with_tracing
 
 logger = logs.getlogger(__name__)
 
@@ -44,8 +44,7 @@ logger = logs.getlogger(__name__)
 # on linux systems
 global_enumAsk = None
 
-
-cdef eval_queries(float* world):
+cdef eval_queries(float * world):
     '''
     Evaluates the queries given a possible world.
     '''
@@ -82,14 +81,14 @@ class EnumerationAsk(Inference):
 
     def __init__(self, mrf, queries, **params):
         Inference.__init__(self, mrf, queries, **params)
-        self.grounder = FastConjunctionGrounding(mrf, simplify=False, unsatfailure=False, formulas=mrf.formulas, cache=auto, verbose=False, multicore=False)
+        self.grounder = FastConjunctionGrounding(mrf, simplify=False, unsatfailure=False, formulas=mrf.formulas,
+                                                 cache=auto, verbose=False, multicore=False)
         # self.grounder = DefaultGroundingFactory(mrf, simplify=False,
         # unsatfailure=False, formulas=list(mrf.formulas), cache=auto,
         # verbose=False)
         # check consistency of fuzzy and functional variables
         for variable in self.mrf.variables:
             variable.consistent(self.mrf.evidence, strict=isinstance(variable, FuzzyVariable))
-
 
     def _run(self):
         """
@@ -103,12 +102,15 @@ class EnumerationAsk(Inference):
         """
         # check consistency with hard constraints:
         self._watch.tag('check hard constraints', verbose=self.verbose)
-        hcgrounder = FastConjunctionGrounding(self.mrf, simplify=False, unsatfailure=True, 
-                                              formulas=[f for f in self.mrf.formulas if f.weight == HARD], 
+        hcgrounder = FastConjunctionGrounding(self.mrf, simplify=False, unsatfailure=True,
+                                              formulas=[f for f in self.mrf.formulas if f.weight == HARD],
                                               **(self._params + {'multicore': False, 'verbose': False}))
         for gf in hcgrounder.itergroundings():
             if isinstance(gf, Logic.TrueFalse) and gf.truth() == .0:
-                raise SatisfiabilityException('MLN is unsatisfiable due to hard constraint violation by evidence: {} ({})'.format(str(gf), str(self.mln.formula(gf.idx))))
+                raise SatisfiabilityException(
+                    'MLN is unsatisfiable due to hard constraint violation by evidence: {} ({})'.format(str(gf),
+                                                                                                        str(self.mln.formula(
+                                                                                                            gf.idx))))
         self._watch.finish('check hard constraints')
         # compute number of possible worlds
         worlds = 1

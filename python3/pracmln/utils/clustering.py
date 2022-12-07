@@ -22,15 +22,16 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.'''
 
-from dnutils import getlogger
-from pracmln import MLN, Database
-
-from pracmln.mln.util import mergedom
-from evalSeqLabels import editDistance
 import math
-import numpy
 from collections import defaultdict
 from itertools import combinations
+
+import numpy
+from dnutils import getlogger
+from pracmln import MLN, Database
+from pracmln.mln.util import mergedom
+
+from evalSeqLabels import editDistance
 
 
 class Cluster(object):
@@ -85,9 +86,10 @@ class Cluster(object):
         if distance == "auto" and self.type == "str":
             dist = editDistance
         elif distance == "auto" and self.type == "number":
-            def dist(x, y): return math.sqrt(
-                sum(map(lambda x_1, x_2: (x_1 - x_2) ** 2, list(zip(x, y))))
-            )
+            def dist(x, y):
+                return math.sqrt(
+                    sum(map(lambda x_1, x_2: (x_1 - x_2) ** 2, list(zip(x, y))))
+                )
         elif type(distance) is callable:
             dist = distance
         else:
@@ -269,9 +271,9 @@ class CorrelationClustering:
                 create_new = True
                 for c in c1:
                     if (
-                        self.avgcorr(d2, c) is None
-                        or self.avgcorr(d2, c) * corr > 0
-                        and abs(self.avgcorr(d2, c) - corr) <= thr2
+                            self.avgcorr(d2, c) is None
+                            or self.avgcorr(d2, c) * corr > 0
+                            and abs(self.avgcorr(d2, c) - corr) <= thr2
                     ):
                         self.add_to_cluster(d2, c)
                         create_new = False
@@ -281,9 +283,9 @@ class CorrelationClustering:
                 create_new = True
                 for c in c2:
                     if (
-                        self.avgcorr(d1, c) is None
-                        or self.avgcorr(d1, c) * corr > 0
-                        and abs(self.avgcorr(d1, c) - corr) <= thr2
+                            self.avgcorr(d1, c) is None
+                            or self.avgcorr(d1, c) * corr > 0
+                            and abs(self.avgcorr(d1, c) - corr) <= thr2
                     ):
                         self.add_to_cluster(d1, c)
                         create_new = False
@@ -303,10 +305,10 @@ class CorrelationClustering:
                     print("  %s ~ %s = %s" % (d2, self.strcluster(c1_), corr1))
                     print("  %s ~ %s = %s" % (d1, self.strcluster(c2_), corr2))
                     if (
-                        corr1 is None
-                        or corr2 is None
-                        or abs(corr - corr1) <= thr2
-                        and abs(corr - corr2) < thr2
+                            corr1 is None
+                            or corr2 is None
+                            or abs(corr - corr1) <= thr2
+                            and abs(corr - corr2) < thr2
                     ):
                         print(
                             "merging (%s) (%s) and (%s) (%s)"
@@ -449,7 +451,7 @@ class NoisyStringClustering(object):
                     truth = newdb.evidence[ev]
                     _, pred, params = db.mln.logic.parse_literal(ev)
                     if (
-                        domain in self.mln.predicate(pred).argdoms
+                            domain in self.mln.predicate(pred).argdoms
                     ):  # domain is affected by the mapping
                         newdb.retract(ev)
                         newargs = [
@@ -491,9 +493,9 @@ if __name__ == "__main__":
         [
             val
             for db in Database.load(
-                mln,
-                "/home/nyga/code/pracmln/examples/object-recognition/object-recognition.pracmln:scenes-new.db",
-            )
+            mln,
+            "/home/nyga/code/pracmln/examples/object-recognition/object-recognition.pracmln:scenes-new.db",
+        )
             for val in db.domains["text"]
         ]
     )
