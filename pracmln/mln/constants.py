@@ -24,7 +24,7 @@
 HARD = float("inf")
 nan = float("NaN")
 auto = -1
-infty = float("inf")
+infinity = float("inf")
 inherit = -2
 ALL = ""
 

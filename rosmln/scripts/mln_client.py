@@ -13,8 +13,8 @@ def mln_interface_client(query, config=None):
         mln_interface = rospy.ServiceProxy('mln_interface', MLNInterface)
         resp1 = mln_interface(query, config)
         return resp1.response
-    except rospy.ServiceException, e:
-        print('Service call failed: %s'%e)
+    except rospy.ServiceException as e:
+        print('Service call failed: %s' % e)
 
 
 def print_results(results):
@@ -30,15 +30,13 @@ if __name__ == '__main__':
     queries = 'Smokes'
     output_filename = 'results.txt'
     query = MLNQuery(queries, None)
-    config = MLNConfig(mlnFiles, db, 'GibbsSampler', output_filename, True,  'FirstOrderLogic', 'PRACGrammar')
+    config = MLNConfig(mlnFiles, db, 'GibbsSampler', output_filename, True, 'FirstOrderLogic', 'PRACGrammar')
     print_results(mln_interface_client(query, config))
 
     print('Without config parameters')
     print_results(mln_interface_client(query))
 
     print('Without evidence')
-    config.db=''
+    config.db = ''
     query = MLNQuery(queries, ['Cancer(Ann)', '!Cancer(Bob)', '!Friends(Ann,Bob)'])
     print_results(mln_interface_client(query, config))
-
-

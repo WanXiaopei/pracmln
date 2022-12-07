@@ -47,7 +47,7 @@ def latexsym(sym):
     return r"\textit{%s}" % str(sym)
 
 
-class Logic(object):
+class Logic:
     """
     Abstract factory class for instantiating logical constructs like conjunctions,
     disjunctions etc. Every specifc logic should implement the methods and return
@@ -62,7 +62,7 @@ class Logic(object):
         :param grammar:     an instance of grammar.Grammar
         :param mln:         the MLN instance that the logic shall be tied to.
         """
-        from pracmln.logic import StandardGrammar, PRACGrammar
+        from pracmln.logic import StandardGrammar, PRACGrammar  # noqa
         if grammar not in ("StandardGrammar", "PRACGrammar"):
             raise Exception("Invalid grammar: %s" % grammar)
         self.grammar = eval(grammar)(self)
@@ -77,7 +77,7 @@ class Logic(object):
         self.__dict__ = d
         self.grammar = eval(d["grammar"])(self)
 
-    class Constraint(object):
+    class Constraint:
         """
         Super class of every constraint.
         """
@@ -122,7 +122,6 @@ class Logic(object):
         def gndatoms(self, l=None):
             raise Exception("%s does not implement gndatoms" % str(type(self)))
 
-
     class Formula(Constraint):
         """
         The base class for all logical formulas.
@@ -131,24 +130,19 @@ class Logic(object):
         def __init__(self, mln=None, idx=None):
             self.mln = mln
             if idx == auto and mln is not None:
-                self.idx = len(mln.formulas)
+                self._idx = len(mln.formulas)
             else:
-                self.idx = idx
+                self._idx = idx
 
         @property
         def idx(self):
             """
             The formula's weight.
             """
-            #             if self._idx is None:
-            #                 try: return self.mln._formulas.index(self)
-            #                 except ValueError:
-            #                     return None
             return self._idx
 
         @idx.setter
         def idx(self, idx):
-            #             print 'setting idx to', idx
             self._idx = idx
 
         @property
@@ -649,15 +643,13 @@ class Logic(object):
         def __repr__(self):
             return "<%s: %s>" % (self.__class__.__name__, str(self))
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class ComplexFormula(Formula):
         """
         A formula that has other formulas as subelements (children)
         """
 
         def __init__(self, mln, idx=None):
-            Formula.__init__(self, mln, idx)
+            super().__init__(mln, idx)
 
         def vardoms(self, variables=None, constants=None):
             """
@@ -752,8 +744,6 @@ class Logic(object):
                     continue
                 prednames = child.prednames(prednames)
             return prednames
-
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     class Conjunction(ComplexFormula):
         """
@@ -881,8 +871,6 @@ class Logic(object):
                 else:
                     conjuncts.append(c)
             return self.mln.logic.conjunction(conjuncts, mln=self.mln, idx=self.idx)
-
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     class Disjunction(ComplexFormula):
         """
@@ -1027,8 +1015,6 @@ class Logic(object):
                 else:
                     disjuncts.append(c)
             return self.mln.logic.disjunction(disjuncts, mln=self.mln, idx=self.idx)
-
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     class Lit(Formula):
         """
@@ -1255,8 +1241,6 @@ class Logic(object):
         def __ne__(self, other):
             return not self == other
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class LitGroup(Formula):
         """
         Represents a group of literals with identical arguments.
@@ -1466,8 +1450,6 @@ class Logic(object):
         def __ne__(self, other):
             return not self == other
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class GroundLit(Formula):
         """
         Represents a ground literal.
@@ -1610,8 +1592,6 @@ class Logic(object):
         def __ne__(self, other):
             return not self == other
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class GroundAtom:
         """
         Represents a ground atom.
@@ -1700,8 +1680,6 @@ class Logic(object):
 
         def __ne__(self, other):
             return not self == other
-
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     class Equality(ComplexFormula):
         """
@@ -1846,8 +1824,6 @@ class Logic(object):
                 list(self.args), negated=self.negated, mln=self.mln, idx=self.idx
             )
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class Implication(ComplexFormula):
         """
         Represents an implication
@@ -1934,8 +1910,6 @@ class Logic(object):
                 mln=self.mln,
                 idx=self.idx,
             ).simplify(world)
-
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     class Biimplication(ComplexFormula):
         """
@@ -2032,8 +2006,6 @@ class Logic(object):
             return self.mln.logic.conjunction(
                 [c1, c2], mln=self.mln, idx=self.idx
             ).simplify(world)
-
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     class Negation(ComplexFormula):
         """
@@ -2217,8 +2189,6 @@ class Logic(object):
             else:
                 return self.mln.logic.negation([f], mln=self.mln, idx=self.idx)
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class Exist(ComplexFormula):
         """
         Existential quantifier.
@@ -2351,8 +2321,6 @@ class Logic(object):
         def truth(self, w):
             raise Exception("'%s' does not implement truth()" % self.__class__.__name__)
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class TrueFalse(Formula):
         """
         Represents constant truth values.
@@ -2401,8 +2369,6 @@ class Logic(object):
                 idx=self.idx if idx is inherit else idx,
             )
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class NonLogicalConstraint(Constraint):
         """
         A constraint that is not somehow made up of logical connectives and (ground) atoms.
@@ -2417,8 +2383,6 @@ class Logic(object):
 
         def negate(self):
             raise Exception("%s does not implement negate()" % str(type(self)))
-
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     class CountConstraint(NonLogicalConstraint):
         """
@@ -2492,8 +2456,6 @@ class Logic(object):
                 self.literal.getVariables(mln, variables, constants)
             return variables
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class GroundCountConstraint(NonLogicalConstraint):
         def __init__(self, gndAtoms, op, count):
             self.gndAtoms = gndAtoms
@@ -2552,8 +2514,6 @@ class Logic(object):
             for ga in self.gndAtoms:
                 l.append(ga)
             return l
-
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     def isvar(self, identifier):
         """

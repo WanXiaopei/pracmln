@@ -60,11 +60,12 @@ if platform.architecture()[0] == "32bit":
         psyco.full()
     else:
         logger.warning(
-            "Note: Psyco (http://psyco.sourceforge.net) was not loaded. On 32bit systems, it is recommended to install it for improved performance."
+            "Note: Psyco (http://psyco.sourceforge.net) was not loaded. On 32bit systems, it is recommended "
+            "to install it for improved performance."
         )
 
 
-class MLN(object):
+class MLN:
     """
     Represents a Markov logic network.
 
@@ -260,7 +261,7 @@ class MLN(object):
         :param formula:             a `Logic.Formula` object or a formula string
         :param weight:              an optional weight. May be a mathematical expression
                                     as a string (e.g. log(0.1)), real-valued number
-                                    or `mln.infty` to indicate a hard formula.
+                                    or `mln.infinity` to indicate a hard formula.
         :param fixweight:           indicates whether or not the weight of this
                                     formula should be fixed during learning.
         :param unique_templvars:    specifies a list of template variables that will create
@@ -304,8 +305,7 @@ class MLN(object):
         """
         if weight is not None:
             self.weights[idx] = weight
-        else:
-            return self.weights[idx]
+        return self.weights[idx]
 
     def __lshift__(self, _input):
         parse_mln(_input, ".", logic=None, grammar=None, mln=self)
@@ -516,7 +516,7 @@ class MLN(object):
         output to the console will be colored and uncolored for every other stream.
 
         :param stream:        the stream to write the MLN to.
-        :param color:         whether or not output should be colorized.
+        :param color:         whether output should be colorized or not.
         """
         if color is None:
             if stream != sys.stdout:
@@ -562,13 +562,6 @@ class MLN(object):
                 except BaseException:
                     w = colorize(str(formula.weight), weight_color, color)
                 stream.write("%s  %s\n" % (w, fstr(formula.cstr(color))))
-
-    def print_formulas(self):
-        """
-        Nicely prints the formulas and their weights.
-        """
-        for f in self.iterFormulasPrintable():
-            print(f)
 
     def iter_formulas_printable(self):
         """

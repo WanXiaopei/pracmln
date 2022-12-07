@@ -25,7 +25,7 @@ from collections import defaultdict
 from dnutils import logs
 
 from .infer import Inference
-from ..constants import infty, HARD
+from ..constants import infinity, HARD
 from ..errors import SatisfiabilityException, MRFValueException
 from ..grounding.fastconj import FastConjunctionGrounding
 from ..mrfvars import FuzzyVariable
@@ -67,7 +67,7 @@ class WCSPInference(Inference):
         return dict([(str(self.mrf.gndatom(idx)), val) for idx, val in result.items()])
 
 
-class WCSPConverter(object):
+class WCSPConverter:
     """
     Class for converting an MLN into a WCSP problem for efficient
     MPE inference.
@@ -136,7 +136,6 @@ class WCSPConverter(object):
                 f.weight = -f.weight
             formulas.append(f.nnf())
         # preprocess the ground formulas
-        #         grounder = DefaultGroundingFactory(self.mrf, formulas=formulas, simplify=True, unsatfailure=True, multicore=self.multicore, verbose=self.verbose)
         grounder = FastConjunctionGrounding(
             self.mrf,
             simplify=True,
@@ -178,7 +177,7 @@ class WCSPConverter(object):
             return
         defcost = max(
             cost2assignments,
-            key=lambda x: infty
+            key=lambda x: infinity
             if cost2assignments[x] == "else"
             else len(cost2assignments[x]),
         )

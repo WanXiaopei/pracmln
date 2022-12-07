@@ -32,12 +32,8 @@ class FirstOrderLogic(Logic):
     Factory class for first-order logic.
     """
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class Constraint(Logic.Constraint):
         pass
-
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     class Formula(Logic.Formula, Constraint):
         def noisyor(self, world):
@@ -80,27 +76,17 @@ class FirstOrderLogic(Logic):
                 prod *= 1.0 - factor
             return 1.0 - prod
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class ComplexFormula(Logic.ComplexFormula, Formula):
         pass
-
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     class Lit(Logic.Lit, Formula):
         pass
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class Litgroup(Logic.LitGroup, Formula):
         pass
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class GroundAtom(Logic.GroundAtom):
         pass
-
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     class GroundLit(Logic.GroundLit, Formula):
         def noisyor(self, world):
@@ -108,8 +94,6 @@ class FirstOrderLogic(Logic):
             if self.negated:
                 truth = 1.0 - truth
             return truth
-
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     class Disjunction(Logic.Disjunction, ComplexFormula):
         def truth(self, world):
@@ -156,8 +140,6 @@ class FirstOrderLogic(Logic):
                 prod *= 1.0 - factor
             return 1.0 - prod
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class Conjunction(Logic.Conjunction, ComplexFormula):
         def truth(self, world):
             dontKnow = False
@@ -202,8 +184,6 @@ class FirstOrderLogic(Logic):
                 prod *= cnf.noisyor(world)
             return prod
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class Implication(Logic.Implication, ComplexFormula):
         def truth(self, world):
             ant = self.children[0].truth(world)
@@ -214,8 +194,6 @@ class FirstOrderLogic(Logic):
                 return None
             return 0
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class Biimplication(Logic.Biimplication, ComplexFormula):
         def truth(self, world):
             c1 = self.children[0].truth(world)
@@ -224,22 +202,14 @@ class FirstOrderLogic(Logic):
                 return None
             return 1 if (c1 == c2) else 0
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class Negation(Logic.Negation, ComplexFormula):
         pass
-
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     class Exist(Logic.Exist, ComplexFormula):
         pass
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class Equality(Logic.Equality, ComplexFormula):
         pass
-
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     class TrueFalse(Logic.TrueFalse, Formula):
         @property
@@ -260,8 +230,6 @@ class FirstOrderLogic(Logic):
         def noisyor(self, world):
             return self(world)
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class ProbabilityConstraint(object):
         """
         Base class for representing a prior/posterior probability constraint (soft evidence)
@@ -275,8 +243,6 @@ class FirstOrderLogic(Logic):
         def __repr__(self):
             return str(self)
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class PriorConstraint(ProbabilityConstraint):
         """
         Class representing a prior probability.
@@ -285,8 +251,6 @@ class FirstOrderLogic(Logic):
         def __str__(self):
             return "P(%s) = %.2f" % (fstr(self.formula), self.p)
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-
     class PosteriorConstraint(ProbabilityConstraint):
         """
         Class representing a posterior probability.
@@ -294,8 +258,6 @@ class FirstOrderLogic(Logic):
 
         def __str__(self):
             return "P(%s|E) = %.2f" % (fstr(self.formula), self.p)
-
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     def conjunction(self, *args, **kwargs):
         return FirstOrderLogic.Conjunction(*args, **kwargs)

@@ -24,18 +24,20 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import re
+from pyparsing import alphas, alphanums, nums, Token, ParserElement
+from pyparsing import ParseException
+from pyparsing import ZeroOrMore, OneOrMore, Forward
+from pyparsing import Word, Literal, Group, Optional, Combine, printables, delimitedList, StringEnd
 
-from pyparsing import *
 
-
-class TreeBuilder(object):
+class TreeBuilder:
     """
     The parsing tree.
     """
 
     def __init__(self, logic):
         self.logic = logic
-        self.reset()
+        self.stack = []
 
     def trigger(self, a, loc, toks, op):
         if op == "litgroup":
@@ -130,8 +132,6 @@ class TreeBuilder(object):
             )
         if len(self.stack) == 0:
             raise Exception("Constraint could not be parsed")
-        #         if not isinstance(self.stack[0], Logic.Constraint):
-        #             raise Exception("Not an instance of Constraint!")
         return self.stack[0]
 
 
@@ -140,10 +140,14 @@ class TreeBuilder(object):
 # ======================================================================================
 
 
-class Grammar(object):
+class Grammar:
     """
     Abstract super class for all logic grammars.
     """
+
+    tree: TreeBuilder
+    formula: Token
+    predDecl: ParserElement
 
     def __deepcopy__(self, memo):
         return self
@@ -171,7 +175,7 @@ class Grammar(object):
         raise Exception("%s does not implement isvar()." % str(type(self)))
 
     def isconstant(self, identifier):
-        return not self.isVar(identifier)
+        return not self.isvar(identifier)
 
     def istemplvar(self, s):
         return s[0] == "+" and self.isvar(s[1:])
@@ -203,12 +207,6 @@ class Grammar(object):
         return (not lit.negated, lit.predname, lit.args)
 
 
-#         m = re.match(r'(!?)(\w+)\((.*?)\)$', s)
-#         if m is not None:
-#             return (m.group(1) != "!", m.group(2), map(str.strip, m.group(3).split(",")))
-#         raise Exception("Could not parse literal '%s'" % s)
-
-
 class StandardGrammar(Grammar):
     """
     The standard MLN logic syntax.
@@ -217,7 +215,6 @@ class StandardGrammar(Grammar):
     def __init__(self, logic):
         identifierCharacter = alphanums + "_" + "-" + "'"
         lcCharacter = alphas.lower()
-        ucCharacter = alphas.upper()
         lcName = Word(lcCharacter, alphanums + "_")
 
         openRB = Literal("(").suppress()
@@ -265,24 +262,14 @@ class StandardGrammar(Grammar):
             + Group(formula)
             + closeRB
         )
-        equality = (
-            (constant | variable) + Literal("=").suppress() + (constant | variable)
-        )
-        inequality = (
-            (constant | variable) + Literal("=/=").suppress() + (constant | variable)
-        )
+        equality = (constant | variable) + Literal("=").suppress() + (constant | variable)
+        inequality = (constant | variable) + Literal("=/=").suppress() + (constant | variable)
         negation = Literal("!").suppress() + openRB + Group(formula) + closeRB
         item = literal | exist | equality | openRB + formula + closeRB | negation
         disjunction = Group(item) + ZeroOrMore(Literal("v").suppress() + Group(item))
-        conjunction = Group(disjunction) + ZeroOrMore(
-            Literal("^").suppress() + Group(disjunction)
-        )
-        implication = Group(conjunction) + Optional(
-            Literal("=>").suppress() + Group(conjunction)
-        )
-        biimplication = Group(implication) + Optional(
-            Literal("<=>").suppress() + Group(implication)
-        )
+        conjunction = Group(disjunction) + ZeroOrMore(Literal("^").suppress() + Group(disjunction))
+        implication = Group(conjunction) + Optional(Literal("=>").suppress() + Group(conjunction))
+        biimplication = Group(implication) + Optional(Literal("<=>").suppress() + Group(implication))
         constraint = biimplication | count_constraint
         formula << constraint
 
@@ -366,14 +353,11 @@ class PRACGrammar(Grammar):
             + "/"
         )
         lcCharacter = alphas.lower()
-        ucCharacter = alphas.upper()
         lcName = Word(lcCharacter, alphanums + "_")
         qMark = "?"
 
         openRB = Literal("(").suppress()
         closeRB = Literal(")").suppress()
-        openSB = Literal("[").suppress()
-        closeSB = Literal("]").suppress()
 
         domName = Combine(
             Optional(Literal(":")) + lcName + Optional(Literal("!") | Literal("?"))
@@ -410,12 +394,8 @@ class PRACGrammar(Grammar):
             + Group(formula)
             + closeRB
         )
-        equality = (
-            (constant | variable) + Literal("=").suppress() + (constant | variable)
-        )
-        inequality = (
-            (constant | variable) + Literal("=/=").suppress() + (constant | variable)
-        )
+        equality = (constant | variable) + Literal("=").suppress() + (constant | variable)
+        inequality = (constant | variable) + Literal("=/=").suppress() + (constant | variable)
         negation = Literal("!").suppress() + openRB + Group(formula) + closeRB
 
         item = (
@@ -471,9 +451,6 @@ class PRACGrammar(Grammar):
 
         def inequality_parse_action(a, b, c):
             return tree.trigger(a, b, c, "!=")
-
-        def count_constraint_parse_action(a, b, c):
-            tree.trigger(a, b, c, "count")
 
         tree = TreeBuilder(logic)
         litgroup.setParseAction(lit_group_parse_action)
@@ -650,80 +627,4 @@ if __name__ == "__main__":
 # #     literal = Word(nums).setParseAction(lambda t: str(t[0]))#int(t[0]))
 # #      = Word(alphas,exact=1)
 # #     operand = mln.logic.grammar.literal
-#
-#     negop = Literal('!')
-#     eqop = Literal('=')
-#     neqop = Literal('=/=')
-#     conjop = Literal('^')
-#     disjop = Literal('v')
-#     implop = Word('=>')
-#     bimplop = Word('<=>')
-#
-#     def conj(t):
-#         out('making conjunction:', t)
-#         return str(t)
-# #     conjop.setParseAction(conj)
-#
-# #     tree = TreeBuilder(mln.logic)
-#
-# #     formula = operatorPrecedence( mln.logic.grammar.formula,
-# #         [(negop, 1, opAssoc.RIGHT),
-# # #          (eqop, 2, opAssoc.LEFT),
-# #          (conjop, 2, opAssoc.LEFT),
-# #          (disjop, 2, opAssoc.LEFT),
-# #          (implop, 2, opAssoc.LEFT),
-# #          (bimplop, 2, opAssoc.LEFT),]
-# #         )
-#
-#
-#     exit()
-#
-#     if test == 'parsing':
-#         tests = ["numberEats(o,2) <=> EXIST p, p2 (eats(o,p) ^ eats(o,p2) ^ !(o=p) ^ !(o=p2) ^ !(p=p2) ^ !(EXIST q (eats(o,q) ^ !(p=q) ^ !(p2=q))))",
-#                  "EXIST y (rel(x,y) ^ EXIST y2 (!(y2=y) ^ rel(x,y2)) ^ !(EXIST y3 (!(y3=y) ^ !(y3=y2) ^ rel(x,y3))))",
-# #                 '(EXIST ?w (action_role(?w, +?r)))',
-# #                     'class(?s1, ?c1) ^ class(?s2, ?c2) ^ ?s1=/=?s2'
-# #                 'EXIST ?w (action_role(?w, +?r) ^ is_a(?w, +?c))'
-#                 "((a(x) ^ b(x)) v (c(x) ^ !(d(x) ^ e(x) ^ g(x)))) => f(x)"
-#                  ]#,"foo(x) <=> !(EXIST p (foo(p)))", "numberEats(o,1) <=> !(EXIST p (eats(o,p) ^ !(o=p)))", "!a(c,d) => c=d", "c(b) v !(a(b) ^ b(c))"]
-# #         tests = ["((!a(x) => b(x)) ^ (b(x) => a(x))) v !(b(x)=>c(x))"]
-# #         tests = ["(EXIST y1 (rel(x,y1) ^ EXIST y2 (rel(x,y2) ^ !(y1=y2) ^ !(EXIST y3 (rel(?x,y3) ^ !(y1=y3) ^ !(y2=y3))))))"]
-# #         tests = ["EXIST ?x (a(?x))"]
-# #         tests = ['!foo(?x, ?y) ^ ?x =/= ?y']
-#         print mln.logic.parse_literal('foo("bla!", c)')
-#         print mln.logic.parse_predicate('foo(ar,bar2!)')
-#         for test in tests:
-#             print "trying to parse %s..." % test
-#             mln.logic.parse_formula(test).print_structure()
-# #             f = logic.grammar.parseFormula(test).toCNF()
-# #             print "got this: %s" % str(f)
-# #             f.printStructure()
-#     elif test == 'NF':
-#         f = "a(x) <=> b(x)"
-#         f = "((a(x) ^ b(x)) v (c(x) ^ !(d(x) ^ e(x) ^ g(x)))) => f(x)"
-#         f = "(a(x) v (b(x) ^ c(x))) => f(x)"
-# #         f = "(a(x) ^ b(x)) <=> (c(x) ^ d(x))"
-#         #f = "(a(x) ^ b(x)) v (c(x) ^ d(x))"
-#         #f = "(a(x) ^ b(x)) v (c(x) ^ d(x)) v (e(x) ^ f(x))"
-#         #f = "(a(x) ^ b(x)) v (c(x) ^ d(x)) v (e(x) ^ f(x)) v (g(x) ^ h(x))"
-#         #f = "(a(x) ^ b(x) ^ e(x)) v (c(x) ^ d(x) ^ f(x))"
-#         #f = "(a(x) ^ b(x) ^ g(x)) v (c(x) ^ d(x) ^ h(x)) v (e(x) ^ f(x) ^ i(x))"
-#         #f = "(a(x) ^ !b(x) ^ !c(x)) v (!a(x) ^ b(x) ^ !c(x)) v (!a(x) ^ !b(x) ^ c(x))"
-#         #f = "(a(x) ^ b(x) ^ !c(x)) v (a(x) ^ !b(x) ^ c(x)) v (!a(x) ^ b(x) ^ c(x))"
-#         #f = "(a(x) ^ !b(x)) v (!a(x) ^ b(x))"
-#         #f = "(a(x) ^ b(x) ^ !c(x)) v (a(x) ^ !b(x) ^ c(x)) v (!a(x) ^ b(x) ^ c(x))"
-#         #f = "(a(x) ^ b(x) ^ !c(x) ^ !d(x)) v (a(x) ^ !b(x) ^ c(x) ^ !d(x)) v (!a(x) ^ b(x) ^ c(x) ^ !d(x)) v (a(x) ^ !b(x) ^ !c(x) ^ d(x)) v (!a(x) ^ b(x) ^ !c(x) ^ d(x)) v (!a(x) ^ !b(x) ^ c(x) ^ d(x))"
-#         #f = "consumesAny(P,Coffee) <=> ((consumedBy(C3,P) ^ goodsT(C3,Coffee)) v (consumedBy(C2,P) ^ goodsT(C2,Coffee)) v (consumedBy(C1,P) ^ goodsT(C1,Coffee)) v (consumedBy(C4,P) ^ goodsT(C4,Coffee)))"
-#         #f = "consumesAny(P,Coffee) <=> ((consumedBy(C3,P) ^ goodsT(C3,Coffee)) v (consumedBy(C2,P) ^ goodsT(C2,Coffee)) v (consumedBy(C1,P) ^ goodsT(C1,Coffee)))"
-#         f = mln.logic.parse_formula(f)
-#         f = f.nnf()
-#         f.print_structure()
-#     elif test == 'count':
-#         c = "count(directs(a,m)|m) >= 4"
-#         c = "count(foo(a,Const)) = 2"
-#         #c = count_constraint.parseString(c)
-#         c = mln.logic.parseFormula(c).cnf()
-#         print str(c)
-#         pass
-#
 #
