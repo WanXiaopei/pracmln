@@ -559,10 +559,10 @@ class MLNQueryGUI(object):
         self.project_dir = os.path.abspath(
             ifnone(directory, ifnone(gconf["prev_query_path"], os.getcwd()))
         )
-        if gconf["prev_query_project" : self.project_dir] is not None:
+        if gconf["prev_query_project": self.project_dir] is not None:
             self.load_project(
                 os.path.join(
-                    self.project_dir, gconf["prev_query_project" : self.project_dir]
+                    self.project_dir, gconf["prev_query_project": self.project_dir]
                 )
             )
         else:
@@ -730,7 +730,7 @@ class MLNQueryGUI(object):
         self.write_gconfig()
         self.project_setdirty(dirty=False)
 
-    ####################### MLN FUNCTIONS #####################################
+    # ###################### MLN FUNCTIONS ######################
 
     def import_mln(self, name, content):
         self.project.add_mln(name, content)
@@ -997,7 +997,7 @@ class MLNQueryGUI(object):
 
     def write_gconfig(self, savegeometry=True):
         self.gconf["prev_query_path"] = self.dir
-        self.gconf["prev_query_project" : self.dir] = self.project.name
+        self.gconf["prev_query_project": self.dir] = self.project.name
 
         # save geometry
         if savegeometry:

@@ -2,7 +2,7 @@ import distutils
 import os
 from distutils.core import setup
 
-import _version
+import pracmln.version as _version
 import pip
 pip.main(['install', 'appdirs'])
 # from setuptools.command import build_py

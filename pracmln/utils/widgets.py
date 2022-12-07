@@ -323,7 +323,7 @@ class SyntaxHighlightingText(ScrolledText2):
             ranges = self.tag_ranges("mlcom")
             i = 0
             while i < len(ranges):
-                r = ranges[i : i + 2]
+                r = ranges[i: i + 2]
                 second_range = (
                     self.index(str(r[0]) + " + 1 char"),
                     self.index(str(r[1]) + " - 1 char"),
@@ -411,17 +411,17 @@ class SyntaxHighlightingText(ScrolledText2):
                 # operators
                 if False:
                     for op in self.highlighter.operators:
-                        if buffer[i : i + len(op)] == op:
+                        if buffer[i: i + len(op)] == op:
                             self.tag_add(
                                 "op",
                                 "%s.%d" % (cline, i),
                                 "%s.%d" % (cline, i + len(op)),
                             )
                 # comments
-                if buffer[i : i + 2] == "//":
+                if buffer[i: i + 2] == "//":
                     self.tag_add("com", "%s.%d" % (cline, i), "%s.end" % cline)
                 # multiline comments
-                elif buffer[i : i + 2] == "/*":
+                elif buffer[i: i + 2] == "/*":
                     if here not in self.tag_ranges("mlcom"):
                         end_pos = self.search(
                             "*/", here, forwards=True
@@ -432,10 +432,11 @@ class SyntaxHighlightingText(ScrolledText2):
                             "/*", here + " + 2 chars", stopindex=end_pos
                         ):  # if there's a nested comment, ignore it (it might just be a nested /* with a */)
                             continue
-                        # !!! make sure the area does not contain any "/*", because the "*/" is not the right one otherwise
+                        # !!! make sure the area does not contain any "/*", because the "*/" is not the right one
+                        #     otherwise
                         # print "multiline comment from %s to %s" % (here, str(end_pos))
                         self.tag_add("mlcom", here, str(end_pos) + " + 2 chars")
-                elif buffer[i : i + 2] == "*/":
+                elif buffer[i: i + 2] == "*/":
                     end_pos = self.index(here + " + 2 chars")
                     if end_pos not in self.tag_ranges("mlcom"):
                         start_pos = self.search(
@@ -454,7 +455,7 @@ class SyntaxHighlightingText(ScrolledText2):
                     idxBracketType = self.highlighter.open_brackets.index(buffer[i])
                     openb, closeb = self.highlighter.brackets[idxBracketType]
                     stack = 1
-                    for j, c in enumerate(buffer[i + 1 :]):
+                    for j, c in enumerate(buffer[i + 1:]):
                         if c == openb:
                             stack += 1
                         elif c == closeb:
@@ -863,7 +864,7 @@ class FilePickEdit(Frame):
         if not isinstance(file_mask, list):
             file_mask = [file_mask]
         if "." in file_mask[0]:
-            self.file_extension = file_mask[0][file_mask[0].rfind(".") :]
+            self.file_extension = file_mask[0][file_mask[0].rfind("."):]
         # read filenames
         self.file_mask = file_mask
         self.updateList()
@@ -995,7 +996,7 @@ class FilePickEdit(Frame):
         num = 0
         if hpos != -1:
             try:
-                num = int(base[hpos + 1 :])
+                num = int(base[hpos + 1:])
                 base = base[:hpos]
             except BaseException:
                 pass
@@ -1142,7 +1143,7 @@ class FilePick(Frame):
         self.unmodified = True
         self.file_extension = ""
         if "." in file_mask:
-            self.file_extension = file_mask[file_mask.rfind(".") :]
+            self.file_extension = file_mask[file_mask.rfind("."):]
         if not isinstance(file_mask, list):
             file_mask = [file_mask]
         self.file_masks = file_mask

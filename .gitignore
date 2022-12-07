@@ -105,3 +105,16 @@ ENV/
 
 # pracmln configuration file(s)
 .pracmln.conf
+
+bin
+apps
+experiments
+env.bat
+env.sh
+*.class
+*.pyc
+*.pyo
+*.bak
+libpracmln/build
+libpracmln/install
+

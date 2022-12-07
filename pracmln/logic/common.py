@@ -1193,9 +1193,8 @@ class Logic(object):
                     print("\nground atoms:")
                     mrf.print_gndatoms()
                     raise Exception(
-                        "Could not ground formula containing '%s' - this atom is not among the ground atoms (see above)."
-                        % self.predname
-                    )
+                        "Could not ground formula containing '%s' - this atom is not among the ground atoms (see above)." %
+                        self.predname)
 
         def _ground_template(self, assignment):
             args = [assignment.get(x, x) for x in self.args]

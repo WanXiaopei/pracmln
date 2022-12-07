@@ -299,9 +299,8 @@ class WCSPConverter(object):
                 worlds *= len(d)
             if worlds > 1000000:
                 logger.warning(
-                    "!!! WARNING: %d POSSIBLE WORLDS ARE GOING TO BE EVALUATED. KEEP IN SIGHT YOUR MEMORY CONSUMPTION !!!"
-                    % worlds
-                )
+                    "!!! WARNING: %d POSSIBLE WORLDS ARE GOING TO BE EVALUATED. KEEP IN SIGHT YOUR MEMORY CONSUMPTION !!!" %
+                    worlds)
             for c in combinations(domains):
                 world = [0] * len(self.mrf.gndatoms)
                 assignment = []

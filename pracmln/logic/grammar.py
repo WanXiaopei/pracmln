@@ -78,14 +78,14 @@ class TreeBuilder(object):
         elif op == "^":
             if len(toks) > 1:
                 formula = self.logic.conjunction(
-                    self.stack[-len(toks) :], self.logic.mln
+                    self.stack[-len(toks):], self.logic.mln
                 )
                 self.stack = self.stack[: -len(toks)]
                 self.stack.append(formula)
         elif op == "v":
             if len(toks) > 1:
                 formula = self.logic.disjunction(
-                    self.stack[-len(toks) :], self.logic.mln
+                    self.stack[-len(toks):], self.logic.mln
                 )
                 self.stack = self.stack[: -len(toks)]
 

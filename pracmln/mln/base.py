@@ -689,7 +689,7 @@ def parse_mln(
                     fuzzy = True
                 continue
             elif line.startswith("#include"):
-                filename = line[len("#include ") :].strip()
+                filename = line[len("#include "):].strip()
                 m = re.match(r'"(?P<filename>.+)"', filename)
                 if m is not None:
                     filename = m.group("filename")

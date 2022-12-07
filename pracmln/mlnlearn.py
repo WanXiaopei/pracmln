@@ -25,17 +25,24 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import argparse
-import fnmatch
 import io
 import os
-import pstats
 import sys
+import argparse
+import fnmatch
+import ntpath
+import pstats
 import tkinter.messagebox
 import traceback
 from cProfile import Profile
-from tkinter import *
-from tkinter.filedialog import asksaveasfilename
+from tkinter import (
+    Frame, Button, OptionMenu, Label, Checkbutton, Radiobutton, Entry,
+    StringVar, IntVar, BOTH, E, W,
+    LEFT, DISABLED, NORMAL, Tk,
+)
+from tkinter.filedialog import asksaveasfilename, askopenfilename
+from tkinter.constants import END
+from tabulate import tabulate
 
 from dnutils import logs, out, ifnone
 from pracmln.mln import MLN
@@ -47,8 +54,7 @@ from pracmln.mln.util import headline, StopWatch
 from pracmln.utils import config, locs
 from pracmln.utils.config import global_config_filename
 from pracmln.utils.project import MLNProject, PRACMLNConfig
-from pracmln.utils.widgets import *
-from tabulate import tabulate
+from pracmln.utils.widgets import FileEditBar
 
 logger = logs.getlogger(__name__)
 
@@ -60,7 +66,7 @@ WINDOWTITLE = "PRACMLN Learning Tool - {}" + os.path.sep + "{}"
 WINDOWTITLEEDITED = "PRACMLN Learning Tool - {}" + os.path.sep + "*{}"
 
 
-class MLNLearn(object):
+class MLNLearn:
     """
     Wrapper class for learning using a PRACMLN configuration.
 
@@ -727,10 +733,10 @@ class MLNLearnGUI:
         self.project_dir = os.path.abspath(
             ifnone(directory, ifnone(gconf["prev_learnwts_path"], os.getcwd()))
         )
-        if gconf["prev_learnwts_project" : self.project_dir] is not None:
+        if gconf["prev_learnwts_project": self.project_dir] is not None:
             self.load_project(
                 os.path.join(
-                    self.project_dir, gconf["prev_learnwts_project" : self.project_dir]
+                    self.project_dir, gconf["prev_learnwts_project": self.project_dir]
                 )
             )
         else:
@@ -1165,7 +1171,7 @@ class MLNLearnGUI:
 
     def write_gconfig(self, savegeometry=True):
         self.gconf["prev_learnwts_path"] = self.project_dir
-        self.gconf["prev_learnwts_project" : self.project_dir] = self.project.name
+        self.gconf["prev_learnwts_project": self.project_dir] = self.project.name
 
         # save geometry
         if savegeometry:

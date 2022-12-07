@@ -645,9 +645,8 @@ class MRF(object):
                             break
                     if idxFormula is None:
                         raise Exception(
-                            "Probability constraint on '%s' cannot be applied because the formula is not part of the MLN!"
-                            % req["expr"]
-                        )
+                            "Probability constraint on '%s' cannot be applied because the formula is not part of the MLN!" %
+                            req["expr"])
                     req["idxFormula"] = idxFormula
                 # instantiate a ground formula
                 formula = self.formulas[req["idxFormula"]]
@@ -766,7 +765,7 @@ class MRF(object):
             )
 
         return (
-            results[len(constraints) :],
+            results[len(constraints):],
             {
                 "steps": min(step, steps),
                 "fittingSteps": fittingStep,
@@ -821,7 +820,7 @@ class MRF(object):
             print(gf)
             idxGAs = sorted(gf.idxGroundAtoms())
             for idx, i in enumerate(idxGAs):
-                for j in idxGAs[idx + 1 :]:
+                for j in idxGAs[idx + 1:]:
                     t = (i, j)
                     if t not in links:
                         print("  %s -- %s" % (nodes[i], nodes[j]))

@@ -97,7 +97,7 @@ class NonDaemonicPool(pool.Pool):
     Process = NoDaemonProcess
 
 
-# exmaple how to be used
+# example how to be used
 if __name__ == "__main__":
 
     def f(x):

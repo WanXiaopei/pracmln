@@ -166,8 +166,7 @@ def get_cond_prob_png(queries, dbs, filename="cond_prob", filedir="/tmp"):
     # generate actual equation
     head = r"""\argmax{}""".format(underset)
     bracket_term = r"""\Pcond{{ \begin{{array}}{{c}}{0}\end{{array}} & \begin{{array}}{{c}}{1}\end{{array}} }}""".format(
-        query, evidence
-    )
+        query, evidence)
     eq = r"""{} {}""".format(head, bracket_term)
 
     return math2png(

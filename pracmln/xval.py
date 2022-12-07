@@ -211,15 +211,15 @@ class XValFold(object):
         )
         directory = self.params.directory
         try:
-            #             # Apply noisy string clustering
-            #             log.debug('Transforming noisy strings...')
-            #             if self.params.noisyStringDomains is not None:
-            #                 noisyStrTrans = NoisyStringTransformer(self.params.mln, self.params.noisyStringDomains, True)
-            #                 learnDBs_ = noisyStrTrans.materializeNoisyDomains(self.params.learnDBs)
-            #                 testDBs_ = noisyStrTrans.transformDBs(self.params.testDBs)
-            #             else:
-            #                 learnDBs_ = self.params.learnDBs
-            #                 testDBs_ = self.params.testDBs
+            #         # Apply noisy string clustering
+            #         log.debug('Transforming noisy strings...')
+            #         if self.params.noisyStringDomains is not None:
+            #             noisyStrTrans = NoisyStringTransformer(self.params.mln, self.params.noisyStringDomains, True)
+            #             learnDBs_ = noisyStrTrans.materializeNoisyDomains(self.params.learnDBs)
+            #             testDBs_ = noisyStrTrans.transformDBs(self.params.testDBs)
+            #         else:
+            #             learnDBs_ = self.params.learnDBs
+            #             testDBs_ = self.params.testDBs
 
             # train the MLN
             mln = self.params.mln
@@ -358,7 +358,7 @@ if __name__ == "__main__":
                 break
         dirname += "-" + timestamp
 
-    expdir = os.getenv("PRACMLN_EXPERIMENTS", ".")
+    expdir = os.getenv("PRACMLN_EXPERIMENTS", "")
     expdir = os.path.join(expdir, dirname)
     if os.path.exists(expdir):
         print('Directory "%s" exists. Overwrite? ([y]/n)' % expdir, end=" ")
@@ -403,7 +403,7 @@ if __name__ == "__main__":
     partSize = int(math.ceil(len(dbs) / float(folds)))
     partition = []
     for i in range(folds):
-        partition.append(dbs[i * partSize : (i + 1) * partSize])
+        partition.append(dbs[i * partSize: (i + 1) * partSize])
 
     foldRunnables = []
     for fold_idx in range(folds):

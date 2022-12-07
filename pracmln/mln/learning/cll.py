@@ -85,7 +85,7 @@ class CLL(AbstractLearner):
             self.valuecounts[partidx] = partition.valuecount()
             self.partitions.append(partition)
             self.evidx[partidx] = partition.evidenceidx()
-            variables = variables[len(partition.variables) :]
+            variables = variables[len(partition.variables):]
         logger.debug("CLL created %d partitions" % len(self.partitions))
         self._compute_statistics()
 

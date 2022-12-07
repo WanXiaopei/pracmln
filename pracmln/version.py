@@ -1,7 +1,7 @@
 """
-_version
 Version information for pracmln.
 """
+
 import sys
 
 __all__ = [
