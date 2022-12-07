@@ -36,7 +36,8 @@ with open(os.path.join(os.path.dirname(__file__), __basedir__, 'requirements.txt
 def datafiles(d):
     data_files = []
     for root, dirs, files in os.walk(os.path.join(os.path.dirname(__file__), d)):
-        if not files: continue
+        if not files:
+            continue
         root_ = root.replace(os.getcwd() + os.path.sep, '')
         data_files.append((root_, [os.path.join(root_, f) for f in files]))
     return data_files
@@ -55,8 +56,9 @@ def description():
     try:
         with open('README.md') as f:
             return f.read()
-    except:
+    except BaseException:
         return 'Markov logic networks in Python. Please visit http://www.pracmln.org'
+
 
 class myinstall(distutils.command.install.install):
 
@@ -68,8 +70,8 @@ class myinstall(distutils.command.install.install):
 setup(
     name='pracmln',
     packages=['pracmln', 'pracmln._version', 'pracmln.logic', 'pracmln.mln',
-        'pracmln.utils', 'pracmln.wcsp', 'pracmln.mln.grounding',
-        'pracmln.mln.inference', 'pracmln.mln.learning'],
+              'pracmln.utils', 'pracmln.wcsp', 'pracmln.mln.grounding',
+              'pracmln.mln.inference', 'pracmln.mln.learning'],
     package_dir={
         'pracmln': basedir('pracmln'),
         'pracmln._version': '_version',
@@ -109,11 +111,10 @@ setup(
     entry_points={
         'console_scripts': [
             'mlnlearn=pracmln.mlnlearn:main',
-	        'mlnquery=pracmln.mlnquery:main',
-	        'libpracmln-build=pracmln.libpracmln:createcpplibs',
+            'mlnquery=pracmln.mlnquery:main',
+            'libpracmln-build=pracmln.libpracmln:createcpplibs',
             'pracmlntest=pracmln.test:main',
         ],
     },
     cmdclass={'install': myinstall}
 )
-
