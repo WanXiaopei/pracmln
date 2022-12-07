@@ -32,7 +32,7 @@ sys.path.insert(0, os.path.abspath(os.path.join("..", "..", _version.__basedir__
 print("using", _version.__basedir__)
 
 try:
-    from sphinxcontrib import bibtex
+    from sphinxcontrib import bibtex    # noqa
 except ImportError:
     print("ERROR: bibtex extension for sphinx not found. Install with")
     print()
