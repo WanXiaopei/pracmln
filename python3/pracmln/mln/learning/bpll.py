@@ -72,7 +72,7 @@ class BPLL(AbstractLearner):
         values = var.valuecount()
         gfs = self._varidx2fidx.get(varidx)
         if (
-                gfs is None
+            gfs is None
         ):  # no list was saved, so the truth of all formulas is unaffected by the variable's value
             # uniform distribution applies
             p = 1.0 / values

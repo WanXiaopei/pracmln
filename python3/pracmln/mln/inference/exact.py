@@ -160,7 +160,7 @@ class EnumerationAsk(Inference):
             )
             try:
                 for num, denum in pool.imap(
-                        with_tracing(eval_queries), self.mrf.worlds()
+                    with_tracing(eval_queries), self.mrf.worlds()
                 ):
                     denominator += denum
                     k += 1

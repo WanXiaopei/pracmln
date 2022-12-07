@@ -682,7 +682,10 @@ class SampleSAT:
                 for idxGndAtom in self.trueOnes + self.falseOnes:
                     # TODO perhaps have a smarter method to know which ones actually were
                     # bottlenecks (or even info about whether we had bottlenecks)
-                    if (idxGndAtom in self.ss.bottlenecks and self in self.ss.bottlenecks[idxGndAtom]):
+                    if (
+                        idxGndAtom in self.ss.bottlenecks
+                        and self in self.ss.bottlenecks[idxGndAtom]
+                    ):
                         if idxGA != idxGndAtom:
                             self.ss.bottlenecks[idxGndAtom].remove(self)
                 # the constraint was added to the list of unsatisfied ones in SampleSAT._flipGndAtom (bottleneck flip)
@@ -697,6 +700,7 @@ class SampleSAT:
 
         def getFormula(self):
             return self.cc
+
 
 # class FuzzyMCSAT(Inference):
 #     """

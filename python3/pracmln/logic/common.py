@@ -304,9 +304,9 @@ class Logic(object):
             for assignment in product(assignments):
                 if assignment:
                     for t in self._ground_template(
-                            reduce(
-                                lambda x, y: dict_union(x, y), itertools.chain(assignment)
-                            )
+                        reduce(
+                            lambda x, y: dict_union(x, y), itertools.chain(assignment)
+                        )
                     ):
                         yield t
                 else:
@@ -380,18 +380,18 @@ class Logic(object):
             except Exception as e:
                 raise Exception("Error grounding '%s': %s" % (str(self), str(e)))
             for grounding in self._itergroundings(
-                    mrf, variables, {}, simplify, domains
+                mrf, variables, {}, simplify, domains
             ):
                 yield grounding
 
         def iter_true_var_assignments(
-                self,
-                mrf,
-                world=None,
-                truth_thr=1.0,
-                strict=False,
-                unknown=False,
-                partial=None,
+            self,
+            mrf,
+            world=None,
+            truth_thr=1.0,
+            strict=False,
+            unknown=False,
+            partial=None,
         ):
             """
             Iteratively yields the variable assignments (as a dict) for which this
@@ -419,35 +419,35 @@ class Logic(object):
             except Exception as e:
                 raise Exception("Error grounding '%s': %s" % (str(self), str(e)))
             for assignment in self._iter_true_var_assignments(
-                    mrf,
-                    variables,
-                    partial,
-                    world,
-                    dict(variables),
-                    truth_thr=truth_thr,
-                    strict=strict,
-                    unknown=unknown,
+                mrf,
+                variables,
+                partial,
+                world,
+                dict(variables),
+                truth_thr=truth_thr,
+                strict=strict,
+                unknown=unknown,
             ):
                 yield assignment
 
         def _iter_true_var_assignments(
-                self,
-                mrf,
-                variables,
-                assignment,
-                world,
-                allvars,
-                truth_thr=1.0,
-                strict=False,
-                unknown=False,
+            self,
+            mrf,
+            variables,
+            assignment,
+            world,
+            allvars,
+            truth_thr=1.0,
+            strict=False,
+            unknown=False,
         ):
             # if all variables have been grounded...
             if variables == {}:
                 gf = self.ground(mrf, assignment)
                 truth = gf(world)
                 if (
-                        ((truth >= truth_thr) if not strict else (truth > truth_thr))
-                        and truth is not None
+                    ((truth >= truth_thr) if not strict else (truth > truth_thr))
+                    and truth is not None
                 ) or (truth is None and unknown):
                     true_assignment = {}
                     for v in allvars:
@@ -466,19 +466,19 @@ class Logic(object):
                 assignment_[varname] = value
                 # recursive descent to ground further variables
                 for ass in self._iter_true_var_assignments(
-                        mrf,
-                        dict(variables),
-                        assignment_,
-                        world,
-                        allvars,
-                        truth_thr=truth_thr,
-                        strict=strict,
-                        unknown=unknown,
+                    mrf,
+                    dict(variables),
+                    assignment_,
+                    world,
+                    allvars,
+                    truth_thr=truth_thr,
+                    strict=strict,
+                    unknown=unknown,
                 ):
                     yield ass
 
         def _itergroundings(
-                self, mrf, variables, assignment, simplify=False, domains=None
+            self, mrf, variables, assignment, simplify=False, domains=None
         ):
             # if all variables have been grounded...
             if not variables:
@@ -492,7 +492,7 @@ class Logic(object):
                 assignment[varname] = value
                 # recursive descent to ground further variables
                 for gf in self._itergroundings(
-                        mrf, dict(variables), assignment, simplify, domains
+                    mrf, dict(variables), assignment, simplify, domains
                 ):
                     yield gf
 
@@ -833,7 +833,7 @@ class Logic(object):
                 else:
                     l = [c]
                 for (
-                        clause
+                    clause
                 ) in l:  # (clause is either a disjunction, a literal or a constant)
                     # if the clause is always true, it can be ignored; if it's always false, then so is the conjunction
                     if isinstance(clause, Logic.TrueFalse):
@@ -1068,7 +1068,7 @@ class Logic(object):
         @args.setter
         def args(self, args):
             if self.mln is not None and len(args) != len(
-                    self.mln.predicate(self.predname).argdoms
+                self.mln.predicate(self.predname).argdoms
             ):
                 raise Exception(
                     "Illegal argument length: %s. %s requires %d arguments: %s"
@@ -1122,9 +1122,9 @@ class Logic(object):
                     varname = arg
                     domain = argdoms[i]
                     if (
-                            varname in variables
-                            and variables[varname] != domain
-                            and variables[varname] is not None
+                        varname in variables
+                        and variables[varname] != domain
+                        and variables[varname] is not None
                     ):
                         raise Exception(
                             "Variable '%s' bound to more than one domain: %s"
@@ -1193,8 +1193,9 @@ class Logic(object):
                     print("\nground atoms:")
                     mrf.print_gndatoms()
                     raise Exception(
-                        "Could not ground formula containing '%s' - this atom is not among the ground atoms (see above)." %
-                        self.predname)
+                        "Could not ground formula containing '%s' - this atom is not among the ground atoms (see above)."
+                        % self.predname
+                    )
 
         def _ground_template(self, assignment):
             args = [assignment.get(x, x) for x in self.args]
@@ -1287,7 +1288,7 @@ class Logic(object):
             predname is a list of predicate names, of which each is tested if it is None
             """
             if self.mln is not None and any(
-                    self.mln.predicate(p) is None for p in prednames
+                self.mln.predicate(p) is None for p in prednames
             ):
                 erroneouspreds = [p for p in prednames if self.mln.predicate(p) is None]
                 raise NoSuchPredicateError(
@@ -1314,7 +1315,7 @@ class Logic(object):
             # arbitrary predicate
             predname = self.predname[0]
             if self.mln is not None and len(args) != len(
-                    self.mln.predicate(predname).argdoms
+                self.mln.predicate(predname).argdoms
             ):
                 raise Exception(
                     "Illegal argument length: %s. %s requires %d arguments: %s"
@@ -1368,9 +1369,9 @@ class Logic(object):
                     varname = arg
                     domain = argdoms[i]
                     if (
-                            varname in variables
-                            and variables[varname] != domain
-                            and variables[varname] is not None
+                        varname in variables
+                        and variables[varname] != domain
+                        and variables[varname] is not None
                     ):
                         raise Exception(
                             "Variable '%s' bound to more than one domain" % varname
@@ -2464,7 +2465,7 @@ class Logic(object):
                 gndAtoms = []
                 # generate a count constraint with all the atoms we obtain by grounding the other params
                 for full_assignment in self._iterAssignment(
-                        mrf, list(other_params), assignment
+                    mrf, list(other_params), assignment
                 ):
                     gndLit = self.literal.ground(mrf, full_assignment, None)
                     gndAtoms.append(gndLit.gndAtom)
@@ -2618,19 +2619,19 @@ class Logic(object):
             return True
         if not isinstance(f, Logic.Conjunction):
             if (
-                    not isinstance(f, Logic.Lit)
-                    and not isinstance(f, Logic.GroundLit)
-                    and not isinstance(f, Logic.Equality)
-                    and not isinstance(f, Logic.TrueFalse)
+                not isinstance(f, Logic.Lit)
+                and not isinstance(f, Logic.GroundLit)
+                and not isinstance(f, Logic.Equality)
+                and not isinstance(f, Logic.TrueFalse)
             ):
                 return False
             return True
         for child in f.children:
             if (
-                    not isinstance(child, Logic.Lit)
-                    and not isinstance(child, Logic.GroundLit)
-                    and not isinstance(child, Logic.Equality)
-                    and not isinstance(child, Logic.TrueFalse)
+                not isinstance(child, Logic.Lit)
+                and not isinstance(child, Logic.GroundLit)
+                and not isinstance(child, Logic.Equality)
+                and not isinstance(child, Logic.TrueFalse)
             ):
                 return False
         return True
@@ -2643,19 +2644,19 @@ class Logic(object):
             return True
         if not isinstance(f, Logic.Disjunction):
             if (
-                    not isinstance(f, Logic.Lit)
-                    and not isinstance(f, Logic.GroundLit)
-                    and not isinstance(f, Logic.Equality)
-                    and not isinstance(f, Logic.TrueFalse)
+                not isinstance(f, Logic.Lit)
+                and not isinstance(f, Logic.GroundLit)
+                and not isinstance(f, Logic.Equality)
+                and not isinstance(f, Logic.TrueFalse)
             ):
                 return False
             return True
         for child in f.children:
             if (
-                    not isinstance(child, Logic.Lit)
-                    and not isinstance(child, Logic.GroundLit)
-                    and not isinstance(child, Logic.Equality)
-                    and not isinstance(child, Logic.TrueFalse)
+                not isinstance(child, Logic.Lit)
+                and not isinstance(child, Logic.GroundLit)
+                and not isinstance(child, Logic.Equality)
+                and not isinstance(child, Logic.TrueFalse)
             ):
                 return False
         return True
@@ -2740,7 +2741,7 @@ class Logic(object):
         domain = mrf.domains[domName]
         for value in domain:
             for assignment in Logic._iter_eq_varassignments(
-                    mrf, variables, dict_union(assignment, {variable: value})
+                mrf, variables, dict_union(assignment, {variable: value})
             ):
                 yield assignment
 
@@ -2793,7 +2794,7 @@ class Logic(object):
         for gf in gfs:
             # non-logical constraint
             if (
-                    not gf.islogical()
+                not gf.islogical()
             ):  # don't apply any transformations to non-logical constraints
                 if gf.idx in negated:
                     gf.negate()
@@ -2805,7 +2806,7 @@ class Logic(object):
             else:
                 cnf = gf.cnf()
             if isinstance(
-                    cnf, Logic.TrueFalse
+                cnf, Logic.TrueFalse
             ):  # formulas that are always true or false can be ignored
                 continue
             cnf.idx = gf.idx

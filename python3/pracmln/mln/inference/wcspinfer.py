@@ -98,11 +98,11 @@ class WCSPConverter(object):
         varidx = 0
         for variable in self.mrf.variables:
             if isinstance(
-                    variable, FuzzyVariable
+                variable, FuzzyVariable
             ):  # fuzzy variables are not subject to reasoning
                 continue
             if (
-                    variable.valuecount(self.mrf.evidence_dicti()) == 1
+                variable.valuecount(self.mrf.evidence_dicti()) == 1
             ):  # the var is fully determined by the evidence
                 for _, value in variable.itervalues(self.mrf.evidence_dicti()):
                     break
@@ -112,7 +112,7 @@ class WCSPConverter(object):
             for gndatom in variable.gndatoms:
                 self.atom2var[gndatom.idx] = varidx
             for validx, (_, value) in enumerate(
-                    variable.itervalues(self.mrf.evidence_dicti())
+                variable.itervalues(self.mrf.evidence_dicti())
             ):
                 self.domains[varidx].append(value)
                 self.val2idx[varidx][value] = validx
@@ -242,19 +242,19 @@ class WCSPConverter(object):
                     validx = self.val2idx[varidx][value]
                 # if there are two different values needed to render the formula true...
                 if (
-                        assignment[varindices.index(varidx)] is not None
-                        and assignment[varindices.index(varidx)] != value
+                    assignment[varindices.index(varidx)] is not None
+                    and assignment[varindices.index(varidx)] != value
                 ):
                     if formula.weight == HARD:
                         if (
-                                conj
+                            conj
                         ):  # ...if it's a hard conjunction, the MLN is unsatisfiable -- e.g. foo(x) ^ !foo(x)
                             raise SatisfiabilityException(
                                 "Knowledge base is unsatisfiable due to hard constraint violation: %s"
                                 % formula
                             )
                         elif (
-                                disj
+                            disj
                         ):  # ...if it's a hard disjunction, it's a tautology -- e.g. foo(x) v !foo(x)
                             continue
                     else:  # for soft constraints, unsatisfiable formulas and tautologies  can be ignored
@@ -264,7 +264,7 @@ class WCSPConverter(object):
                 maxtruth = formula.maxtruth(self.mrf.evidence)
                 mintruth = formula.mintruth(self.mrf.evidence)
                 if formula.weight == HARD and (
-                        maxtruth in Interval("]0,1[") or mintruth in Interval("]0,1[")
+                    maxtruth in Interval("]0,1[") or mintruth in Interval("]0,1[")
                 ):
                     raise MRFValueException(
                         "No fuzzy truth values are allowed in hard constraints."
@@ -299,8 +299,9 @@ class WCSPConverter(object):
                 worlds *= len(d)
             if worlds > 1000000:
                 logger.warning(
-                    "!!! WARNING: %d POSSIBLE WORLDS ARE GOING TO BE EVALUATED. KEEP IN SIGHT YOUR MEMORY CONSUMPTION !!!" %
-                    worlds)
+                    "!!! WARNING: %d POSSIBLE WORLDS ARE GOING TO BE EVALUATED. KEEP IN SIGHT YOUR MEMORY CONSUMPTION !!!"
+                    % worlds
+                )
             for c in combinations(domains):
                 world = [0] * len(self.mrf.gndatoms)
                 assignment = []

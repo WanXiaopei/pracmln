@@ -126,11 +126,11 @@ class XValFold(object):
         self.confmat = ConfusionMatrix()
         # write the training and testing databases into a file
         with open(
-                os.path.join(params.directory, "train_dbs_%d.db" % params.fold_idx), "w+"
+            os.path.join(params.directory, "train_dbs_%d.db" % params.fold_idx), "w+"
         ) as dbfile:
             Database.write_dbs(params.learn_dbs, dbfile)
         with open(
-                os.path.join(params.directory, "test_dbs_%d.db" % params.fold_idx), "w+"
+            os.path.join(params.directory, "test_dbs_%d.db" % params.fold_idx), "w+"
         ) as dbfile:
             Database.write_dbs(params.test_dbs, dbfile)
 
@@ -228,7 +228,7 @@ class XValFold(object):
             # apply closed world for fuzzy atoms
             for db in learn_dbs:
                 for a, v in db.gndatoms(
-                        [p.name for p in mln.predicates if isinstance(p, FuzzyPredicate)]
+                    [p.name for p in mln.predicates if isinstance(p, FuzzyPredicate)]
                 ):
                     if v != 1:
                         db[a] = 0
@@ -403,7 +403,7 @@ if __name__ == "__main__":
     partSize = int(math.ceil(len(dbs) / float(folds)))
     partition = []
     for i in range(folds):
-        partition.append(dbs[i * partSize: (i + 1) * partSize])
+        partition.append(dbs[i * partSize : (i + 1) * partSize])
 
     foldRunnables = []
     for fold_idx in range(folds):

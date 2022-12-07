@@ -47,13 +47,13 @@ def create_formula_groundings(formulas):
     gfs = []
     for formula in sorted(formulas, key=global_fastConjGrounding._fsort):
         if global_fastConjGrounding.mrf.mln.logic.islitconj(
-                formula
+            formula
         ) or global_fastConjGrounding.mrf.mln.logic.isclause(formula):
             for gf in global_fastConjGrounding.itergroundings_fast(formula):
                 gfs.append(gf)
         else:
             for gf in formula.itergroundings(
-                    global_fastConjGrounding.mrf, simplify=True
+                global_fastConjGrounding.mrf, simplify=True
             ):
                 gfs.append(gf)
     return gfs
@@ -67,13 +67,13 @@ class FastConjunctionGrounding(DefaultGroundingFactory):
     """
 
     def __init__(
-            self,
-            mrf,
-            simplify=False,
-            unsatfailure=False,
-            formulas=None,
-            cache=None,
-            **params
+        self,
+        mrf,
+        simplify=False,
+        unsatfailure=False,
+        formulas=None,
+        cache=None,
+        **params
     ):
         DefaultGroundingFactory.__init__(
             self,
@@ -94,16 +94,16 @@ class FastConjunctionGrounding(DefaultGroundingFactory):
             if self.mrf.evidence[e.gndatom.idx] is not None:
                 return 2
             elif type(self.mrf.mln.predicate(e.gndatom.predname)) in (
-                    FunctionalPredicate,
-                    SoftFunctionalPredicate,
+                FunctionalPredicate,
+                SoftFunctionalPredicate,
             ):
                 return 3
             else:
                 return 4
         elif isinstance(e, Logic.Lit) and type(self.mrf.mln.predicate(e.predname)) in (
-                FunctionalPredicate,
-                SoftFunctionalPredicate,
-                FuzzyPredicate,
+            FunctionalPredicate,
+            SoftFunctionalPredicate,
+            FuzzyPredicate,
         ):
             return 5
         elif isinstance(e, Logic.Lit):
@@ -157,10 +157,10 @@ class FastConjunctionGrounding(DefaultGroundingFactory):
             yield gf
 
     def _itergroundings_fast(
-            self, formula, constituents, cidx, pivotfct, truthpivot, assignment, level=0
+        self, formula, constituents, cidx, pivotfct, truthpivot, assignment, level=0
     ):
         if truthpivot == 0 and (
-                isinstance(formula, Logic.Conjunction) or self.mrf.mln.logic.islit(formula)
+            isinstance(formula, Logic.Conjunction) or self.mrf.mln.logic.islit(formula)
         ):
             if formula.weight == HARD:
                 raise SatisfiabilityException(
@@ -170,7 +170,7 @@ class FastConjunctionGrounding(DefaultGroundingFactory):
                 )
             return
         if truthpivot == 1 and (
-                isinstance(formula, Logic.Disjunction) or self.mrf.mln.logic.islit(formula)
+            isinstance(formula, Logic.Disjunction) or self.mrf.mln.logic.islit(formula)
         ):
             return
         if cidx == len(constituents):
@@ -192,13 +192,13 @@ class FastConjunctionGrounding(DefaultGroundingFactory):
             else:
                 truthpivot_ = pivotfct(truthpivot, truth)
             for gf in self._itergroundings_fast(
-                    formula,
-                    constituents,
-                    cidx + 1,
-                    pivotfct,
-                    truthpivot_,
-                    newass,
-                    level + 1,
+                formula,
+                constituents,
+                cidx + 1,
+                pivotfct,
+                truthpivot_,
+                newass,
+                level + 1,
             ):
                 yield gf
 

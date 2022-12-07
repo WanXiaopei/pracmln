@@ -241,13 +241,13 @@ class MRF(object):
             var = self.variable(gndatom)
             if isinstance(self.mln.logic, FuzzyLogic):
                 if (
-                        (
-                            isinstance(var, MutexVariable)
-                            or isinstance(var, SoftMutexVariable)
-                            or isinstance(var, BinaryVariable)
-                        )
-                        and value is not None
-                        and value in Interval("]0,1[")
+                    (
+                        isinstance(var, MutexVariable)
+                        or isinstance(var, SoftMutexVariable)
+                        or isinstance(var, BinaryVariable)
+                    )
+                    and value is not None
+                    and value in Interval("]0,1[")
                 ):
                     raise MRFValueException(
                         'Illegal value for the  (soft-) mutex or binary variable "%s": %s'
@@ -476,10 +476,10 @@ class MRF(object):
         :returns:    a generator of (idx, possible world) tuples.
         """
         for res in self._iterworlds(
-                [v for v in self.variables if v.valuecount(self.evidence) > 1],
-                list(self.evidence),
-                CallByRef(0),
-                self.evidence_dicti(),
+            [v for v in self.variables if v.valuecount(self.evidence) > 1],
+            list(self.evidence),
+            CallByRef(0),
+            self.evidence_dicti(),
         ):
             yield res
 
@@ -493,14 +493,14 @@ class MRF(object):
             world_ = list(world)
             value = variable.evidence_value(evidence)
             for res in self._iterworlds(
-                    variables[1:], variable.setval(value, world_), worldidx, evidence
+                variables[1:], variable.setval(value, world_), worldidx, evidence
             ):
                 yield res
         else:
             for _, value in variable.itervalues(evidence):
                 world_ = list(world)
                 for res in self._iterworlds(
-                        variables[1:], variable.setval(value, world_), worldidx, evidence
+                    variables[1:], variable.setval(value, world_), worldidx, evidence
                 ):
                     yield res
 
@@ -524,7 +524,7 @@ class MRF(object):
             yield i, w
 
     def itergroundings(
-            self, simplify=False, grounding_factory="DefaultGroundingFactory"
+        self, simplify=False, grounding_factory="DefaultGroundingFactory"
     ):
         """
         Iterates over all groundings of all formulas of this MRF.
@@ -585,19 +585,19 @@ class MRF(object):
             stream.write(str(ga) + "\n")
 
     def apply_prob_constraints(
-            self,
-            constraints,
-            method=InferenceMethods.EnumerationAsk,
-            thr=1.0e-3,
-            steps=20,
-            fittingMCSATSteps=5000,
-            fittingParams=None,
-            given=None,
-            queries=None,
-            maxThreshold=None,
-            greedy=False,
-            probabilityFittingResultFileName=None,
-            **args
+        self,
+        constraints,
+        method=InferenceMethods.EnumerationAsk,
+        thr=1.0e-3,
+        steps=20,
+        fittingMCSATSteps=5000,
+        fittingParams=None,
+        given=None,
+        queries=None,
+        maxThreshold=None,
+        greedy=False,
+        probabilityFittingResultFileName=None,
+        **args
     ):
         """
         Applies the given probability constraints (if any), dynamically
@@ -645,18 +645,19 @@ class MRF(object):
                             break
                     if idxFormula is None:
                         raise Exception(
-                            "Probability constraint on '%s' cannot be applied because the formula is not part of the MLN!" %
-                            req["expr"])
+                            "Probability constraint on '%s' cannot be applied because the formula is not part of the MLN!"
+                            % req["expr"]
+                        )
                     req["idxFormula"] = idxFormula
                 # instantiate a ground formula
                 formula = self.formulas[req["idxFormula"]]
                 variables = formula.getVariables(self)
                 groundVars = {}
                 for (
-                        varName,
-                        domName,
+                    varName,
+                    domName,
                 ) in (
-                        variables.items()
+                    variables.items()
                 ):  # instantiate vars arbitrarily (just use first element of domain)
                     groundVars[varName] = self.domains[domName][0]
                 gndFormula = formula.ground(self, groundVars)
@@ -765,7 +766,7 @@ class MRF(object):
             )
 
         return (
-            results[len(constraints):],
+            results[len(constraints) :],
             {
                 "steps": min(step, steps),
                 "fittingSteps": fittingStep,
@@ -820,7 +821,7 @@ class MRF(object):
             print(gf)
             idxGAs = sorted(gf.idxGroundAtoms())
             for idx, i in enumerate(idxGAs):
-                for j in idxGAs[idx + 1:]:
+                for j in idxGAs[idx + 1 :]:
                     t = (i, j)
                     if t not in links:
                         print("  %s -- %s" % (nodes[i], nodes[j]))

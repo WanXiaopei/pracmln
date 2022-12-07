@@ -27,7 +27,7 @@ class DirectDescent(object):
     """
 
     def __init__(
-            self, wt, learner, gtol=1e-3, maxiter=None, learningRate=0.1, **params
+        self, wt, learner, gtol=1e-3, maxiter=None, learningRate=0.1, **params
     ):
         self.learner = learner
         self.wt = wt
@@ -132,7 +132,7 @@ class DiagonalNewton(object):
             for i in range(N):
                 v = H[i][i]
                 if (
-                        v == 0.0
+                    v == 0.0
                 ):  # HACK: if any variance component is zero, set corresponding gradient component to zero
                     sgrad[i] = g[i] = 0.0
                 else:
@@ -228,7 +228,10 @@ class SciPyOpt(object):
 
         # if not useGrad or not p.useGrad(): neg_grad = None
         if not p.usef:
-            def neg_f(wt): return -p._fDummy(wt)
+
+            def neg_f(wt):
+                return -p._fDummy(wt)
+
         log = logs.getlogger(self.__class__.__name__)
         if optimizer == "bfgs":
             params = dict(
@@ -323,6 +326,7 @@ class SciPyOpt(object):
             raise Exception("Unknown optimizer '%s'" % optimizer)
 
         return wt
+
 
 # try:
 #     from playdoh import Fitness, maximize, MAXCPU, GA, PSO, print_table

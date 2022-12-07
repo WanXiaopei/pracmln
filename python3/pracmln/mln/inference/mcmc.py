@@ -148,6 +148,7 @@ class MCMCInference(Inference):
                 t += formula(c.state)
             return t / len(self.chains)
 
+
 #         def write(self, short=False):
 #             if len(self.chains) > 1:
 #                 for i in range(len(self.infer.queries)):

@@ -85,7 +85,7 @@ class CLL(AbstractLearner):
             self.valuecounts[partidx] = partition.valuecount()
             self.partitions.append(partition)
             self.evidx[partidx] = partition.evidenceidx()
-            variables = variables[len(partition.variables):]
+            variables = variables[len(partition.variables) :]
         logger.debug("CLL created %d partitions" % len(self.partitions))
         self._compute_statistics()
 
@@ -120,14 +120,14 @@ class CLL(AbstractLearner):
             self._compute_stat_rec(literals, [], {}, formula, isconj=isconj)
 
     def _compute_stat_rec(
-            self,
-            literals,
-            gndliterals,
-            var_assign,
-            formula,
-            f_gndlit_parts=None,
-            processed=None,
-            isconj=False,
+        self,
+        literals,
+        gndliterals,
+        var_assign,
+        formula,
+        f_gndlit_parts=None,
+        processed=None,
+        isconj=False,
     ):
         """
         TODO: make sure that there are no equality constraints in the conjunction!
@@ -141,9 +141,9 @@ class CLL(AbstractLearner):
             part_with_f_lit = None
             for gndlit in gndliterals:
                 if (
-                        isinstance(gndlit, Logic.Equality)
-                        or hasattr(self, "qpreds")
-                        and gndlit.gndatom.predname not in self.qpreds
+                    isinstance(gndlit, Logic.Equality)
+                    or hasattr(self, "qpreds")
+                    and gndlit.gndatom.predname not in self.qpreds
                 ):
                     continue
                 part = self.atomidx2partition[gndlit.gndatom.idx]
@@ -159,7 +159,7 @@ class CLL(AbstractLearner):
                 gndlits = part2gndlits[part_with_f_lit]
                 part2gndlits = {part_with_f_lit: gndlits}
             if (
-                    not isconj
+                not isconj
             ):  # if we don't have a conjunction, ground the formula with the given variable assignment
                 # print 'formula', formula
                 gndformula = formula.ground(self.mrf, var_assign)
@@ -198,9 +198,9 @@ class CLL(AbstractLearner):
         # ground the literal with the existing assignments
         gndlit = lit.ground(self.mrf, var_assign, partial=True)
         for assign in (
-                Logic.iter_eq_varassignments(gndlit, formula, self.mrf)
-                if isinstance(gndlit, Logic.Equality)
-                else gndlit.itervargroundings(self.mrf)
+            Logic.iter_eq_varassignments(gndlit, formula, self.mrf)
+            if isinstance(gndlit, Logic.Equality)
+            else gndlit.itervargroundings(self.mrf)
         ):
             # copy the arguments to avoid side effects
             # if f_gndlit_parts is None: f_gndlit_parts = set()
@@ -442,7 +442,7 @@ class CLL(AbstractLearner):
             var = variables[0]
             for _, val in var.itervalues(evidence):
                 for world in self._itervalues(
-                        variables[1:], assignment + [val], evidence
+                    variables[1:], assignment + [val], evidence
                 ):
                     yield world
 

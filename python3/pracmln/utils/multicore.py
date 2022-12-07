@@ -99,6 +99,7 @@ class NonDaemonicPool(pool.Pool):
 
 # exmaple how to be used
 if __name__ == "__main__":
+
     def f(x):
         return x * x
 

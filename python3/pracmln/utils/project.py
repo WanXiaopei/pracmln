@@ -362,8 +362,8 @@ class PRACMLNConfig(object):
             project.save(project.resolve_path())
         else:
             with open(
-                    os.path.join(self.config_file.resolve_path(), self.config_file.file),
-                    "w+",
+                os.path.join(self.config_file.resolve_path(), self.config_file.file),
+                "w+",
             ) as cf:
                 cf.write(json.dumps(self.config))
         self._dirty = False

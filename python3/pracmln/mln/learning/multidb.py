@@ -78,7 +78,7 @@ class MultipleDatabaseLearner(AbstractLearner):
             )
             try:
                 for i, learner in pool.imap(
-                        with_tracing(_setup_learner), self._iterdbs(method)
+                    with_tracing(_setup_learner), self._iterdbs(method)
                 ):
                     self.learners[i] = learner
                     if self.verbose:
@@ -129,10 +129,10 @@ class MultipleDatabaseLearner(AbstractLearner):
             pool = Pool()
             try:
                 for i, (f_, d_) in enumerate(
-                        pool.imap(
-                            with_tracing(_methodcaller("_f", sideeffects=True)),
-                            [(l, w) for l in self.learners],
-                        )
+                    pool.imap(
+                        with_tracing(_methodcaller("_f", sideeffects=True)),
+                        [(l, w) for l in self.learners],
+                    )
                 ):
                     self.learners[i].__dict__ = d_
                     likelihood += f_
@@ -155,10 +155,10 @@ class MultipleDatabaseLearner(AbstractLearner):
             pool = Pool()
             try:
                 for i, (grad_, d_) in enumerate(
-                        pool.imap(
-                            with_tracing(_methodcaller("_grad", sideeffects=True)),
-                            [(l, w) for l in self.learners],
-                        )
+                    pool.imap(
+                        with_tracing(_methodcaller("_grad", sideeffects=True)),
+                        [(l, w) for l in self.learners],
+                    )
                 ):
                     self.learners[i].__dict__ = d_
                     grad += grad_
@@ -181,8 +181,8 @@ class MultipleDatabaseLearner(AbstractLearner):
             pool = Pool()
             try:
                 for h in pool.imap(
-                        with_tracing(_methodcaller("_hessian")),
-                        [(l, w) for l in self.learners],
+                    with_tracing(_methodcaller("_hessian")),
+                    [(l, w) for l in self.learners],
                 ):
                     hessian += h
             except Exception as e:
@@ -205,10 +205,10 @@ class MultipleDatabaseLearner(AbstractLearner):
             pool = Pool(maxtasksperchild=1)
             try:
                 for i, (_, d_) in enumerate(
-                        pool.imap(
-                            with_tracing(_methodcaller("_prepare", sideeffects=True)),
-                            self.learners,
-                        )
+                    pool.imap(
+                        with_tracing(_methodcaller("_prepare", sideeffects=True)),
+                        self.learners,
+                    )
                 ):
                     checkmem()
                     self.learners[i].__dict__ = d_

@@ -239,7 +239,7 @@ class WCSP(object):
             # if the constraint is fully specified by its tuples,
             # simplify it by introducing default costs
             if reduce(
-                    lambda x, y: x * y, [self.domsizes[x] for x in varindices]
+                lambda x, y: x * y, [self.domsizes[x] for x in varindices]
             ) == len(cold.tuples):
                 cost2assignments = defaultdict(list)
                 for t, c in cold.tuples.items():

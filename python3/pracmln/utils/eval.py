@@ -59,9 +59,9 @@ class ConfusionMatrix(object):
         """
         Add a new classification result to the confusion matrix.
 
-        - gndTruth:	the correct label of an example
-        - prediction:	the predicted class label of an example
-        - inc:		the increment (default: 1)
+        - gndTruth:    the correct label of an example
+        - prediction:    the predicted class label of an example
+        - inc:        the increment (default: 1)
         """
         if prediction not in self.labels:
             self.labels.append(prediction)
@@ -83,8 +83,8 @@ class ConfusionMatrix(object):
         Returns the matrix entry for the prediction pred and ground truth clazz.
         """
         if (
-                self.matrix.get(pred, None) is None
-                or self.matrix[pred].get(clazz, None) is None
+            self.matrix.get(pred, None) is None
+            or self.matrix[pred].get(clazz, None) is None
         ):
             return 0
         return self.matrix[pred][clazz]
@@ -347,17 +347,17 @@ class ConfusionMatrix(object):
         texFile = open(texFileName, "w+")
         texFile.write(
             r"""
-		\documentclass[10pt]{article}
-		\usepackage{color}
-		\usepackage{rotating}
-		\usepackage[table]{xcolor}
-		\definecolor{cfmcolor}{rgb}{0.2,0.4,0.6}
-		\begin{document}
-		\pagenumbering{gobble}
-		\resizebox{\columnwidth}{!}{
-		%s}
-		\end{document}
-		"""
+        \documentclass[10pt]{article}
+        \usepackage{color}
+        \usepackage{rotating}
+        \usepackage[table]{xcolor}
+        \definecolor{cfmcolor}{rgb}{0.2,0.4,0.6}
+        \begin{document}
+        \pagenumbering{gobble}
+        \resizebox{\columnwidth}{!}{
+        %s}
+        \end{document}
+        """
             % self.getLatexTable()
         )
         texFile.close()
@@ -374,17 +374,17 @@ class ConfusionMatrix(object):
         texFile = open(texFileName, "w+")
         texFile.write(
             r"""
-		\documentclass[10pt]{article}
-		\usepackage{color}
-		\usepackage{rotating}
-		\usepackage[table]{xcolor}
-		\definecolor{cfmcolor}{rgb}{0.2,0.4,0.6}
-		\begin{document}
-		\pagenumbering{gobble}
-		\resizebox{\columnwidth}{!}{
-		%s}
-		\end{document}
-		"""
+        \documentclass[10pt]{article}
+        \usepackage{color}
+        \usepackage{rotating}
+        \usepackage[table]{xcolor}
+        \definecolor{cfmcolor}{rgb}{0.2,0.4,0.6}
+        \begin{document}
+        \pagenumbering{gobble}
+        \resizebox{\columnwidth}{!}{
+        %s}
+        \end{document}
+        """
             % self.getLatexTable()
         )
         texFile.close()

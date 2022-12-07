@@ -105,13 +105,13 @@ def __write_output(infile, outdir, workdir=".", filename="", size=1, svg=True):
 
 
 def math2png(
-        content,
-        outdir,
-        packages=default_packages,
-        declarations=[],
-        filename="",
-        size=1,
-        svg=True,
+    content,
+    outdir,
+    packages=default_packages,
+    declarations=[],
+    filename="",
+    size=1,
+    svg=True,
 ):
     """
     Generate png images from $$...$$ style math environment equations.

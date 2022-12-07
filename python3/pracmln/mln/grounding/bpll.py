@@ -65,9 +65,9 @@ def create_formula_groundings(formula, unsatfailure=True):
                     if truth != 0:
                         stat.append((var.idx, validx, truth))
                     elif (
-                            unsatfailure
-                            and gf.weight == HARD
-                            and gf(global_bpll_grounding.mrf.evidence) != 1
+                        unsatfailure
+                        and gf.weight == HARD
+                        and gf(global_bpll_grounding.mrf.evidence) != 1
                     ):
                         print()
                         gf.print_structure(global_bpll_grounding.mrf.evidence)
@@ -125,12 +125,12 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
                 setattr(child, "vardoms", types.MethodType(eqvardoms, child))
         lits = sorted(children, key=self._conjsort)
         for gf in self._itergroundings_fast(
-                formula, lits, 0, assignment={}, variables=[]
+            formula, lits, 0, assignment={}, variables=[]
         ):
             yield gf
 
     def _itergroundings_fast(
-            self, formula, constituents, cidx, assignment, variables, falsevar=None, level=0
+        self, formula, constituents, cidx, assignment, variables, falsevar=None, level=0
     ):
         if cidx == len(constituents):
             # no remaining literals to ground. return the ground formula
@@ -156,13 +156,13 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
                 if gnd.truth(None) == 0:
                     continue
                 for gf in self._itergroundings_fast(
-                        formula,
-                        constituents,
-                        cidx + 1,
-                        dict_union(assignment, varass),
-                        variables,
-                        falsevar,
-                        level + 1,
+                    formula,
+                    constituents,
+                    cidx + 1,
+                    dict_union(assignment, varass),
+                    variables,
+                    falsevar,
+                    level + 1,
                 ):
                     yield gf
             else:
@@ -208,13 +208,13 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
                 if skip:
                     continue
                 for gf in self._itergroundings_fast(
-                        formula,
-                        constituents,
-                        cidx + 1,
-                        dict_union(assignment, varass),
-                        vars_ + stat,
-                        falsevar=falsevar_,
-                        level=level + 1,
+                    formula,
+                    constituents,
+                    cidx + 1,
+                    dict_union(assignment, varass),
+                    vars_ + stat,
+                    falsevar=falsevar_,
+                    level=level + 1,
                 ):
                     yield gf
 
@@ -225,7 +225,7 @@ class BPLLGroundingFactory(FastConjunctionGrounding):
             pool = Pool(maxtasksperchild=1)
             try:
                 for gndresult in pool.imap(
-                        with_tracing(create_formula_groundings), self.formulas
+                    with_tracing(create_formula_groundings), self.formulas
                 ):
                     for fidx, stat in gndresult:
                         for (varidx, validx, val) in stat:
@@ -311,21 +311,21 @@ class FormulaGrounding(object):
 
     def epochEndsHere(self):
         for mem in (
-                self.parent,
-                self.trueGroundings,
-                self.children,
-                self.domains,
-                self.processed,
+            self.parent,
+            self.trueGroundings,
+            self.children,
+            self.domains,
+            self.processed,
         ):
             mem.epochEndsHere()
 
     def undoEpoch(self):
         for mem in (
-                self.parent,
-                self.trueGroundings,
-                self.children,
-                self.domains,
-                self.processed,
+            self.parent,
+            self.trueGroundings,
+            self.children,
+            self.domains,
+            self.processed,
         ):
             mem.undoEpoch()
 
@@ -354,7 +354,7 @@ class FormulaGrounding(object):
             assignment = {}
         gf_count = 1
         for var in set(self.formula.getVariables(self.mrf.mln)).difference(
-                list(assignment.keys())
+            list(assignment.keys())
         ):
             domain = self.domains[var]
             if domain is None:
@@ -436,11 +436,11 @@ class SmartGroundingFactory(object):
 
     def epochEndsHere(self):
         for mem in (
-                self.values_processed,
-                self.variable_stack,
-                self.var2fgs,
-                self.gndAtom2fgs,
-                self.manipulatedFgs,
+            self.values_processed,
+            self.variable_stack,
+            self.var2fgs,
+            self.gndAtom2fgs,
+            self.manipulatedFgs,
         ):
             mem.epochEndsHere()
         for fg in self.manipulatedFgs:
@@ -450,11 +450,11 @@ class SmartGroundingFactory(object):
         for fg in self.manipulatedFgs:
             fg.undoEpoch()
         for mem in (
-                self.values_processed,
-                self.variable_stack,
-                self.var2fgs,
-                self.gndAtom2fgs,
-                self.manipulatedFgs,
+            self.values_processed,
+            self.variable_stack,
+            self.var2fgs,
+            self.gndAtom2fgs,
+            self.manipulatedFgs,
         ):
             mem.undoEpoch()
 

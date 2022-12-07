@@ -318,7 +318,9 @@ class MLNLearn(object):
             raise Exception("No MLN specified")
 
         # load the training databases
-        if isinstance(self.db, list) and all([isinstance(e, Database) for e in self.db]):
+        if isinstance(self.db, list) and all(
+            [isinstance(e, Database) for e in self.db]
+        ):
             dbs = self.db
         elif isinstance(self.db, Database):
             dbs = [self.db]
@@ -725,10 +727,10 @@ class MLNLearnGUI:
         self.project_dir = os.path.abspath(
             ifnone(directory, ifnone(gconf["prev_learnwts_path"], os.getcwd()))
         )
-        if gconf["prev_learnwts_project": self.project_dir] is not None:
+        if gconf["prev_learnwts_project" : self.project_dir] is not None:
             self.load_project(
                 os.path.join(
-                    self.project_dir, gconf["prev_learnwts_project": self.project_dir]
+                    self.project_dir, gconf["prev_learnwts_project" : self.project_dir]
                 )
             )
         else:
@@ -843,7 +845,7 @@ class MLNLearnGUI:
 
     def noask_save_project(self):
         if self.project.name and not self.project.name == DEFAULTNAME.format(
-                ".pracmln"
+            ".pracmln"
         ):
             self.save_project(os.path.join(self.project_dir, self.project.name))
         else:
@@ -1163,7 +1165,7 @@ class MLNLearnGUI:
 
     def write_gconfig(self, savegeometry=True):
         self.gconf["prev_learnwts_path"] = self.project_dir
-        self.gconf["prev_learnwts_project": self.project_dir] = self.project.name
+        self.gconf["prev_learnwts_project" : self.project_dir] = self.project.name
 
         # save geometry
         if savegeometry:

@@ -559,10 +559,10 @@ class MLNQueryGUI(object):
         self.project_dir = os.path.abspath(
             ifnone(directory, ifnone(gconf["prev_query_path"], os.getcwd()))
         )
-        if gconf["prev_query_project": self.project_dir] is not None:
+        if gconf["prev_query_project" : self.project_dir] is not None:
             self.load_project(
                 os.path.join(
-                    self.project_dir, gconf["prev_query_project": self.project_dir]
+                    self.project_dir, gconf["prev_query_project" : self.project_dir]
                 )
             )
         else:
@@ -691,7 +691,7 @@ class MLNQueryGUI(object):
 
     def noask_save_project(self):
         if self.project.name and not self.project.name == DEFAULTNAME.format(
-                ".pracmln"
+            ".pracmln"
         ):
             self.save_project(os.path.join(self.project_dir, self.project.name))
         else:
@@ -953,9 +953,9 @@ class MLNQueryGUI(object):
 
     def set_outputfilename(self):
         if (
-                not hasattr(self, "output_filename")
-                or not hasattr(self, "db_filename")
-                or not hasattr(self, "mln_filename")
+            not hasattr(self, "output_filename")
+            or not hasattr(self, "db_filename")
+            or not hasattr(self, "mln_filename")
         ):
             return
         mln = self.mln_container.selected_file.get()
@@ -997,7 +997,7 @@ class MLNQueryGUI(object):
 
     def write_gconfig(self, savegeometry=True):
         self.gconf["prev_query_path"] = self.dir
-        self.gconf["prev_query_project": self.dir] = self.project.name
+        self.gconf["prev_query_project" : self.dir] = self.project.name
 
         # save geometry
         if savegeometry:

@@ -43,13 +43,13 @@ class DefaultGroundingFactory:
     """
 
     def __init__(
-            self,
-            mrf,
-            simplify=False,
-            unsatfailure=False,
-            formulas=None,
-            cache=auto,
-            **params
+        self,
+        mrf,
+        simplify=False,
+        unsatfailure=False,
+        formulas=None,
+        cache=auto,
+        **params
     ):
         self.mrf = mrf
         self.formulas = ifnone(formulas, list(self.mrf.formulas))
@@ -134,9 +134,9 @@ class DefaultGroundingFactory:
                 bar.update((i + 1) / float(len(self.formulas)))
             for gndformula in formula.itergroundings(self.mrf, simplify=simplify):
                 if (
-                        unsatfailure
-                        and gndformula.weight == HARD
-                        and gndformula(self.mrf.evidence) == 0
+                    unsatfailure
+                    and gndformula.weight == HARD
+                    and gndformula(self.mrf.evidence) == 0
                 ):
                     print()
                     gndformula.print_structure(self.mrf.evidence)
@@ -201,9 +201,9 @@ class EqualityConstraintGrounder(object):
             if not goon:
                 continue
             for assignment in self._iter_valid_variable_assignments(
-                    variables[1:],
-                    dict_union(assignments, {variable: value}),
-                    new_eq_groundings,
+                variables[1:],
+                dict_union(assignments, {variable: value}),
+                new_eq_groundings,
             ):
                 yield assignment
 

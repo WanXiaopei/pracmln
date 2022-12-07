@@ -126,10 +126,10 @@ class FuzzyLogic(Logic):
                 else:
                     sf_children.append(child)
             if (
-                    minTruth is not None
-                    and minTruth < 1
-                    or minTruth == 1
-                    and len(sf_children) == 0
+                minTruth is not None
+                and minTruth < 1
+                or minTruth == 1
+                and len(sf_children) == 0
             ):
                 sf_children.append(self.mln.logic.true_false(minTruth, mln=self.mln))
             if len(sf_children) > 1:
@@ -163,9 +163,9 @@ class FuzzyLogic(Logic):
                 else:
                     sf_children.append(child)
             if (
-                    maxTruth is not None
-                    and maxTruth > 0
-                    or (maxTruth == 0 and len(sf_children) == 0)
+                maxTruth is not None
+                and maxTruth > 0
+                or (maxTruth == 0 and len(sf_children) == 0)
             ):
                 sf_children.append(self.mln.logic.true_false(maxTruth, mln=self.mln))
             if len(sf_children) > 1:

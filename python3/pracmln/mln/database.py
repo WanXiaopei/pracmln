@@ -544,13 +544,13 @@ class Database(object):
             given this Pseudo-MRF.
             """
             for assignment in formula.iter_true_var_assignments(
-                    self, self.evidence, truth_thr=truth_thr
+                self, self.evidence, truth_thr=truth_thr
             ):
                 yield assignment
 
 
 def parse_db(
-        mln, content, ignore_unknown_preds=False, db=None, dirs=["."], projectpath=None
+    mln, content, ignore_unknown_preds=False, db=None, dirs=["."], projectpath=None
 ):
     """
     Reads one or more databases in a string representation and returns
@@ -594,7 +594,7 @@ def parse_db(
             domnames = [domname for _ in constants]
         # include
         elif l.startswith("#include"):
-            filename = l[len("#include "):].strip()
+            filename = l[len("#include ") :].strip()
             m = re.match(r'"(?P<filename>.+)"', filename)
             if m is not None:
                 filename = m.group("filename")
@@ -640,7 +640,7 @@ def parse_db(
         # valued evidence
         elif l[0] in "0123456789":
             s = l.find(" ")
-            gndatom = l[s + 1:].replace(" ", "")
+            gndatom = l[s + 1 :].replace(" ", "")
             value = float(l[:s])
             if value < 0 or value > 1:
                 raise Exception("Valued evidence must be in [0,1]")

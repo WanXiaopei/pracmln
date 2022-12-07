@@ -540,8 +540,8 @@ class MLN(object):
         stream.write(colorize("\n// predicate declarations\n", comment_color, color))
         for predicate in self.iterpreds():
             if (
-                    isinstance(predicate, FuzzyPredicate)
-                    or predicate.name in self.fuzzypreds
+                isinstance(predicate, FuzzyPredicate)
+                or predicate.name in self.fuzzypreds
             ):
                 stream.write("#fuzzy\n")
             stream.write(
@@ -622,12 +622,12 @@ class MLN(object):
 
 
 def parse_mln(
-        text,
-        searchpaths=["."],
-        projectpath=None,
-        logic="FirstOrderLogic",
-        grammar="PRACGrammar",
-        mln=None,
+    text,
+    searchpaths=["."],
+    projectpath=None,
+    logic="FirstOrderLogic",
+    grammar="PRACGrammar",
+    mln=None,
 ):
     """
     Reads an MLN from a stream providing a 'read' method.
@@ -689,7 +689,7 @@ def parse_mln(
                     fuzzy = True
                 continue
             elif line.startswith("#include"):
-                filename = line[len("#include "):].strip()
+                filename = line[len("#include ") :].strip()
                 m = re.match(r'"(?P<filename>.+)"', filename)
                 if m is not None:
                     filename = m.group("filename")
@@ -741,7 +741,7 @@ def parse_mln(
                     raise MLNParsingError('Malformed #unique expression: "%s"' % line)
                 continue
             elif line.startswith(
-                    "#AdaptiveMLNDependency"
+                "#AdaptiveMLNDependency"
             ):  # declared as "#AdaptiveMLNDependency:pred:domain"; seems to be deprecated
                 depPredicate, domain = line.split(":")[1:3]
                 if hasattr(mln, "AdaptiveDependencyMap"):

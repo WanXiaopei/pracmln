@@ -42,16 +42,16 @@ class IPFPM(Inference):
         Inference.__init__(self, mrf)
 
     def _infer(
-            self,
-            verbose=True,
-            details=False,
-            fittingMethod=EnumerationAsk,
-            fittingThreshold=1e-3,
-            fittingSteps=100,
-            fittingParams=None,
-            maxThreshold=None,
-            greedy=False,
-            **args
+        self,
+        verbose=True,
+        details=False,
+        fittingMethod=EnumerationAsk,
+        fittingThreshold=1e-3,
+        fittingSteps=100,
+        fittingParams=None,
+        maxThreshold=None,
+        greedy=False,
+        **args
     ):
         # add formulas to the model whose weights we can then fit
         if verbose:

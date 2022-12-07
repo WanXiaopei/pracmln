@@ -85,7 +85,7 @@ class Predicate(object):
             return
         for value in dom:
             for gndatom in self._groundatoms(
-                    mln, domains, values + [value], argdoms[1:]
+                mln, domains, values + [value], argdoms[1:]
             ):
                 yield gndatom
 
