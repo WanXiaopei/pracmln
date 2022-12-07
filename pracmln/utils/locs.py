@@ -1,19 +1,11 @@
 import os
 
-import appdirs
-from pracmln.version import APPNAME, APPAUTHOR
-
 root = os.path.realpath(os.path.join(os.path.dirname(__file__), "..", ".."))
-user_data = appdirs.user_data_dir(APPNAME, APPAUTHOR)
+log_dir = os.path.join(os.getcwd(), "log")
 
-if os.path.basename(root).startswith("python"):
-    root = os.path.realpath(os.path.join(root, ".."))
-    app_data = root
-else:
-    app_data = appdirs.site_data_dir(APPNAME, APPAUTHOR)
-    if not os.path.exists(app_data):
-        app_data = user_data
+if not os.path.exists(log_dir):
+    os.mkdir(log_dir)
 
-trdparty = os.path.join(app_data, "3rdparty")
-examples = os.path.join(app_data, "examples")
-etc = os.path.join(app_data, "etc")
+trdparty = os.path.join(log_dir, "3rdparty")
+examples = os.path.join(log_dir, "examples")
+etc = os.path.join(log_dir, "etc")

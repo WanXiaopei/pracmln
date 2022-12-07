@@ -83,7 +83,7 @@ ALLOWED_EXTENSIONS = [
     ("Database files", ".db"),
 ]
 DEFAULTNAME = "unknown{}"
-DEFAULT_CONFIG = os.path.join(locs.user_data, global_config_filename)
+DEFAULT_CONFIG = os.path.join(locs.log_dir, global_config_filename)
 WINDOWTITLE = "PRACMLN Query Tool - {}" + os.path.sep + "{}"
 WINDOWTITLEEDITED = "PRACMLN Query Tool - {}" + os.path.sep + "*{}"
 

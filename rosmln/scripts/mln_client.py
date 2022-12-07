@@ -21,12 +21,12 @@ def print_results(results):
     if not results.evidence:
         print('ERROR: Something went wrong...')
     else:
-        print results
+        print(results)
 
 
 if __name__ == '__main__':
-    mlnFiles = '{}/test/models/smokers/wts.pybpll.smoking-train-smoking.mln'.format(locs.user_data)
-    db = '{}/test/models/smokers/smoking-test-smaller.db'.format(locs.user_data)
+    mlnFiles = '{}/test/models/smokers/wts.pybpll.smoking-train-smoking.mln'.format(locs.log_dir)
+    db = '{}/test/models/smokers/smoking-test-smaller.db'.format(locs.log_dir)
     queries = 'Smokes'
     output_filename = 'results.txt'
     query = MLNQuery(queries, None)

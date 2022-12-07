@@ -94,7 +94,7 @@ def toulbar2_path():
 
 # Globally check if the toulbar2 executable can be found when
 # this module is loaded. Print a warning if not.
-_tb2path = os.path.join(locs.app_data, toulbar2_path())
+_tb2path = os.path.join(locs.log_dir, toulbar2_path())
 
 if not is_executable(_tb2path):
     logger.error(

@@ -62,6 +62,7 @@ class Logic(object):
         :param grammar:     an instance of grammar.Grammar
         :param mln:         the MLN instance that the logic shall be tied to.
         """
+        from pracmln.logic import StandardGrammar, PRACGrammar
         if grammar not in ("StandardGrammar", "PRACGrammar"):
             raise Exception("Invalid grammar: %s" % grammar)
         self.grammar = eval(grammar)(self)
@@ -76,7 +77,6 @@ class Logic(object):
         self.__dict__ = d
         self.grammar = eval(d["grammar"])(self)
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
     class Constraint(object):
         """
         Super class of every constraint.
@@ -122,7 +122,6 @@ class Logic(object):
         def gndatoms(self, l=None):
             raise Exception("%s does not implement gndatoms" % str(type(self)))
 
-    #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
     class Formula(Constraint):
         """

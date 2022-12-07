@@ -12,7 +12,7 @@ export CMAKE_INCLUDE_PATH="{0}/include:${{CMAKE_INCLUDE_PATH}}"'''
 
 
 def createcpplibs():
-    lib_home = os.path.join(locs.app_data, "libpracmln")
+    lib_home = os.path.join(locs.log_dir, "libpracmln")
 
     oldwd = os.getcwd()
     basePath = os.path.join(os.getcwd(), "libpracmln")

@@ -61,7 +61,7 @@ logger = logs.getlogger(__name__)
 QUERY_PREDS = 0
 EVIDENCE_PREDS = 1
 DEFAULTNAME = "unknown{}"
-DEFAULT_CONFIG = os.path.join(locs.user_data, global_config_filename)
+DEFAULT_CONFIG = os.path.join(locs.log_dir, global_config_filename)
 WINDOWTITLE = "PRACMLN Learning Tool - {}" + os.path.sep + "{}"
 WINDOWTITLEEDITED = "PRACMLN Learning Tool - {}" + os.path.sep + "*{}"
 

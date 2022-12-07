@@ -27,9 +27,6 @@ pipmain(["install", "sphinx", "sphinx_bootstrap_theme", "sphinxcontrib-bibtex"])
 
 sys.path.insert(0, os.path.abspath("../.."))
 
-sys.path.insert(0, os.path.abspath(os.path.join("..", "..", _version.__basedir__)))
-
-print("using", _version.__basedir__)
 
 try:
     from sphinxcontrib import bibtex    # noqa
